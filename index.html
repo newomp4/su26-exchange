@@ -626,6 +626,16 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fmtC = n => n >= 1e6 ? (n/1e6).toFixed(n<1e7?2:1)+"M" : n >= 1e5 ? Math.round(n/1e3)+"K" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : ""+n;
 const fmtD = d => (d>=0?"+":"-") + Math.abs(d).toFixed(Math.abs(d) < 1 ? 2 : 1) + "%";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+// chart markers that would overlap collapse into one clustered marker
+function clusterMarks(items, minGap){
+  const out = [];
+  for (const it of items.sort((a, b) => a.x - b.x)){
+    const last = out[out.length - 1];
+    if (last && it.x - last.x < minGap){ last.n++; last.titles.push(it.title); }
+    else out.push({ x: it.x, n: 1, titles: [it.title] });
+  }
+  return out;
+}
 // on the public mirror (GitHub Pages) there is no local server: read the
 // published data files directly and hide every admin control
 const PUBLIC = location.protocol === "https:" && !["localhost", "127.0.0.1"].includes(location.hostname);
@@ -691,7 +701,9 @@ function pathFrom(pts, w, h, pad){
 function renderIndex(){
   const svg = $("#idx");
   if (!svg) return;
-  const W = 1000, H = 220, PL = 14, PR = 14, PT = 14, PB = 26;
+  const wrap = $("#idxwrap");
+  const W = Math.max(480, Math.round((wrap && wrap.clientWidth) || 1000));
+  const H = 220, PL = 14, PR = 14, PT = 14, PB = 26;
   const real = SERIES && SERIES.times.length >= 3;
   let pts, times, dayIdx = [], revealIdx = -1;
   if (real){
@@ -739,8 +751,12 @@ function renderIndex(){
        <text x="${PL + 2}" y="${Y(100) - 5}" font-size="10" fill="var(--faint)" font-family="var(--mono)">100</text>` : "";
   svg.innerHTML = `
     ${y100}
-    ${dayIdx.map(i => `<line x1="${X(i)}" y1="${PT}" x2="${X(i)}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="3 4"/>
-      <text x="${X(i) + 5}" y="${PT + 11}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${times[i].split(" ")[0]}</text>`).join("")}
+    ${(() => { let lx = -1e9; return dayIdx.map(i => {
+      const x = X(i), lbl = x - lx > 64 && x > 56 && x < W - 64;
+      if (lbl) lx = x;
+      return `<line x1="${x}" y1="${PT}" x2="${x}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="3 4"/>` +
+        (lbl ? `<text x="${x + 5}" y="${PT + 11}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${times[i].split(" ")[0]}</text>` : "");
+    }).join(""); })()}
     ${revealIdx >= 0 ? `<line x1="${X(revealIdx)}" y1="${PT}" x2="${X(revealIdx)}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="3 3"/>
       <text x="${X(revealIdx) - 6}" y="${PT + 10}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="var(--mono)">JUL 6 · ROSTER REVEAL</text>` : ""}
     <path class="areain" d="${d}L${W - PR} ${H - PB}L${PL} ${H - PB}Z" fill="var(--up-bg)"/>
@@ -767,8 +783,8 @@ function renderIndex(){
     xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i)); xh.setAttribute("visibility", "visible");
     dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(pts[i])); dot.setAttribute("visibility", "visible");
     tip.style.display = "block";
-    tip.style.left = (X(i) / W * 100) + "%";
-    tip.style.top = (Y(pts[i]) / H * 100) + "%";
+    tip.style.left = Math.max(8, Math.min(92, X(i) / W * 100)) + "%";
+    tip.style.top = Math.max(16, Y(pts[i]) / H * 100) + "%";
     tip.textContent = `${times[i]} · ${pts[i].toFixed(2)}`;
   };
   svg.onpointerleave = () => {
@@ -914,13 +930,16 @@ function spotChart(series, w, h, pad){
   const fs = Math.max(10, Math.round(h * .07));
   const ci = series.findIndex(s => s[0] >= CAMP_START);
   const shade = ci >= 0 ? `<rect x="${X(ci)}" y="0" width="${Math.max(0, X(pts.length - 1) - X(ci))}" height="${h - PB}" fill="var(--up-bg)"/>` : "";
-  // campaign log entries as markers (hover for the note)
-  const marks = NOTES.map(n => {
+  // campaign log entries as markers, clustered when they'd overlap (hover for the notes)
+  const markPts = NOTES.map(n => {
     let idx = -1;
     for (let i = 0; i < series.length; i++){ if (series[i][0] <= n.t) idx = i; else break; }
-    return idx >= 0 ? `<g><line x1="${X(idx)}" y1="12" x2="${X(idx)}" y2="${h - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"/>
-      <circle cx="${X(idx)}" cy="8" r="3.5" fill="var(--ink)"><title>${esc(n.t.replace("T", " ") + " · " + n.text)}</title></circle></g>` : "";
-  }).join("");
+    return idx >= 0 ? { x: X(idx), title: n.t.replace("T", " ") + " · " + n.text } : null;
+  }).filter(Boolean);
+  const marks = clusterMarks(markPts, 16).map(m =>
+    `<g><line x1="${m.x}" y1="12" x2="${m.x}" y2="${h - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"/>
+      <circle cx="${m.x}" cy="8" r="${m.n > 1 ? 4.5 : 3.5}" fill="var(--ink)"><title>${esc(m.titles.join("\n"))}</title></circle>
+      ${m.n > 1 ? `<text x="${m.x + 7}" y="11" font-size="9" fill="var(--muted)" font-family="var(--mono)">×${m.n}</text>` : ""}</g>`).join("");
   const fmtTm = s => s.length > 10 ? s.slice(5, 16).replace("T", " ").replace("-", "/") : s.slice(5).replace("-", "/");
   const endY = Y(pts[pts.length - 1]);
   return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="RIZPY follower chart">${shade}${marks}
@@ -1029,7 +1048,7 @@ function renderTelem(){
     el.innerHTML = '<div class="cmpempty">Not enough samples in this window yet.</div>';
     return;
   }
-  const W = 1000, H = 300, P = 16, PT = 16, PB = 26;
+  const W = Math.max(480, Math.round(el.clientWidth || 1000)), H = 300, P = 16, PT = 16, PB = 26;
   const t0 = new Date(seg[0][0]).getTime();
   const t1 = Math.max(t0 + 1, new Date(seg[seg.length - 1][0]).getTime());
   const X = t => P + (t - t0) / (t1 - t0) * (W - 2 * P);
@@ -1055,11 +1074,12 @@ function renderTelem(){
       days += `<line x1="${x}" y1="${PT}" x2="${x}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="4 4"/>
         <text x="${x + 4}" y="${PT + 10}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${seg[i][0].slice(5, 10).replace("-", "/")}</text>`;
     }
-  const marks = NOTES.filter(n => n.t >= seg[0][0] && n.t <= seg[seg.length - 1][0]).map(n => {
-    const x = X(new Date(n.t).getTime());
-    return `<g><line x1="${x}" y1="${PT}" x2="${x}" y2="${H - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/>
-      <circle cx="${x}" cy="${PT - 6}" r="3.5" fill="var(--ink)"><title>${esc(n.t.replace("T", " ") + " · " + n.text)}</title></circle></g>`;
-  }).join("");
+  const marks = clusterMarks(
+    NOTES.filter(n => n.t >= seg[0][0] && n.t <= seg[seg.length - 1][0])
+      .map(n => ({ x: X(new Date(n.t).getTime()), title: n.t.replace("T", " ") + " · " + n.text })), 16
+  ).map(m => `<g><line x1="${m.x}" y1="${PT}" x2="${m.x}" y2="${H - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/>
+      <circle cx="${m.x}" cy="${PT - 6}" r="${m.n > 1 ? 4.5 : 3.5}" fill="var(--ink)"><title>${esc(m.titles.join("\n"))}</title></circle>
+      ${m.n > 1 ? `<text x="${m.x + 7}" y="${PT - 3}" font-size="9" fill="var(--muted)" font-family="var(--mono)">×${m.n}</text>` : ""}</g>`).join("");
   const peak = Math.max(...seg.map(s => s[2] || 0));
   const fmtTm = s => s.slice(5, 16).replace("T", " ").replace("-", "/");
   el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="RIZPY telemetry: followers, viewers, chat">
@@ -1260,7 +1280,8 @@ function renderCmp(){
   const padd = (tmax - tmin) * .04;
   const target = { min: tmin - padd, max: tmax + padd };
 
-  const W = 1000, H = 340, P = 16, RP = 135, BB = 26, TP = 14, PH = H - BB - TP - 4;
+  const W = Math.max(480, Math.round(box.clientWidth || 1000)), H = 340, P = 16,
+    RP = Math.max(95, Math.min(140, Math.round(W * .2))), BB = 26, TP = 14, PH = H - BB - TP - 4;
   const X = i => P + i * (W - P - RP) / Math.max(1, N - 1);
   const yOf = (v, dom) => TP + (dom.max - TR(v)) * PH / (dom.max - dom.min);
   const pathOf = (vals, dom) => {
@@ -1298,7 +1319,7 @@ function renderCmp(){
     const t = dom.max - (dom.max - dom.min) * j / 3;
     return fmtV(isLog ? Math.pow(10, t) : t);
   };
-  const step = Math.max(1, Math.round((N - 1) / 5));
+  const step = Math.max(1, Math.round((N - 1) / Math.max(3, Math.floor(W / 190))));
   const xTicks = [];
   for (let i = 0; i < N; i += step) xTicks.push(i);
   if (xTicks[xTicks.length - 1] !== N - 1) xTicks.push(N - 1);
@@ -1337,7 +1358,11 @@ function renderCmp(){
     sEls.forEach((el, i) => el.setAttribute("d", pathOf(drawn[i].vals, dom)));
     const ends = drawn.map((l, i) => ({ i, y: yOf(l.vals[l.lastI], dom) })).sort((a, b) => a.y - b.y);
     for (let j = 1; j < ends.length; j++)
-      if (ends[j].y - ends[j-1].y < 13) ends[j].y = ends[j-1].y + 13;
+      if (ends[j].y - ends[j-1].y < 15) ends[j].y = ends[j-1].y + 15;
+    if (ends.length){
+      const over = ends[ends.length - 1].y - (H - BB - 5);
+      if (over > 0) ends.forEach(e => { e.y = Math.max(TP + 10, e.y - over); });
+    }
     ends.forEach(e => {
       dEls[e.i].setAttribute("cy", e.y.toFixed(1));
       tEls[e.i].setAttribute("y", (e.y + 3.5).toFixed(1));
@@ -1918,8 +1943,10 @@ function renderSpot(){
   const ranked = ALL.filter(x => x.f != null).sort((a,b) => b.f - a.f);
   const rankF = t.f != null ? ranked.indexOf(t) + 1 : null;
   const cs = campaignStats(t);
+  const rightW = (document.querySelector(".spotright") || {}).clientWidth
+    || Math.round((($("#spot") && $("#spot").clientWidth) || 1000) * .52);
   const chart = (cs && cs.series.length >= 3)
-    ? spotChart(cs.series, 560, 210, 10)
+    ? spotChart(cs.series, Math.max(320, rightW), 210, 10)
     : `<div class="empty">RIZPY's real chart draws itself here after 3+ collected samples (one lands every 5 minutes). The shaded zone marks the campaign window.</div>`;
   const campVal = !cs ? "-" : cs.pre ? "starts Jul 15" : fmtD(cs.pct);
   const gainVal = !cs ? "-" : cs.pre ? "-" : (cs.gained >= 0 ? "+" : "") + cs.gained.toLocaleString();
@@ -2065,7 +2092,9 @@ function renderFocus(){
       return (pb && cur != null)
         ? `<div class="f-sub">before / after: ${pb.toLocaleString()} on ${PRE_BASE.label} → ${cur.toLocaleString()} now · <b class="${cur >= pb ? "u" : "d"}" style="color:var(--${cur >= pb ? "up" : "down"})">${fmtD((cur - pb) / pb * 100)}</b> in one month</div>`
         : ""; })()}
-    ${cs && cs.series.length >= 3 ? spotChart(cs.series, 1200, 300, 12) : ""}`;
+    ${cs && cs.series.length >= 3 ? spotChart(cs.series,
+      Math.max(600, Math.round(focusEl.clientWidth * .9) || 1200),
+      Math.max(200, Math.round(innerHeight * .32)), 12) : ""}`;
   if (cur != null && !reduced){
     const el = $("#f-num"), t0 = performance.now();
     const from = Math.max(0, cur - Math.max(50, Math.round(cur * 0.02)));
@@ -2179,6 +2208,12 @@ loadTags();
 loadChat();
 renderWall();
 renderWire();
+// charts render at true pixel width; keep them true when the window changes
+let rszT;
+addEventListener("resize", () => {
+  clearTimeout(rszT);
+  rszT = setTimeout(() => { renderIndex(); renderCmp(); renderTelem(); renderSpot(); }, 200);
+});
 $("#notein").addEventListener("keydown", e => { if (e.key === "Enter") addNote(); });
 setInterval(() => { syncServer(); loadNotes(); loadSeries(); loadTags(); loadChat(); }, 5 * 60 * 1000);
 
