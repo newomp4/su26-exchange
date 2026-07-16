@@ -1,0 +1,2421 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SU26 · Streamer University 2026 Exchange</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%93%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#FAFAF9; --ink:#111110; --muted:#6E6E6B; --faint:#9C9C97;
+    --line:#E4E4E1; --card:#FFFFFF; --up:#0E7B46; --down:#B3352E;
+    --up-bg:rgba(14,123,70,.08); --down-bg:rgba(179,53,46,.08);
+    --c1:#2563EB; --c2:#C2410C; --c3:#7C3AED; --c4:#0F766E; --c5:#BE185D;
+    --ghost:rgba(120,120,116,.28);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0E0E0D; --ink:#F2F2F0; --muted:#8F8F8A; --faint:#6A6A66;
+      --line:#262624; --card:#161615; --up:#34A96C; --down:#E06058;
+      --up-bg:rgba(52,169,108,.12); --down-bg:rgba(224,96,88,.12);
+      --c1:#60A5FA; --c2:#FB923C; --c3:#A78BFA; --c4:#2DD4BF; --c5:#F472B6;
+      --ghost:rgba(143,143,138,.3); }
+  }
+  :root[data-theme="dark"]{ --bg:#0E0E0D; --ink:#F2F2F0; --muted:#8F8F8A; --faint:#6A6A66;
+    --line:#262624; --card:#161615; --up:#34A96C; --down:#E06058;
+    --up-bg:rgba(52,169,108,.12); --down-bg:rgba(224,96,88,.12);
+    --c1:#60A5FA; --c2:#FB923C; --c3:#A78BFA; --c4:#2DD4BF; --c5:#F472B6;
+    --ghost:rgba(143,143,138,.3); }
+  :root[data-theme="light"]{ --bg:#FAFAF9; --ink:#111110; --muted:#6E6E6B; --faint:#9C9C97;
+    --line:#E4E4E1; --card:#FFFFFF; --up:#0E7B46; --down:#B3352E;
+    --up-bg:rgba(14,123,70,.08); --down-bg:rgba(179,53,46,.08);
+    --c1:#2563EB; --c2:#C2410C; --c3:#7C3AED; --c4:#0F766E; --c5:#BE185D;
+    --ghost:rgba(120,120,116,.28); }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--mono);margin:0;
+    font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 64px}
+  a{color:inherit}
+
+  /* masthead */
+  header{padding:28px 0 18px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;
+    border-bottom:1px solid var(--ink)}
+  .mast-sym{font-size:26px;font-weight:700;letter-spacing:-.02em}
+  .mast-name{font-size:13px;color:var(--muted)}
+  .mast-right{margin-left:auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  #mast-data.stale{color:var(--down)}
+  .mast-open{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .mast-open b{color:var(--ink)}
+  .dot-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--up);
+    margin-right:6px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* tape */
+  .tape{border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:8px 0;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  .tape-inner{display:inline-block;animation:tape 60s linear infinite}
+  .tape:hover .tape-inner{animation-play-state:paused}
+  .tape span{margin-right:28px;font-size:12px}
+  .tape .u{color:var(--up)} .tape .d{color:var(--down)}
+  .tape .sym{font-weight:700}
+  @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){
+    .tape-inner{animation:none}
+    .dot-live{animation:none}
+  }
+
+  /* kpis */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line);margin-top:24px}
+  .kpi{background:var(--card);padding:14px 16px}
+  .kpi .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .kpi .v{font-size:22px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .s{font-size:11px;color:var(--muted);margin-top:2px}
+  .kpi .v.up{color:var(--up)}
+
+  /* sections */
+  h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+    font-weight:600;margin:40px 0 12px;display:flex;align-items:baseline;gap:12px}
+  h2 .rule{flex:1;border-top:1px solid var(--line)}
+  h2 .note{font-size:10px;letter-spacing:0;text-transform:none;color:var(--faint)}
+
+  /* index chart */
+  .chart-card{border:1px solid var(--line);background:var(--card);padding:16px;position:relative}
+  .chart-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .chart-title{font-weight:700}
+  .chart-delta{font-variant-numeric:tabular-nums}
+  .chart-delta.up{color:var(--up)}
+  #idxwrap{position:relative}
+  #idx{width:100%;height:220px;display:block;touch-action:pan-y}
+  .tip{position:absolute;pointer-events:none;background:var(--card);color:var(--ink);
+    border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.18);
+    font-size:11px;padding:4px 8px;white-space:nowrap;transform:translate(-50%,-130%);
+    display:none;z-index:3;font-variant-numeric:tabular-nums}
+  details.data{margin-top:10px;font-size:11px;color:var(--muted)}
+  details.data table{border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums}
+  details.data td,details.data th{border:1px solid var(--line);padding:3px 8px;text-align:right}
+
+  /* controls */
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;align-items:center}
+  .controls input{font-family:var(--mono);font-size:12px;padding:7px 10px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);width:220px;outline-offset:2px}
+  .chip{font-family:var(--mono);font-size:11px;padding:6px 10px;border:1px solid var(--line);
+    background:var(--card);color:var(--muted);cursor:pointer}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .legend{margin-left:auto;font-size:10px;color:var(--faint)}
+
+  /* board table */
+  .board{border:1px solid var(--line);background:var(--card);overflow:auto;max-height:72vh}
+  table.mkt{width:100%;border-collapse:collapse;min-width:1080px}
+  .mkt th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-weight:600;
+    white-space:nowrap;user-select:none;position:sticky;top:0;background:var(--card);z-index:2}
+  .mkt th.num{text-align:right}
+  .mkt th button{all:unset;cursor:pointer;letter-spacing:inherit}
+  .mkt th button:hover{color:var(--ink)}
+  .mkt th .arr{font-size:9px}
+  .mkt td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .mkt tr:last-child td{border-bottom:none}
+  .mkt tr:hover td{background:var(--bg)}
+  td.sym{font-weight:700;white-space:nowrap}
+  td.sym .gt{font-size:9px;border:1px solid var(--line);padding:1px 4px;margin-left:6px;color:var(--muted)}
+  td.who{font-family:var(--sans);min-width:230px}
+  td.who .nm{font-weight:600;font-family:var(--mono);font-size:12px}
+  td.who .bio{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35}
+  td.plat{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num .approx{color:var(--faint)}
+  td.delta{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+  td.delta .pill{padding:2px 6px}
+  td.delta .pill.u{color:var(--up);background:var(--up-bg)}
+  td.delta .pill.d{color:var(--down);background:var(--down-bg)}
+  td.spark{width:120px}
+  td.spark svg{display:block;overflow:visible}
+
+  /* who cell extras */
+  .nmrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .nmrow img{width:22px;height:22px;border-radius:4px;background:var(--line);flex:none}
+  .badge{font-size:8.5px;letter-spacing:.07em;border:1px solid var(--line);color:var(--muted);
+    padding:1px 4px;text-transform:uppercase;font-family:var(--mono);white-space:nowrap}
+
+  /* top movers */
+  .movers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line)}
+  .mover{background:var(--card);padding:12px 14px 44px;position:relative;overflow:hidden}
+  .mover .sym{font-weight:700;font-size:12px}
+  .mover .nm2{font-family:var(--sans);font-size:11px;color:var(--muted)}
+  .mover .big{font-size:20px;font-weight:700;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+  .mover .big.u{color:var(--up)} .mover .big.d{color:var(--down)}
+  .mover svg{position:absolute;right:0;bottom:0;left:0;width:100%;height:34px;display:block}
+
+  /* links + row accent */
+  td.who a{text-decoration:none;color:inherit}
+  td.who a:hover .nm{text-decoration:underline;text-underline-offset:3px}
+  .mkt tbody tr:hover td:first-child{box-shadow:inset 2px 0 0 var(--ink)}
+  .mkt tbody tr.dim{opacity:.35}
+  .spot a{color:inherit}
+
+  /* motion */
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  tbody tr{animation:rise .35s cubic-bezier(.2,.7,.3,1) both}
+  .mover{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  .kpi{animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+  .kpi:nth-child(2){animation-delay:60ms}.kpi:nth-child(3){animation-delay:120ms}
+  .kpi:nth-child(4){animation-delay:180ms}.kpi:nth-child(5){animation-delay:240ms}
+  .kpi:nth-child(6){animation-delay:300ms}
+  .mkt td{transition:background .15s}
+  .sline{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease-out forwards}
+  .sdot{opacity:0;animation:pop .25s ease-out forwards}
+  .areain{opacity:0;animation:pop .7s .9s ease-out forwards}
+  .pill.lp{animation:pulse 2.4s infinite}
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s cubic-bezier(.2,.7,.3,1),transform .5s cubic-bezier(.2,.7,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pop{to{opacity:1}}
+  @media (prefers-reduced-motion: reduce){
+    tbody tr,.mover,.kpi,.spot,.pill.lp{animation:none}
+    .sline{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+    .sdot,.areain{animation:none;opacity:1}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+
+  /* spotlight */
+  .spot{border:1px solid var(--ink);background:var(--card);padding:16px;display:grid;gap:16px;
+    grid-template-columns:1fr;animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  @media (min-width:720px){.spot{grid-template-columns:minmax(280px,1fr) 1.3fr}}
+  .spot .head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .spot .avatar{width:56px;height:56px;border-radius:6px;background:var(--line);flex:none}
+  .spot .tick{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .spot .nm2{font-family:var(--sans);font-size:11px;color:var(--muted)}
+  .spot .bio2{font-family:var(--sans);font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .spot .stats{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:var(--card);
+    margin-top:12px;overflow:hidden}
+  .spot .stat{flex:1 1 105px;min-width:105px;background:var(--card);padding:8px 10px;
+    border-left:1px solid var(--line);border-top:1px solid var(--line);margin:-1px 0 0 -1px}
+  .spot .avatar.ph{display:flex;align-items:center;justify-content:center;font-weight:700;
+    font-size:24px;color:var(--faint)}
+  .spotright{display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .spotright svg{width:100%;height:210px;display:block}
+  .spot .k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .spot .v2{font-size:16px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+  .spot .v2.uu{color:var(--up)} .spot .v2.dd{color:var(--down)}
+  .spot .v2.small{font-size:12px;line-height:1.4;padding-top:4px}
+  .spot svg{width:100%;height:140px;display:block}
+  .spot .empty{color:var(--faint);font-family:var(--sans);font-size:12px;border:1px dashed var(--line);
+    height:140px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;line-height:1.6}
+  /* compare */
+  .cmpwrap{display:grid;grid-template-columns:1fr 240px;gap:14px}
+  @media (max-width:860px){.cmpwrap{grid-template-columns:1fr}}
+  #cmpchart{position:relative;min-width:0}
+  #cmpchart svg{width:100%;height:340px;display:block}
+  .cmppanel{border:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;min-height:0}
+  .cmppanel input{font-family:var(--mono);font-size:12px;padding:8px 10px;border:none;
+    border-bottom:1px solid var(--line);background:var(--card);color:var(--ink);width:100%;outline-offset:-2px}
+  #cmplist{overflow-y:auto;max-height:312px}
+  .cmprow{display:flex;align-items:center;gap:8px;padding:6px 10px;font-size:11.5px;cursor:pointer;
+    border-bottom:1px solid var(--line)}
+  .cmprow:hover{background:var(--card)}
+  .cmprow .cdot{width:9px;height:9px;border-radius:2px;flex:none}
+  .cmprow .cdot.ghost{background:var(--ghost)}
+  .cmprow .cnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cmprow .cval{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cmprow .cx{color:var(--faint);padding-left:2px}
+  .cmprow.pin{background:var(--card);font-weight:600}
+  .cmprow.pin:hover .cx{color:var(--down)}
+  .cmprow.nod .cnm{color:var(--faint)}
+  .cmphr{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);padding:7px 10px 3px}
+  .gline{cursor:pointer}
+  .gline:hover{stroke:var(--muted)}
+  .tip2{position:absolute;pointer-events:none;background:var(--card);color:var(--ink);
+    border:1px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,.18);
+    font-size:11px;padding:6px 9px;white-space:nowrap;display:none;z-index:3;
+    font-variant-numeric:tabular-nums;transform:translateX(-50%);line-height:1.7}
+  .tip2 .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:baseline}
+  .cmpempty{color:var(--faint);font-family:var(--sans);font-size:12px;border:1px dashed var(--line);
+    height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;line-height:1.6}
+  td.sym{cursor:pointer}
+
+  /* the wire */
+  .wirebox{border:1px solid var(--line);background:var(--card);max-height:230px;overflow-y:auto}
+  .wireitem{display:flex;gap:10px;padding:6px 12px;border-top:1px solid var(--line);
+    font-size:12px;align-items:baseline}
+  .wireitem:first-child{border-top:none}
+  .wireitem .wt2{color:var(--muted);font-size:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .wireitem b{cursor:pointer;white-space:nowrap}
+  .wireitem b:hover{text-decoration:underline;text-underline-offset:3px}
+  .wireitem.rz b{color:var(--up)}
+  .wireitem .wi{width:14px;flex:none;text-align:center}
+  .wireitem .wi.u{color:var(--up)}
+  .wireitem .wi.m{color:var(--muted)}
+  .wireitem .wiretxt{color:var(--muted);font-family:var(--sans);font-size:12px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* telemetry */
+  #telem svg{width:100%;height:300px;display:block}
+  .tlegend{font-weight:400;font-size:10px;color:var(--faint);margin-left:10px;letter-spacing:0}
+  .tl{padding-left:12px;position:relative}
+  .tl::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:2px}
+  .tlf::before{background:var(--up)}
+  .tlv::before{background:var(--ghost);border:1px solid var(--muted)}
+  .tlc::before{background:var(--c1)}
+
+  /* market wall */
+  #wall{display:flex;flex-wrap:wrap;gap:6px}
+  .wtile{position:relative;padding:8px 10px;border:1px solid var(--line);background:var(--card);
+    cursor:pointer;min-width:88px;flex:1 0 88px;max-width:150px;transition:transform .12s}
+  .wtile:hover{transform:translateY(-2px)}
+  .wtile .wt{font-weight:700;font-size:11px;letter-spacing:.02em}
+  .wtile .wf{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+  .wtile .wd{font-size:10px;font-variant-numeric:tabular-nums;margin-top:1px;color:var(--muted)}
+  .wtile.s2{flex:1.6 0 122px;max-width:210px}
+  .wtile.s2 .wf{font-size:15px}
+  .wtile.s3{flex:2.4 0 170px;max-width:290px}
+  .wtile.s3 .wf{font-size:18px}
+  .wtile.up .wd{color:var(--up)}
+  .wtile.dn .wd{color:var(--down)}
+  .wtile.cr{border-color:var(--up);box-shadow:inset 0 0 0 1px var(--up)}
+  .wtile.cr::after{content:"CR";position:absolute;top:4px;right:5px;font-size:8px;color:var(--up);
+    border:1px solid var(--up);padding:0 3px;letter-spacing:.06em}
+  .wu1{background:color-mix(in srgb, var(--up) 6%, var(--card))}
+  .wu2{background:color-mix(in srgb, var(--up) 13%, var(--card))}
+  .wu3{background:color-mix(in srgb, var(--up) 22%, var(--card))}
+  .wu4{background:color-mix(in srgb, var(--up) 32%, var(--card))}
+  .wd1{background:color-mix(in srgb, var(--down) 6%, var(--card))}
+  .wd2{background:color-mix(in srgb, var(--down) 13%, var(--card))}
+  .wd3{background:color-mix(in srgb, var(--down) 22%, var(--card))}
+  .wd4{background:color-mix(in srgb, var(--down) 32%, var(--card))}
+
+  /* CR campaign tags */
+  .crtag{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;border:1px solid var(--line);
+    background:none;color:var(--faint);padding:1px 5px;cursor:pointer;opacity:0;transition:opacity .15s}
+  .mkt tr:hover .crtag{opacity:1}
+  .crtag.on{opacity:1;background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .crmini{font-size:8px;border:1px solid var(--ink);padding:0 3px;color:var(--ink);flex:none;font-family:var(--mono)}
+
+  /* campaign log */
+  .notesbox{border:1px solid var(--line);background:var(--card);padding:12px 14px}
+  .notesbox .preset{margin-top:0}
+  .noteitem{display:flex;gap:12px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line);font-size:12px}
+  .noteitem:first-child{border-top:none}
+  .noteitem .nt{color:var(--muted);font-size:10px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .noteitem .nx{margin-left:auto;padding:2px 8px}
+  #notelist{margin-top:10px}
+  .notesempty{color:var(--faint);font-family:var(--sans);font-size:12px;line-height:1.6}
+
+  .preset{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  .preset input{font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--line);
+    background:var(--bg);color:var(--ink);width:190px;max-width:100%}
+  .preset .hint{font-family:var(--sans);font-size:10.5px;color:var(--faint)}
+
+  .kpi .v.dn{color:var(--down)}
+  td.rk2{color:var(--faint);font-size:10px;width:30px}
+  tr.spotrow td:first-child{box-shadow:inset 2px 0 0 var(--up)}
+  tr.spotrow .nm{text-decoration:underline;text-underline-offset:3px}
+
+  /* focus mode (fullscreen display for OBS / screen share) */
+  #focus{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;
+    justify-content:center;padding:5vw;gap:2.2vh}
+  #focus[hidden]{display:none}
+  #focus .f-tick{font-size:clamp(22px,3vw,40px);font-weight:700;letter-spacing:-.02em}
+  #focus .f-sub{color:var(--muted);font-size:clamp(11px,1.3vw,15px);font-weight:400;letter-spacing:0}
+  #focus .f-num{font-size:clamp(56px,11vw,170px);font-weight:700;letter-spacing:-.04em;
+    font-variant-numeric:tabular-nums;line-height:1}
+  #focus .f-row{display:flex;gap:2.5vw;align-items:baseline;flex-wrap:wrap}
+  #focus .f-pct{font-size:clamp(20px,3.6vw,52px);font-weight:700;font-variant-numeric:tabular-nums}
+  #focus .f-pct.u{color:var(--up)} #focus .f-pct.d{color:var(--down)}
+  #focus svg{width:100%;height:32vh;display:block}
+  #focus .f-exit{position:absolute;top:16px;right:16px}
+
+  /* cinema */
+  #cinema{position:fixed;inset:0;background:var(--bg);z-index:70;display:flex;flex-direction:column}
+  #cinema[hidden]{display:none}
+  .cin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;
+    border-bottom:1px solid var(--line)}
+  .cin-bar select{font-family:var(--mono);font-size:11px;padding:6px 8px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink)}
+  #cin-title{font-family:var(--mono);font-size:11px;padding:6px 8px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);width:170px}
+  #cin-status{font-size:11px;color:var(--muted)}
+  #cin-rec[data-on="1"]{background:var(--down);border-color:var(--down);color:#fff}
+  .cin-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:16px}
+  #cin-canvas{width:min(92vw,calc(76vh * 16 / 9));height:auto;border:1px solid var(--line);background:var(--bg)}
+
+  /* live data */
+  .livebox{border:1px solid var(--line);background:var(--card);margin:0 0 12px;font-size:12px}
+  .livebox summary{padding:9px 12px;cursor:pointer;color:var(--muted);list-style:none}
+  .livebox summary::-webkit-details-marker{display:none}
+  .livebox .on{color:var(--up);font-weight:700}
+  .livebody{padding:2px 12px 12px;font-family:var(--sans);color:var(--muted);line-height:1.7}
+  .livebody input{font-family:var(--mono);font-size:12px;padding:6px 10px;border:1px solid var(--line);
+    background:var(--bg);color:var(--ink);width:300px;max-width:100%;margin-right:8px}
+  .livebody code{font-family:var(--mono);background:var(--bg);padding:1px 4px}
+
+  /* public mirror: admin controls hidden */
+  .public .livebox{display:none}
+  .public .notesbox .preset{display:none}
+  .public .noteitem .nx{display:none}
+  .public .crtag{display:none}
+  .public .spot .preset{display:none}
+
+  footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:11px;color:var(--muted);line-height:1.6}
+  footer b{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="mast-sym">SU26</span>
+    <span class="mast-name">STREAMER UNIVERSITY 2026 · CLASS EXCHANGE</span>
+    <div class="mast-right">
+      <span class="mast-open"><span class="dot-live"></span>CAMPUS OPENS <b>JUL 15-20 2026</b></span>
+      <span class="mast-open" title="When the collector last saved a sample">DATA <b id="mast-data">baked Jul 13</b></span>
+      <button class="chip" id="cinemabtn" title="Animated renders of the data, exportable as video">CINEMA</button>
+      <button class="chip" id="themebtn" title="Theme: auto / light / dark">AUTO</button>
+    </div>
+  </header>
+
+  <div class="tape" aria-hidden="true"><div class="tape-inner" id="tape"></div></div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Students admitted</div><div class="v" data-count="120">0</div><div class="s">Class of 2026</div></div>
+    <div class="kpi"><div class="k">Applications</div><div class="v" data-count="1000000" data-fmt="compact">0</div><div class="s">1M+ submitted</div></div>
+    <div class="kpi"><div class="k">Acceptance rate</div><div class="v">0.012%</div><div class="s">harder than Harvard ×300</div></div>
+    <div class="kpi"><div class="k">Tracked class reach</div><div class="v" id="kpi-reach">-</div><div class="s" id="kpi-reach-sub">followers · 28 tracked names</div></div>
+    <div class="kpi"><div class="k">Class index</div><div class="v up" id="kpi-idx">-</div><div class="s" id="kpi-idx-sub">weekly growth, follower-weighted</div></div>
+    <div class="kpi"><div class="k">Live right now</div><div class="v" id="kpi-live">-</div><div class="s" id="kpi-live-sub">connect live data below</div></div>
+    <div class="kpi"><div class="k">General increase</div><div class="v" id="kpi-gen">-</div><div class="s" id="kpi-gen-sub">since Jul 13 · needs live data</div></div>
+    <div class="kpi"><div class="k">CR campaigns · 7d</div><div class="v" id="kpi-cr">-</div><div class="s" id="kpi-cr-sub">tag people on the board</div></div>
+  </div>
+
+  <h2>SU26 class index <span class="rule"></span><span class="note" id="idx-note">follower-weighted · illustrative until collected samples build</span></h2>
+  <div class="chart-card">
+    <div class="chart-head">
+      <span class="chart-title">CLASS INDEX</span>
+      <span class="chart-delta up" id="idx-headline"></span>
+    </div>
+    <div id="idxwrap">
+      <svg id="idx" preserveAspectRatio="none" role="img" aria-label="Class index line chart, last 30 days, rising after the July 6 roster reveal"></svg>
+      <div class="tip" id="idxtip"></div>
+    </div>
+    <details class="data"><summary>Data table (weekly)</summary><div id="idxtable"></div></details>
+  </div>
+
+  <h2>The wire <span class="rule"></span><span class="note">auto-detected events across the class · go-lives, surges, milestones</span></h2>
+  <div id="wire" class="wirebox"></div>
+
+  <h2>Spotlight <span class="rule"></span><span class="note">RIZPY · pinned, tracked extra close</span></h2>
+  <div class="spot" id="spot"></div>
+
+  <h2>RIZPY telemetry <span class="rule"></span><span class="note">followers vs live viewers vs chat speed · what caused what</span></h2>
+  <div class="chart-card">
+    <div class="chart-head">
+      <span class="chart-title">SIGNALS <span class="tlegend"><span class="tl tlf">followers</span> · <span class="tl tlv">viewers</span> · <span class="tl tlc">chat msgs/min</span></span></span>
+      <span>
+        <button class="chip" data-tw="24" aria-pressed="true">24H</button>
+        <button class="chip" data-tw="all" aria-pressed="false">CAMPAIGN</button>
+      </span>
+    </div>
+    <div id="telem"></div>
+  </div>
+
+  <h2>Campaign log <span class="rule"></span><span class="note">what happened when · each entry becomes a marker on RIZPY's charts</span></h2>
+  <div class="notesbox">
+    <div class="preset"><input id="notein" placeholder="e.g. Kai shoutout on main stream, big clip posted, collab with Sketch" aria-label="Log a campaign moment"><button class="chip" onclick="addNote()">LOG IT</button></div>
+    <div id="notelist"></div>
+  </div>
+
+  <h2>Top movers <span class="rule"></span><span class="note">biggest weekly gains among tracked names</span></h2>
+  <div class="movers" id="movers"></div>
+
+  <h2>Compare <span class="rule"></span><span class="note">head to head on any metric · click tickers on the board below to add lines</span></h2>
+  <div class="chart-card">
+    <div class="controls" style="margin-bottom:8px">
+      <span id="cmpmetrics">
+        <button class="chip" data-m="g" aria-pressed="true" title="Each line as % growth from its own starting point, so any two people are comparable">GROWTH %</button>
+        <button class="chip" data-m="gain" aria-pressed="false">GAINED</button>
+        <button class="chip" data-m="f" aria-pressed="false">FOLLOWERS</button>
+        <button class="chip" data-m="lv" aria-pressed="false">LIVE VIEWERS</button>
+        <button class="chip" data-m="cv" aria-pressed="false">CLIP VIEWS</button>
+        <button class="chip" data-m="hl" aria-pressed="false">HOURS LIVE</button>
+      </span>
+      <button class="chip" id="cmpfit" aria-pressed="false" title="FULL fits the whole class in frame; ZOOM closes in on the highlighted people">VIEW: ZOOM</button>
+      <button class="chip" id="cmpreset" title="Back to RIZPY on growth %, zoomed">RESET</button>
+      <button class="chip" id="cmppng" title="Save the chart as an image">EXPORT PNG</button>
+    </div>
+    <div class="cmpwrap">
+      <div id="cmpchart"></div>
+      <aside class="cmppanel">
+        <input id="cmpq2" type="search" placeholder="Search the class" aria-label="Search people to pin">
+        <div id="cmplist"></div>
+      </aside>
+    </div>
+  </div>
+
+  <h2>The big board <span class="rule"></span><span class="note">the whole class · click any column header to rank by it</span></h2>
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search (press /)" aria-label="Search students">
+    <button class="chip" data-plat="all" aria-pressed="true">ALL</button>
+    <button class="chip" data-plat="Twitch" aria-pressed="false">TWITCH</button>
+    <button class="chip" data-plat="YouTube" aria-pressed="false">YOUTUBE</button>
+    <button class="chip" data-plat="Instagram" aria-pressed="false">IG</button>
+    <button class="chip" data-plat="TikTok" aria-pressed="false">TIKTOK</button>
+    <button class="chip" data-plat="Kick" aria-pressed="false">KICK</button>
+    <button class="chip" id="crchip" aria-pressed="false" title="Only people running Content Rewards campaigns with us">CR ONLY</button>
+    <button class="chip" id="csv" title="Download the board as a spreadsheet">EXPORT CSV</button>
+    <span class="legend"><span id="count"></span> · ● tracker &nbsp; ≈ estimate &nbsp; - no public data &nbsp; GT golden ticket</span>
+  </div>
+  <details class="livebox" id="livebox">
+    <summary id="livestatus">LIVE DATA: OFF. Showing Jul 13 snapshot. Click to set up free live Twitch tracking.</summary>
+    <div class="livebody">
+      One-time setup (free): go to <code>dev.twitch.tv/console/apps</code>, log in with a Twitch account
+      (needs 2FA turned on in Twitch settings), hit <b>Register Your Application</b>. Name it anything, set
+      OAuth Redirect URL to <code>http://localhost:8026</code>, category Website Integration, client type Public.
+      Copy the <b>Client ID</b>, click <b>New Secret</b> and copy that too, paste both below and hit
+      <b>SAVE KEYS</b>, then <b>COLLECT NOW</b>. Keys go only to the little server on this Mac (stored in
+      config.json inside the dashboard folder); after that the every-4-hours auto-collection just works.<br>
+      <input id="cid" placeholder="Twitch Client ID" aria-label="Twitch Client ID">
+      <input id="csec" type="password" placeholder="Twitch Client Secret" aria-label="Twitch Client Secret">
+      <input id="cyt" placeholder="YouTube API key (optional)" aria-label="YouTube API key"><br>
+      <button class="chip" onclick="saveCfg()">SAVE KEYS</button>
+      <button class="chip" id="collectbtn" onclick="collectNow()">COLLECT NOW</button>
+      <button class="chip" id="connect" title="Optional: also stream live numbers into this browser tab">CONNECT TWITCH</button>
+      <button class="chip" id="refresh" hidden>REFRESH NOW</button>
+    </div>
+  </details>
+  <div class="board">
+    <table class="mkt">
+      <thead><tr>
+        <th>#</th>
+        <th><button class="hsort" data-key="s">Ticker <span class="arr"></span></button></th>
+        <th><button class="hsort" data-key="n">Name <span class="arr"></span></button></th>
+        <th><button class="hsort" data-key="p">Platform <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="f">Followers <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="d">7d Δ <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="td" title="Since the Jul 13 2026 baseline">Total Δ <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="gain" title="Raw followers gained since the Jul 13 baseline">Gained <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="cv" title="Views on Twitch clips created since Jul 15">Clip views <span class="arr"></span></button></th>
+        <th>Trend</th>
+        <th class="num"><button class="hsort" data-key="peak" title="Highest concurrent viewers this hub has observed">Peak <span class="arr"></span></button></th>
+        <th class="num"><button class="hsort" data-key="lv">Live now <span class="arr"></span></button></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <h2>Market wall <span class="rule"></span><span class="note">size = followers · color = today's move · CR clients ringed · click to compare</span></h2>
+  <div id="wall"></div>
+
+  <div id="cinema" hidden>
+    <div class="cin-bar">
+      <select id="cin-scene" aria-label="Scene">
+        <option value="race">LINE RACE · your compare picks</option>
+        <option value="bars">LEADERBOARD RACE · top 10</option>
+        <option value="counter">RIZPY COUNTER</option>
+        <option value="end">END CARD · campaign recap</option>
+      </select>
+      <input id="cin-title" placeholder="Custom title (optional)" aria-label="Custom title">
+      <select id="cin-metric" aria-label="Metric">
+        <option value="g">GROWTH %</option><option value="gain">GAINED</option>
+        <option value="f">FOLLOWERS</option><option value="lv">LIVE VIEWERS</option>
+        <option value="cv">CLIP VIEWS</option><option value="hl">HOURS LIVE</option>
+      </select>
+      <select id="cin-dur" aria-label="Duration">
+        <option value="5">5s</option><option value="10" selected>10s</option>
+        <option value="20">20s</option><option value="30">30s</option>
+      </select>
+      <select id="cin-res" aria-label="Resolution">
+        <option value="1280x720">720p</option><option value="1920x1080" selected>1080p</option>
+        <option value="2560x1440">1440p</option><option value="3840x2160">4K</option>
+      </select>
+      <select id="cin-fps" aria-label="Frame rate">
+        <option value="24">24fps</option><option value="30" selected>30fps</option><option value="60">60fps</option>
+      </select>
+      <select id="cin-fmt" aria-label="Format" title="MP4 renders offline frame-perfect; WebM records in real time">
+        <option value="mp4" selected>MP4</option><option value="webm">WEBM</option>
+      </select>
+      <button class="chip" id="cin-play">PREVIEW</button>
+      <button class="chip" id="cin-rec">⬤ RECORD</button>
+      <span id="cin-status"></span>
+      <button class="chip" id="cin-close" style="margin-left:auto">ESC</button>
+    </div>
+    <div class="cin-stage"><canvas id="cin-canvas" width="1920" height="1080"></canvas></div>
+  </div>
+
+  <footer id="foot">
+    <b>Methodology.</b> Streamer University 2026 was announced by Kai Cenat on July 6, 2026: 120 students
+    admitted from 1M+ applications; campus runs July 15-20, 2026. Follower "prices" marked ● were read from
+    public trackers (Streams Charts, TwitchTracker, Social Blade) on July 13, 2026; figures marked ≈ are
+    estimates from the most recent public data and can be off. The 7d Δ column is computed from this hub's
+    own recorded history once it exists (marked without ≈); until then it shows weekly estimates converted
+    from 30-day tracker rates (marked ≈). RIZPY's numbers come straight from his 5-minute samples. Sparklines
+    without recorded history are illustrative; the endpoints are the data. With live mode connected, Twitch numbers come straight from the
+    official Twitch API in your browser, and % change is computed from daily snapshots this page saves
+    locally. That part is real data, not estimates. Instagram/TikTok have no free API, so those stay
+    snapshots. Subscriber counts: Twitch keeps subs private to each broadcaster (public "sub counts" on
+    tracker sites are estimates), so they are not shown here; YouTube subscriber and view counts are public
+    and get tracked once a YouTube API key is added to the collector. TikTok, Instagram and X have no free
+    official follower API. Roster per the official reveal and fan-compiled lists; a handful of the 120 names
+    were announced on stream only. Not affiliated with Streamer University. Not financial advice, and no,
+    you cannot actually buy shares in JasonTheWeen.
+  </footer>
+</div>
+
+<script src="mp4-muxer.js"></script>
+<script>
+"use strict";
+// ---------- data ----------
+// v:2 = count+growth from tracker, v:1 = count from tracker / growth est, v:0 = estimate
+const T = [
+  {s:"STABLE", n:"Stable Ronaldo", p:"Twitch",   login:"stableronaldo", f:4772886, d:1.8, v:1, bio:"FaZe Clan member; Fortnite pro turned IRL megastreamer"},
+  {s:"PLAQUE", n:"PlaqueBoyMax",  p:"Twitch",    login:"plaqueboymax", f:2444000, d:0.9, v:2, bio:"Music streams: artists record songs live on \"In the Booth\""},
+  {s:"WEEN",   n:"JasonTheWeen",  p:"Twitch",    login:"jasontheween", f:2369000, d:4.5, v:2, bio:"One of Twitch's fastest risers; ranked #21 on the platform in 2026"},
+  {s:"SKETCH", n:"Sketch",        p:"Twitch",    login:"thesketchreal", f:1692220, d:1.2, v:1, bio:"\"What's up brother\", Madden/NFL streamer, 2024's breakout"},
+  {s:"LACY",   n:"Lacy",          p:"Twitch",    login:"lacy", f:2050000, d:2.1, v:0, bio:"FaZe member; IRL + gaming, runs with Jason and Ronaldo"},
+  {s:"MARLON", n:"Marlon",        p:"Twitch",    login:"marlon", f:1600000, d:1.5, v:0, bio:"High-energy IRL streamer"},
+  {s:"SILKY",  n:"Silky",         p:"Twitch",    login:"silky", f:1250000, d:1.1, v:0, bio:"Comedy streamer; SU'25 alum back for a second year"},
+  {s:"SOFEY",  n:"Aishah Sofey",  p:"Instagram", f:16000000,d:1.9, v:0, bio:"Model / influencer; the most-debated pick of the class"},
+  {s:"SKAI",   n:"Skai Jackson",  p:"Instagram", f:9600000, d:0.5, v:0, bio:"Former Disney star (Jessie, Bunk'd)"},
+  {s:"SARA",   n:"Sara Saffari",  p:"Instagram", f:7700000, d:0.8, v:0, bio:"Fitness influencer & YouTuber"},
+  {s:"DREAM",  n:"DreamDoll",     p:"Instagram", f:7500000, d:0.6, v:0, bio:"Rapper & TV personality (Love & Hip Hop: NY, Bad Girls Club)"},
+  {s:"EFE",    n:"CarterEfe",     p:"Instagram", f:4000000, d:0.7, v:0, bio:"Nigerian comedian & Afrobeats artist (\"Machala\")"},
+  {s:"DRUM",   n:"OfficeDrummer", p:"Twitch",    login:"officedrummer", f:3400000, d:2.4, v:0, bio:"Suit-and-tie drummer; office drum covers went mega-viral"},
+  {s:"JERE",   n:"Jeremiah Brown",p:"TikTok",    f:2500000, d:3.2, v:0, bio:"Love Island USA S7; TikTok's Rising Star of the Year (FindJeremiah)"},
+  {s:"KIERA",  n:"Kiera Please",  p:"TikTok",    f:2400000, d:0.4, v:0, bio:"Cosplay & pop-culture creator"},
+  {s:"CNYC",   n:"Clarence NYC",  p:"YouTube",   f:2300000, d:0.3, v:0, bio:"YouTuber; one half of Chris & Queen with Queen Naija"},
+  {s:"KANEL",  n:"Kanel Joseph",  p:"YouTube",   f:2200000, d:1.4, v:0, bio:"Chaotic IRL prank & event streamer"},
+  {s:"NAIJA",  n:"Queen Naija",   p:"YouTube",   f:2100000, d:0.4, v:0, bio:"Platinum R&B singer (\"Medicine\"); started on YouTube"},
+  {s:"CGC",    n:"Chris Gone Crazy",p:"Twitch",  login:"chrisgonecrazy", f:1800000, d:1.0, v:0, bio:"Comedy creator"},
+  {s:"BIGANT", n:"RealBigAnt",    p:"TikTok",    f:1500000, d:2.0, v:0, bio:"TikTok comedy creator"},
+  {s:"TATUM",  n:"Tatum Bittick", p:"TikTok",    f:1300000, d:1.6, v:0, bio:"Singer & lifestyle creator"},
+  {s:"JAIDA",  n:"Jaidabunni",    p:"YouTube",   f:900000,  d:2.2, v:0, bio:"Lifestyle & reaction YouTuber"},
+  {s:"YUSUF",  n:"Yusuf7n",       p:"Twitch",    login:"yusuf7n", f:800000, d:1.3, v:0, bio:"Fortnite creator"},
+  {s:"SMOKE",  n:"Smokecertified",p:"YouTube",   f:800000,  d:3.5, v:0, gt:1, bio:"Golden-ticket admit; gaming YouTuber"},
+  {s:"MCQN",   n:"McQueen",       p:"YouTube",   f:500000,  d:8.0, v:0, gt:1, bio:"Golden-ticket admit"},
+  {s:"PINK",   n:"s0pink",        p:"Twitch",    login:"s0pink", f:420000, d:5.0, v:0, bio:"Rising variety streamer"},
+  {s:"MOOK",   n:"Mookie",        p:"Twitch",    login:"mookie", f:350000, d:4.2, v:0, bio:"Rising comedy streamer"},
+  {s:"BONNIE", n:"Bonnie Rabbit", p:"Twitch",    login:"bonnierabbit", f:280000, d:6.1, v:0, bio:"Rising IRL / variety streamer"},
+];
+
+const ROSTER = [
+  ["Aikooofficial","TW",1],["Straight2ThBank","TW",1],["coolbutterflyyyy","TW",1],
+  ["A2guapo","TW"],["Avazura","TW"],["2xceeej","TW"],["Andrej Mihelson","TW"],["Andrewuhrik","TW"],
+  ["AngelCrackedU","TW"],["Aozami","TW"],["BenjyChavez_","TW"],["Blazian","TW"],["Bonita","TW"],
+  ["Braeden","TW"],["Giovanna Ramos","TW"],["Madaichakell","TW"],["Madi2hottyy","TW"],["Malek_04","TW"],
+  ["MandooMillions","TW"],["MeesterKeem","TW"],["Miya","TW"],["Mya Nicole","TW"],["Noemi","TW"],
+  ["NotBilzo","TW"],["OnlyLarryKing","TW"],["Payton Baeton","TW"],["Pudgie16","TW"],["Reemknocks","TW"],
+  ["RizpyYT","TW"],["Rula Empire","TW"],["Runik","TW"],["Sarah Farrugia","TW"],["Seleolu","TW"],
+  ["Shaz Delicious","TW"],["Sierra Sprague","TW"],["SUHMMIEE","TW"],["Sukiimellow","TW"],["Suburbbaby","TW"],
+  ["Taylor Jasmine","TW"],["Ysabella Grace","TW"],["Coolitshawty","TW"],["CuteGunz","TW"],["DamiiLive","TW"],
+  ["Dopeboyoli","TW"],["E11ysa","TW"],["Elinameng","TW"],["Ezee","TW"],["Flako","TW"],["Fumibean","TW"],
+  ["ftgioo","TW"],["ilikehaskell","TW"],["itsregtoofunny","TW"],["Shonyx","TW"],["Cinnamon Roll","TW"],
+  ["thatsdaveontv","TW"],["iwastori","TW"],["Jadamalaytv","TW"],["Jaymommy0","TW"],["Jshock9nine","TW"],
+  ["Jordyn Lucas","TW"],["JuicyJacob","TW"],["KiCosmic","TW"],["KiiingJojo","TW"],["King68TheGreat","TW"],
+  ["TheMightyBA","TW"],["Therealnialovee","TW"],["Leii","TW"],["Tiana Musarra","TW"],["Wabewrld","TW"],
+  ["WardrobeWinter","TW"],["WRLDKailee","TW"],["XscapeVerse","TW"],["Yaboyywill","TW"],["GEO","TW"],
+  ["Yugi2x","TW"],["Stanley Meng","TW"],["Marlea","TW"],["Davis","TW"],["AmberrTyson","TW"],
+  ["Edwardkso","TW"],["Laila Simone","TW"],["Lanializa","TW"],["DCTHADESIGNER","TW"],["Catrnado","TW"],
+  ["ChakraShooter","TW"],["NotQuiteLikeDub","TW"],["LuhLiv","TW"],["Raphael Solo Live","TW"],["Rizz","TW"],
+  ["Rawdogmoon","TW"],["Crystalizaguirre","KICK"],["FlippenJosh","KICK"],["Blasianbeautyalexis","KICK"]
+];
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fmtC = n => n >= 1e6 ? (n/1e6).toFixed(n<1e7?2:1)+"M" : n >= 1e5 ? Math.round(n/1e3)+"K" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : ""+n;
+const fmtD = d => (d>=0?"+":"-") + Math.abs(d).toFixed(Math.abs(d) < 1 ? 2 : 1) + "%";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+// on the public mirror (GitHub Pages) there is no local server: read the
+// published data files directly and hide every admin control
+const PUBLIC = location.protocol === "https:" && !["localhost", "127.0.0.1"].includes(location.hostname);
+if (PUBLIC) document.documentElement.classList.add("public");
+let HIST = JSON.parse(localStorage.getItem("su26_hist") || "{}");
+let SERIES = null; // per-ticker time series from the collector, via /api/series
+// highest concurrent viewers this hub has ever observed per channel
+let PEAKS = JSON.parse(localStorage.getItem("su26_peaks") || "{}");
+function savePeaks(){ localStorage.setItem("su26_peaks", JSON.stringify(PEAKS)); }
+// real recorded history for a symbol (needs 3+ saved days)
+function histPts(sym){
+  const pts = Object.keys(HIST).sort().map(d => HIST[d][sym]).filter(v => v != null);
+  return pts.length >= 3 ? pts : null;
+}
+function rng(seed){ let a = 0; for (const c of seed) a = (a*31 + c.charCodeAt(0)) >>> 0;
+  return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+// 30-day series ending at +d%, reveal bump at day 23 (Jul 6)
+function series(sym, d){
+  const r = rng(sym), n = 30, pts = [1];
+  const bump = d * 0.6, drift = (d - bump) / (n - 1);
+  for (let i = 1; i < n; i++){
+    let v = pts[i-1] + drift/100 + (r() - .5) * 0.004;
+    if (i === 23) v += bump/100;
+    pts.push(v);
+  }
+  const scale = (1 + d/100) / pts[n-1];       // pin the endpoint to the real Δ
+  return pts.map((v,i) => v * (1 + (scale-1) * i/(n-1)));
+}
+function pathFrom(pts, w, h, pad){
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max-min) || 1;
+  const X = i => pad + i*(w-2*pad)/(pts.length-1);
+  const Y = v => h - pad - (v-min)*(h-2*pad)/span;
+  return { d: pts.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(""), X, Y };
+}
+
+// ---------- tape ----------
+{
+  const one = T.map(t => `<span><span class="sym">${t.s}</span> ${fmtC(t.f)} <span class="${t.d>=0?"u":"d"}">${fmtD(t.d)}</span></span>`).join("");
+  $("#tape").innerHTML = one + one;
+}
+
+// ---------- KPIs ----------
+{
+  const reach = T.reduce((a,t)=>a+t.f,0);
+  $("#kpi-reach").textContent = fmtC(reach);
+  const idxD = T.reduce((a,t)=>a + t.d * t.f, 0) / T.reduce((a,t)=>a+t.f,0);
+  $("#kpi-idx").textContent = fmtD(idxD);
+  $("#idx-headline").textContent = fmtD(idxD) + " · 7d";
+  // count-up tiles
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const target = +el.dataset.count, fmt = el.dataset.fmt === "compact" ? (n=>fmtC(n).replace(".00","")) : (n=>Math.round(n).toLocaleString());
+    if (reduced){ el.textContent = fmt(target) + (el.dataset.fmt==="compact"?"+":""); return; }
+    const t0 = performance.now();
+    (function tick(t){ const p = Math.min(1,(t-t0)/900), e = 1-Math.pow(1-p,3);
+      el.textContent = fmt(target*e) + (p===1 && el.dataset.fmt==="compact" ? "+" : "");
+      if (p<1) requestAnimationFrame(tick); })(t0);
+  });
+}
+
+// ---------- index chart: real once collected samples exist, synthetic before ----------
+function renderIndex(){
+  const svg = $("#idx");
+  if (!svg) return;
+  const W = 1000, H = 220, PL = 14, PR = 14, PT = 14, PB = 26;
+  const real = SERIES && SERIES.times.length >= 3;
+  let pts, times, dayIdx = [], revealIdx = -1;
+  if (real){
+    // follower-weighted class index over a stable basket: everyone present at sample one
+    const keys = Object.keys(SERIES.series).filter(k => SERIES.series[k].f && SERIES.series[k].f[0] != null);
+    const N0 = SERIES.times.length, lastVal = {}, sums = [];
+    for (let i = 0; i < N0; i++){
+      let s = 0;
+      for (const k of keys){
+        const v = SERIES.series[k].f[i];
+        if (v != null) lastVal[k] = v;
+        s += lastVal[k] || 0;
+      }
+      sums.push(s);
+    }
+    pts = sums.map(v => v / sums[0] * 100);
+    times = SERIES.times.map(t => t.slice(5, 16).replace("T", " ").replace("-", "/"));
+    for (let i = 1; i < N0; i++)
+      if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10)) dayIdx.push(i);
+  } else {
+    const idxD = T.reduce((a, t) => a + t.d * t.f, 0) / T.reduce((a, t) => a + t.f, 0);
+    pts = series("SU26INDEX", idxD).map(v => v * 100);
+    times = pts.map((_, i) => new Date(2026, 5, 13 + i)
+      .toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+    revealIdx = 23;
+  }
+  const N = pts.length;
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+  const X = i => PL + i * (W - PL - PR) / (N - 1);
+  const Y = v => PT + (max - v) * (H - PT - PB) / span;
+  const d = pts.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
+  const delta = pts[N - 1] - 100;
+  $("#idx-headline").textContent = fmtD(delta) + (real ? " · since " + times[0].split(" ")[0] : " · 7d");
+  $("#idx-headline").className = "chart-delta" + (delta >= 0 ? " up" : "");
+  if (real){
+    const k = $("#kpi-idx");
+    k.textContent = fmtD(delta);
+    k.className = "v " + (delta >= 0 ? "up" : "dn");
+    $("#kpi-idx-sub").textContent = "real, follower-weighted";
+    $("#idx-note").textContent = "follower-weighted · 100 = first collected sample · real data";
+  }
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const y100 = (100 >= min - span * .02 && 100 <= max + span * .02)
+    ? `<line x1="${PL}" y1="${Y(100)}" x2="${W - PR}" y2="${Y(100)}" stroke="var(--line)" stroke-dasharray="2 4"/>
+       <text x="${PL + 2}" y="${Y(100) - 5}" font-size="10" fill="var(--faint)" font-family="var(--mono)">100</text>` : "";
+  svg.innerHTML = `
+    ${y100}
+    ${dayIdx.map(i => `<line x1="${X(i)}" y1="${PT}" x2="${X(i)}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="3 4"/>
+      <text x="${X(i) + 5}" y="${PT + 11}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${times[i].split(" ")[0]}</text>`).join("")}
+    ${revealIdx >= 0 ? `<line x1="${X(revealIdx)}" y1="${PT}" x2="${X(revealIdx)}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="3 3"/>
+      <text x="${X(revealIdx) - 6}" y="${PT + 10}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="var(--mono)">JUL 6 · ROSTER REVEAL</text>` : ""}
+    <path class="areain" d="${d}L${W - PR} ${H - PB}L${PL} ${H - PB}Z" fill="var(--up-bg)"/>
+    <path id="idxline" d="${d}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${X(N - 1)}" cy="${Y(pts[N - 1])}" r="4" fill="var(--${delta >= 0 ? "up" : "down"})" class="sdot" style="animation-delay:1.3s"/>
+    <text x="${PL}" y="${H - 8}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${times[0]}</text>
+    <text x="${W - PR}" y="${H - 8}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${times[N - 1]}</text>
+    <line id="xh" x1="0" y1="${PT}" x2="0" y2="${H - PB}" stroke="var(--faint)" stroke-width="1" visibility="hidden"/>
+    <circle id="xhdot" r="3.5" fill="currentColor" visibility="hidden"/>`;
+  const line = $("#idxline");
+  if (!reduced && !renderIndex._drawn){
+    const len = line.getTotalLength();
+    line.style.strokeDasharray = len;
+    line.style.strokeDashoffset = len;
+    line.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1) .15s";
+    requestAnimationFrame(() => requestAnimationFrame(() => { line.style.strokeDashoffset = "0"; }));
+    renderIndex._drawn = true;
+  }
+  const tip = $("#idxtip"), xh = $("#xh"), dot = $("#xhdot");
+  svg.onpointermove = e => {
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(N - 1, Math.round((px - PL) / (W - PL - PR) * (N - 1))));
+    xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i)); xh.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(pts[i])); dot.setAttribute("visibility", "visible");
+    tip.style.display = "block";
+    tip.style.left = (X(i) / W * 100) + "%";
+    tip.style.top = (Y(pts[i]) / H * 100) + "%";
+    tip.textContent = `${times[i]} · ${pts[i].toFixed(2)}`;
+  };
+  svg.onpointerleave = () => {
+    tip.style.display = "none";
+    xh.setAttribute("visibility", "hidden");
+    dot.setAttribute("visibility", "hidden");
+  };
+  // per-day closes in the data table
+  let cols;
+  if (real){
+    cols = [];
+    for (let i = 0; i < N; i++){
+      const day = times[i].split(" ")[0];
+      if (!cols.length || cols[cols.length - 1][0] !== day) cols.push([day, pts[i]]);
+      else cols[cols.length - 1][1] = pts[i];
+    }
+  } else {
+    cols = [0, 7, 14, 21, 23, 29].map(i => [times[i], pts[i]]);
+  }
+  $("#idxtable").innerHTML = "<table><tr>" + cols.map(c => `<th>${c[0]}</th>`).join("") +
+    "</tr><tr>" + cols.map(c => `<td>${c[1].toFixed(2)}</td>`).join("") + "</tr></table>";
+}
+renderIndex();
+
+// ---------- big board ----------
+const usedTicks = new Set(T.map(t => t.s));
+function tick(n){
+  const base = n.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6) || "SU";
+  let s = base, i = 2;
+  while (usedTicks.has(s)) s = base.slice(0,5) + i++;
+  usedTicks.add(s); return s;
+}
+// the baked-in growth figures were 30-day rates; the dashboard reports weekly,
+// so convert (÷30×7). Estimates either way (marked ≈) until real history takes over.
+T.forEach(t => { if (t.d != null) t.d = t.d * 7 / 30; });
+
+const TICKS = { "RizpyYT": "RIZPY" };
+const ALL = T.concat(ROSTER.map(([n,p,gt]) => {
+  const s = TICKS[n] || tick(n); usedTicks.add(s);
+  return { s, n, p: p === "TW" ? "Twitch" : "Kick", f: null, d: null, gt, u: 1,
+    bio: "Class of '26. No public tracker data yet" };
+}));
+// RIZPY's other socials: YouTube subs tracked via the YouTube API key.
+// TikTok (@rizpyytt, ~112K) and X have no free API, so they stay out of the data.
+ALL.push({ s: "RIZPYT", n: "Rizpy (YouTube)", p: "YouTube", f: null, d: null, u: 1,
+  bio: "RIZPY's YouTube channel (@RizpyYT), subscribers tracked per run" });
+
+const SPOT = "RizpyYT";
+// clipping campaign window: baseline is RIZPY's count when SU campus opens
+const CAMP_START = "2026-07-15";
+// the "before" anchor, one month pre-campus. Set f here once read off twitchtracker.com/rizpyyt
+// (baking it in makes OBS see it too); the SET BASELINE box on the spotlight also works.
+const PRE_BASE = { date: "2026-06-14", label: "Jun 14", f: null };
+function preBaseVal(){
+  if (PRE_BASE.f) return PRE_BASE.f;
+  const v = +localStorage.getItem("su26_prebase");
+  return v > 0 ? v : null;
+}
+function setPreBase(){
+  const v = +document.getElementById("pbin").value;
+  if (v > 0){
+    localStorage.setItem("su26_prebase", v);
+    renderSpot();
+    if (!focusEl.hidden) renderFocus();
+  }
+}
+let SPOTSAMPLES = null; // intraday [datetime, followers, viewers] from collector.mjs
+// Jul 13 2026 baseline for "Total Δ": the follower counts baked into this page
+const BASE = {};
+ALL.forEach(t => {
+  if (t.f != null) BASE[t.s] = t.f;
+  if (PEAKS[t.s] != null) t.peak = PEAKS[t.s];
+});
+let sortKey = "f", sortDir = -1, plat = "all", query = "", LASTROWS = [];
+let TAGS = new Set(), CRONLY = false;
+function spark(t){
+  const w = 110, h = 30, pad = 3;
+  const hp = histPts(t.s);
+  const pts = hp || (t.d == null ? null : series(t.s, t.d));
+  if (!pts) return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <line x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="2 4"/></svg>`;
+  const { d, X, Y } = pathFrom(pts, w, h, pad);
+  const up = hp ? pts[pts.length-1] >= pts[0] : t.d >= 0;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <title>${t.n}: ${t.d==null?"trend":fmtD(t.d)+" weekly"}${hp?" (recorded history)":""}</title>
+    <path d="${d}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity=".55" pathLength="1" class="sline"/>
+    <circle cx="${X(pts.length-1)}" cy="${Y(pts[pts.length-1])}" r="3" fill="var(--${up?"up":"down"})" class="sdot" style="animation-delay:.6s"/></svg>`;
+}
+function renderMovers(){
+  const top = ALL.filter(t => t.d != null).sort((a,b) => b.d - a.d).slice(0, 4);
+  $("#movers").innerHTML = top.map((t, i) => {
+    const hp = histPts(t.s), pts = hp || series(t.s, t.d);
+    const w = 200, h = 34, pad = 2;
+    const { d } = pathFrom(pts, w, h, pad);
+    const up = t.d >= 0;
+    const area = d + `L${(w-pad).toFixed(1)} ${h} L${pad} ${h} Z`;
+    return `<div class="mover" style="animation-delay:${i*70}ms">
+      <span class="sym">${t.s}</span> <span class="nm2">${t.n}</span>
+      <div class="big ${up?"u":"d"}">${up?"▲":"▼"} ${fmtD(t.d)}${t.dReal?"":" ≈"}</div>
+      <div class="nm2">${t.f!=null ? fmtC(t.f)+" followers" : ""}</div>
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${area}" fill="var(--${up?"up":"down"}-bg)"/>
+        <path d="${d}" fill="none" stroke="var(--${up?"up":"down"})" stroke-width="1.5" pathLength="1" class="sline"/>
+      </svg></div>`;
+  }).join("");
+}
+function updateGeneral(){
+  const withTd = ALL.filter(t => t.td != null);
+  if (!withTd.length) return;
+  const wsum = withTd.reduce((a,t) => a + (BASE[t.s] ?? t.f), 0);
+  const g = withTd.reduce((a,t) => a + t.td * (BASE[t.s] ?? t.f), 0) / wsum;
+  const el = $("#kpi-gen");
+  el.textContent = fmtD(g);
+  el.className = "v " + (g >= 0 ? "up" : "dn");
+  $("#kpi-gen-sub").textContent = "weighted, since Jul 13 · " + withTd.length + " names";
+}
+// campaign math for RIZPY: baseline = last value before CAMP_START (or first ever seen)
+function campaignStats(t){
+  let series = (SPOTSAMPLES && SPOTSAMPLES.length)
+    ? SPOTSAMPLES.filter(s => s[1] != null).map(s => [s[0], s[1]])
+    : null;
+  if (!series || !series.length){
+    const dates = Object.keys(HIST).sort();
+    series = dates.filter(d => HIST[d][t.s] != null).map(d => [d, HIST[d][t.s]]);
+  }
+  if (!series.length) return null;
+  let bi = 0;
+  for (let i = 0; i < series.length; i++){ if (series[i][0] < CAMP_START) bi = i; else break; }
+  const base = series[bi][1], cur = series[series.length - 1][1];
+  const startMs = Math.max(new Date(CAMP_START).getTime(), new Date(series[bi][0].slice(0, 10)).getTime());
+  const days = Math.max(1, Math.round((Date.now() - startMs) / 864e5));
+  const pre = new Date().toISOString().slice(0, 10) < CAMP_START;
+  return { series, base, cur, gained: cur - base, pct: base ? (cur - base) / base * 100 : 0, days, pre };
+}
+function spotChart(series, w, h, pad){
+  const PB = Math.round(h * .12);
+  const pts = series.map(s => s[1]);
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+  const X = i => pad + i * (w - 2 * pad) / (pts.length - 1);
+  const Y = v => pad + (max - v) * (h - 2 * pad - PB) / span;
+  const d = pts.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
+  const up = pts[pts.length - 1] >= pts[0];
+  const fs = Math.max(10, Math.round(h * .07));
+  const ci = series.findIndex(s => s[0] >= CAMP_START);
+  const shade = ci >= 0 ? `<rect x="${X(ci)}" y="0" width="${Math.max(0, X(pts.length - 1) - X(ci))}" height="${h - PB}" fill="var(--up-bg)"/>` : "";
+  // campaign log entries as markers (hover for the note)
+  const marks = NOTES.map(n => {
+    let idx = -1;
+    for (let i = 0; i < series.length; i++){ if (series[i][0] <= n.t) idx = i; else break; }
+    return idx >= 0 ? `<g><line x1="${X(idx)}" y1="12" x2="${X(idx)}" y2="${h - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"/>
+      <circle cx="${X(idx)}" cy="8" r="3.5" fill="var(--ink)"><title>${esc(n.t.replace("T", " ") + " · " + n.text)}</title></circle></g>` : "";
+  }).join("");
+  const fmtTm = s => s.length > 10 ? s.slice(5, 16).replace("T", " ").replace("-", "/") : s.slice(5).replace("-", "/");
+  const endY = Y(pts[pts.length - 1]);
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="RIZPY follower chart">${shade}${marks}
+    <path d="${d}L${(w - pad).toFixed(1)} ${h - PB}L${pad} ${h - PB}Z" fill="var(--${up ? "up" : "down"}-bg)"/>
+    <path d="${d}" fill="none" stroke="var(--${up ? "up" : "down"})" stroke-width="2" stroke-linejoin="round" pathLength="1" class="sline"/>
+    <circle cx="${X(pts.length - 1)}" cy="${endY}" r="4" fill="var(--${up ? "up" : "down"})" class="sdot" style="animation-delay:.7s"/>
+    <text x="${X(pts.length - 1) - 10}" y="${Math.max(fs + 2, endY - 12)}" text-anchor="end" font-size="${fs}" font-weight="700" fill="var(--${up ? "up" : "down"})" font-family="var(--mono)">${pts[pts.length - 1].toLocaleString()}</text>
+    <text x="${pad + 2}" y="${Math.min(h - PB - 6, Y(pts[0]) + fs + 8)}" font-size="${fs * .85}" fill="var(--faint)" font-family="var(--mono)">${pts[0].toLocaleString()}</text>
+    <text x="${pad}" y="${h - 4}" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[0][0])}</text>
+    <text x="${w - pad}" y="${h - 4}" text-anchor="end" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[series.length - 1][0])}</text></svg>`;
+}
+// net follower change today from the 5-minute samples
+function todayDelta(){
+  if (!SPOTSAMPLES || !SPOTSAMPLES.length) return null;
+  const day = SPOTSAMPLES[SPOTSAMPLES.length - 1][0].slice(0, 10);
+  const todays = SPOTSAMPLES.filter(s => s[0].startsWith(day) && s[1] != null);
+  return todays.length >= 2 ? todays[todays.length - 1][1] - todays[0][1] : null;
+}
+// ---------- market wall: the class as a stock-exchange heatmap ----------
+// today's move per ticker: first vs latest sample of the current day
+function dayChange(tick){
+  if (!SERIES || !SERIES.times.length) return null;
+  const s = SERIES.series[tick];
+  if (!s || !s.f) return null;
+  const today = SERIES.times[SERIES.times.length - 1].slice(0, 10);
+  let first = null, last = null;
+  for (let i = 0; i < SERIES.times.length; i++){
+    if (SERIES.times[i].slice(0, 10) !== today) continue;
+    const v = s.f[i];
+    if (v == null) continue;
+    if (first == null) first = v;
+    last = v;
+  }
+  if (first == null || last == null || !first) return null;
+  return (last - first) / first * 100;
+}
+function renderWall(){
+  const el = $("#wall");
+  if (!el) return;
+  const people = ALL.filter(t => t.f != null).sort((a, b) => b.f - a.f);
+  if (!people.length){
+    el.innerHTML = '<div class="notesempty">Fills in once follower data lands.</div>';
+    return;
+  }
+  el.innerHTML = people.map(t => {
+    let ch = dayChange(t.s), src = "today";
+    if (ch == null){
+      ch = t.td ?? t.d ?? null;
+      src = t.td != null ? "since Jul 13" : "weekly est.";
+    }
+    const a = ch == null ? 0 : Math.abs(ch);
+    const lvl = a >= 1.5 ? 4 : a >= .5 ? 3 : a >= .15 ? 2 : a >= .02 ? 1 : 0;
+    const cls = (ch != null && lvl) ? ` ${ch > 0 ? "up wu" : "dn wd"}${lvl}` : "";
+    const size = t.f >= 1e6 ? " s3" : t.f >= 1e5 ? " s2" : "";
+    return `<div class="wtile${size}${cls}${TAGS.has(t.s) ? " cr" : ""}" onclick="cmpToggle('${t.s}')"
+      title="${esc(t.n)} · ${t.f.toLocaleString()} followers${ch != null ? " · " + fmtD(ch) + " " + src : ""} · click to compare">
+      <div class="wt">${t.s}</div><div class="wf">${fmtC(t.f)}</div>
+      <div class="wd">${ch != null ? (ch >= 0 ? "▲ " : "▼ ") + fmtD(ch) : "-"}</div></div>`;
+  }).join("");
+}
+
+// ---------- the wire: auto-detected events across the class ----------
+let EVENTS = [];
+function renderWire(){
+  const el = $("#wire");
+  if (!el) return;
+  if (!EVENTS.length){
+    el.innerHTML = '<div class="notesempty" style="padding:10px 12px">Events land here automatically: go-lives, follower surges, milestones. First entries arrive as collections run.</div>';
+    return;
+  }
+  el.innerHTML = EVENTS.slice(0, 80).map(e => {
+    const icon = e.k === "live" ? '<span class="wi u">▶</span>'
+      : e.k === "off" ? '<span class="wi m">■</span>'
+      : e.k === "surge" ? '<span class="wi u">▲</span>'
+      : '<span class="wi u">●</span>';
+    const txt = e.k === "live" ? `went live${e.x ? " · " + esc(e.x) : ""} · ${fmtC(e.v)} watching`
+      : e.k === "off" ? "went offline"
+      : e.k === "surge" ? `+${e.v.toLocaleString()} followers in one window`
+      : `crossed ${fmtC(e.v)} followers`;
+    return `<div class="wireitem${e.s === "RIZPY" ? " rz" : ""}"><span class="wt2">${e.t.slice(5).replace("T", " ").replace("-", "/")}</span>${icon}<b onclick="cmpToggle('${e.s}')" title="Add to compare">${e.s}</b>${TAGS.has(e.s) ? '<span class="crmini">CR</span>' : ""}<span class="wiretxt">${txt}</span></div>`;
+  }).join("");
+}
+
+// ---------- telemetry: followers + viewers + chat speed on one timeline ----------
+let CHATROWS = null, TELWIN = "24";
+async function loadChat(){
+  const txt = await fetch("rizpy-chat.csv", { cache: "no-store" }).then(r => r.ok ? r.text() : null).catch(() => null);
+  if (txt == null) return;
+  CHATROWS = txt.trim().split("\n").slice(1)
+    .map(l => l.split(","))
+    .filter(c => c.length >= 4)
+    .map(c => [c[0] + "T" + c[1], +c[2] || 0, +c[3] || 0, +c[4] || 0]);
+  renderTelem();
+}
+function renderTelem(){
+  const el = $("#telem");
+  if (!el) return;
+  const sp = (SPOTSAMPLES || []).filter(s => s[1] != null);
+  if (sp.length < 3){
+    el.innerHTML = '<div class="cmpempty">Builds from RIZPY\'s 2-minute samples; give it a few minutes.</div>';
+    return;
+  }
+  const cut = TELWIN === "24" ? new Date(Date.now() - 24 * 36e5).toLocaleString("sv-SE").slice(0, 16).replace(" ", "T") : "";
+  const seg = sp.filter(s => s[0] >= cut);
+  if (seg.length < 3){
+    el.innerHTML = '<div class="cmpempty">Not enough samples in this window yet.</div>';
+    return;
+  }
+  const W = 1000, H = 300, P = 16, PT = 16, PB = 26;
+  const t0 = new Date(seg[0][0]).getTime();
+  const t1 = Math.max(t0 + 1, new Date(seg[seg.length - 1][0]).getTime());
+  const X = t => P + (t - t0) / (t1 - t0) * (W - 2 * P);
+  const fmin = Math.min(...seg.map(s => s[1])), fmax = Math.max(...seg.map(s => s[1]));
+  const fy = v => PT + (fmax - v) / ((fmax - fmin) || 1) * (H - PT - PB) * .8;
+  const vmax = Math.max(1, ...seg.map(s => s[2] || 0));
+  const vy = v => H - PB - (v / vmax) * (H - PT - PB) * .5;
+  const chat = (CHATROWS || []).filter(c => c[0] >= seg[0][0] && c[0] <= seg[seg.length - 1][0]);
+  const cmax = Math.max(1, ...chat.map(c => c[1]));
+  const chh = v => (v / cmax) * (H - PT - PB) * .3;
+  const fpath = seg.map((s, i) => (i ? "L" : "M") + X(new Date(s[0]).getTime()).toFixed(1) + " " + fy(s[1]).toFixed(1)).join("");
+  const vpath = "M" + seg.map(s => X(new Date(s[0]).getTime()).toFixed(1) + " " + vy(s[2] || 0).toFixed(1)).join(" L") +
+    ` L${(W - P).toFixed(1)} ${H - PB} L${P} ${H - PB} Z`;
+  const bw = Math.max(1.2, (W - 2 * P) / Math.max(60, (t1 - t0) / 6e4) * .8);
+  const bars = chat.map(c => {
+    const x = X(new Date(c[0]).getTime());
+    return `<rect x="${(x - bw / 2).toFixed(1)}" y="${(H - PB - chh(c[1])).toFixed(1)}" width="${bw.toFixed(1)}" height="${chh(c[1]).toFixed(1)}" fill="var(--c1)" opacity=".5"><title>${c[0].slice(5).replace("T", " ")} · ${c[1]} msgs/min · ${c[2]} chatters${c[3] ? " · " + c[3] + " subs" : ""}</title></rect>`;
+  }).join("");
+  let days = "";
+  for (let i = 1; i < seg.length; i++)
+    if (seg[i][0].slice(0, 10) !== seg[i-1][0].slice(0, 10)){
+      const x = X(new Date(seg[i][0]).getTime());
+      days += `<line x1="${x}" y1="${PT}" x2="${x}" y2="${H - PB}" stroke="var(--line)" stroke-dasharray="4 4"/>
+        <text x="${x + 4}" y="${PT + 10}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${seg[i][0].slice(5, 10).replace("-", "/")}</text>`;
+    }
+  const marks = NOTES.filter(n => n.t >= seg[0][0] && n.t <= seg[seg.length - 1][0]).map(n => {
+    const x = X(new Date(n.t).getTime());
+    return `<g><line x1="${x}" y1="${PT}" x2="${x}" y2="${H - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 4" opacity=".7"/>
+      <circle cx="${x}" cy="${PT - 6}" r="3.5" fill="var(--ink)"><title>${esc(n.t.replace("T", " ") + " · " + n.text)}</title></circle></g>`;
+  }).join("");
+  const peak = Math.max(...seg.map(s => s[2] || 0));
+  const fmtTm = s => s.slice(5, 16).replace("T", " ").replace("-", "/");
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="RIZPY telemetry: followers, viewers, chat">
+    ${days}${bars}
+    <path d="${vpath}" fill="var(--ghost)" stroke="var(--muted)" stroke-width="1"/>
+    ${marks}
+    <path d="${fpath}" fill="none" stroke="var(--up)" stroke-width="2.5" stroke-linejoin="round" pathLength="1" class="sline"/>
+    <circle cx="${X(t1)}" cy="${fy(seg[seg.length - 1][1])}" r="4" fill="var(--up)" class="sdot" style="animation-delay:.7s"/>
+    <text x="${W - P - 8}" y="${Math.max(PT + 12, fy(seg[seg.length - 1][1]) - 10)}" text-anchor="end" font-size="15" font-weight="700" fill="var(--up)" font-family="var(--mono)">${seg[seg.length - 1][1].toLocaleString()}</text>
+    ${peak ? `<text x="${P + 2}" y="${Math.max(PT + 12, vy(peak) - 6)}" font-size="10" fill="var(--muted)" font-family="var(--mono)">peak ${peak.toLocaleString()} watching</text>` : ""}
+    <text x="${P}" y="${H - 8}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${fmtTm(seg[0][0])}</text>
+    <text x="${W - P}" y="${H - 8}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${fmtTm(seg[seg.length - 1][0])}</text>
+  </svg>`;
+}
+document.querySelectorAll("[data-tw]").forEach(c => c.addEventListener("click", () => {
+  TELWIN = c.dataset.tw;
+  document.querySelectorAll("[data-tw]").forEach(x => x.setAttribute("aria-pressed", x === c ? "true" : "false"));
+  renderTelem();
+}));
+
+// ---------- Content Rewards campaign tags ----------
+async function loadTags(){
+  const r = await fetch(PUBLIC ? "cr-tags.json" : "/api/tags", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  if (r){ TAGS = new Set(r); render(); renderCmp(); renderWall(); updateCrKpi(); }
+}
+async function toggleTag(k){
+  if (PUBLIC) return;
+  const r = await fetch("/api/tags", { method: "POST", body: JSON.stringify({ toggle: k }) })
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  if (r && r.tags){ TAGS = new Set(r.tags); render(); renderCmp(); renderWall(); updateCrKpi(); }
+}
+function updateCrKpi(){
+  const el = $("#kpi-cr");
+  if (!el) return;
+  const withD = ALL.filter(t => t.d != null && t.dReal);
+  const cr = withD.filter(t => TAGS.has(t.s));
+  const field = withD.filter(t => !TAGS.has(t.s));
+  if (!cr.length){
+    el.textContent = "-";
+    el.className = "v";
+    $("#kpi-cr-sub").textContent = TAGS.size ? "waiting for real history" : "tag people on the board";
+    return;
+  }
+  const avg = a => a.reduce((s, t) => s + t.d, 0) / a.length;
+  const c = avg(cr);
+  el.textContent = fmtD(c);
+  el.className = "v " + (c >= 0 ? "up" : "dn");
+  $("#kpi-cr-sub").textContent = "avg of " + cr.length + (field.length ? " · field " + fmtD(avg(field)) : "");
+}
+
+// ---------- compare: everyone as a line, any metric ----------
+const CMPSPECIAL = { CRAVG: "CR campaigns · avg", FIELD: "The field · avg" };
+const cohortCount = k => !SERIES ? 0 :
+  Object.keys(SERIES.series).filter(x => k === "CRAVG" ? TAGS.has(x) : !TAGS.has(x)).length;
+const CMP = { sel: ["RIZPY"], metric: "g", fit: "zoom" };
+const CMPFMT = {
+  g: fmtD, f: fmtC, lv: fmtC, cv: fmtC,
+  gain: v => (v >= 0 ? "+" : "") + Math.round(v).toLocaleString(),
+  hl: v => v.toFixed(1) + "h"
+};
+async function loadSeries(){
+  SERIES = await fetch(PUBLIC ? "series.json" : "/api/series", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  // masthead freshness: when the collector last saved, red when overdue
+  const md = $("#mast-data");
+  if (md && SERIES && SERIES.times.length){
+    const last = SERIES.times[SERIES.times.length - 1];
+    const ageH = (Date.now() - new Date(last).getTime()) / 36e5;
+    md.textContent = last.slice(5, 16).replace("T", " ").replace("-", "/") +
+      (ageH > 2.5 ? " · STALE" : "");
+    md.classList.toggle("stale", ageH > 2.5);
+    md.parentElement.title = ageH > 2.5
+      ? "No sample in " + ageH.toFixed(1) + "h. Was the Mac asleep? Hit COLLECT NOW."
+      : "When the collector last saved a sample";
+  }
+  renderCmp();
+  renderIndex();
+  renderWall();
+}
+function cmpValues(tick, m = CMP.metric){
+  // cohort pseudo-lines: the average of every member's own curve
+  if (CMPSPECIAL[tick]){
+    const members = Object.keys(SERIES.series).filter(k => tick === "CRAVG" ? TAGS.has(k) : !TAGS.has(k));
+    const rows = members.map(k => cmpValuesRaw(k, m)).filter(Boolean);
+    if (!rows.length) return null;
+    return SERIES.times.map((_, i) => {
+      let s = 0, n = 0;
+      for (const r of rows){ if (r[i] != null){ s += r[i]; n++; } }
+      return n ? s / n : null;
+    });
+  }
+  return cmpValuesRaw(tick, m);
+}
+function cmpValuesRaw(tick, m = CMP.metric){
+  const s = SERIES.series[tick];
+  if (!s) return null;
+  const raw = (m === "g" || m === "gain") ? s.f : s[m];
+  if (!raw) return null;
+  const vals = []; let last = null;
+  for (let i = 0; i < SERIES.times.length; i++){
+    let v = raw[i];
+    if (v == null) v = (m === "lv") ? 0 : last;
+    vals.push(v);
+    if (v != null) last = v;
+  }
+  if (m === "g" || m === "gain"){
+    const base = vals.find(v => v != null);
+    if (base == null) return null;
+    return vals.map(v => v == null ? null : m === "g" ? (base ? (v / base - 1) * 100 : 0) : v - base);
+  }
+  return vals;
+}
+function cmpToggle(k, addOnly){
+  const i = CMP.sel.indexOf(k);
+  if (i >= 0){ if (!addOnly) CMP.sel.splice(i, 1); }
+  else {
+    if (CMP.sel.length >= 6) CMP.sel.pop();
+    CMP.sel.push(k);
+  }
+  renderCmp();
+  saveUI();
+}
+// one color per pinned person, shared by the chart lines and the panel list
+function cmpColors(){
+  const PAL = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "var(--c5)"];
+  const map = {};
+  let pi = 0;
+  for (const k of CMP.sel) map[k] = k === "RIZPY" ? "var(--up)" : PAL[pi++ % PAL.length];
+  return map;
+}
+let CMPQ = "";
+function renderCmpList(){
+  const el = $("#cmplist");
+  if (!el) return;
+  const cmap = cmpColors();
+  const q = CMPQ.toLowerCase();
+  const hasData = k => !!(SERIES && SERIES.series[k]);
+  const dataOk = k => CMPSPECIAL[k] ? cohortCount(k) > 0 : hasData(k);
+  const pinned = CMP.sel.map(k => {
+    const t = ALL.find(x => x.s === k);
+    const label = t ? t.n : (CMPSPECIAL[k] || k);
+    const val = CMPSPECIAL[k] ? cohortCount(k) + " ppl" : (t && t.f != null ? fmtC(t.f) : "-");
+    return `<div class="cmprow pin" onclick="cmpToggle('${k}')" title="Unpin">
+      <span class="cdot" style="background:${cmap[k]}"></span>
+      <span class="cnm">${esc(label)}${dataOk(k) ? "" : " · no data yet"}</span>
+      ${!CMPSPECIAL[k] && TAGS.has(k) ? '<span class="crmini">CR</span>' : ""}
+      <span class="cval">${val}</span><span class="cx">×</span></div>`;
+  }).join("");
+  const cohorts = [["CRAVG", "CR campaigns avg"], ["FIELD", "The field avg"]]
+    .filter(([k]) => !CMP.sel.includes(k))
+    .map(([k, label]) => `<div class="cmprow${cohortCount(k) ? "" : " nod"}" onclick="cmpToggle('${k}')" title="Pin the cohort average">
+      <span class="cdot ghost"></span><span class="cnm">${label}</span>
+      <span class="cval">${cohortCount(k)} ppl</span></div>`).join("");
+  const rest = ALL.filter(t => !CMP.sel.includes(t.s))
+    .filter(t => !q || (t.n + " " + t.s).toLowerCase().includes(q))
+    .sort((a, b) => (b.f || 0) - (a.f || 0))
+    .map(t => `<div class="cmprow${hasData(t.s) ? "" : " nod"}" onclick="cmpToggle('${t.s}')" title="Pin to chart">
+      <span class="cdot ghost"></span><span class="cnm">${esc(t.n)}</span>
+      ${TAGS.has(t.s) ? '<span class="crmini">CR</span>' : ""}
+      <span class="cval">${t.f != null ? fmtC(t.f) : "-"}</span></div>`).join("");
+  el.innerHTML = pinned +
+    (cohorts ? `<div class="cmphr">cohorts · tagged vs everyone else</div>` + cohorts : "") +
+    `<div class="cmphr">${q ? "matches" : "the class"} · click to pin</div>` + rest;
+}
+function renderCmp(){
+  const box = $("#cmpchart");
+  if (!box) return;
+  renderCmpList();
+  document.querySelectorAll("#cmpmetrics .chip").forEach(c =>
+    c.setAttribute("aria-pressed", c.dataset.m === CMP.metric ? "true" : "false"));
+  if (!SERIES || !SERIES.times.length){
+    box.innerHTML = '<div class="cmpempty">The compare chart builds itself from collected runs. Hit COLLECT NOW in the live data box, or wait for the next hourly run.</div>';
+    return;
+  }
+  const N = SERIES.times.length;
+  const sel = CMP.sel
+    .map(k => ({ k, vals: cmpValues(k), t: ALL.find(x => x.s === k) }))
+    .filter(l => l.vals && l.vals.some(v => v != null));
+  // the rest of the class as faint background lines (click one to promote it)
+  const ghosts = Object.keys(SERIES.series)
+    .filter(k => !CMP.sel.includes(k))
+    .map(k => ({ k, vals: cmpValues(k) }))
+    .filter(l => l.vals && l.vals.some(v => v != null));
+  // FULL view fits the entire class (log scale for count metrics so 14K and 4.7M share a frame);
+  // ZOOM view fits the highlighted people
+  const isLog = CMP.fit === "all" && (CMP.metric === "f" || CMP.metric === "lv" || CMP.metric === "cv");
+  const TR = isLog ? (v => Math.log10(Math.max(v, 1))) : (v => v);
+  const scaleSrc = CMP.fit === "all" ? sel.concat(ghosts) : (sel.length ? sel : ghosts);
+  if (!scaleSrc.length){
+    box.innerHTML = '<div class="cmpempty">No collected data yet for the selected people.</div>';
+    return;
+  }
+  const tv = scaleSrc.flatMap(l => l.vals.filter(v => v != null).map(TR));
+  let tmin = Math.min(...tv), tmax = Math.max(...tv);
+  const flat = tmin === tmax;
+  if (flat){ tmin -= 1; tmax += 1; }
+  const padd = (tmax - tmin) * .04;
+  const target = { min: tmin - padd, max: tmax + padd };
+
+  const W = 1000, H = 340, P = 16, RP = 135, BB = 26, TP = 14, PH = H - BB - TP - 4;
+  const X = i => P + i * (W - P - RP) / Math.max(1, N - 1);
+  const yOf = (v, dom) => TP + (dom.max - TR(v)) * PH / (dom.max - dom.min);
+  const pathOf = (vals, dom) => {
+    let d = "", started = false;
+    vals.forEach((v, i) => {
+      if (v == null) return;
+      d += (started ? "L" : "M") + X(i).toFixed(1) + " " + yOf(v, dom).toFixed(1);
+      started = true;
+    });
+    return d;
+  };
+  const cmap = cmpColors();
+  const drawn = sel.map(l => {
+    const col = cmap[l.k];
+    const lastI = l.vals.reduce((a, v, i) => v != null ? i : a, 0);
+    const dn = l.k === "CRAVG" ? "CR AVG" : l.k === "FIELD" ? "FIELD" : l.k;
+    return { ...l, col, lastI, dn, endV: l.vals[l.vals.reduce((a, v, i) => v != null ? i : a, 0)],
+      w: (l.k === "RIZPY" || CMPSPECIAL[l.k]) ? 2.6 : 1.8 };
+  });
+  const fmtV = CMPFMT[CMP.metric];
+  const fmtT = s => s.slice(5, 16).replace("T", " ").replace("-", "/");
+  // smooth zoom: if only the view changed, morph existing lines from the old domain to the new
+  const sig = CMP.metric + "|" + CMP.sel.join(",") + "|" + N;
+  // cancel any in-flight zoom and continue from wherever the view visually is,
+  // so rapid toggling can never leave the chart mid-scale
+  if (CMP._raf){ cancelAnimationFrame(CMP._raf); CMP._raf = null; }
+  const cur = CMP._vis || CMP._dom;
+  const tween = !reduced && cur && CMP._sig === sig && CMP._log === isLog &&
+    (Math.abs(cur.min - target.min) > 1e-9 || Math.abs(cur.max - target.max) > 1e-9);
+  const dom0 = tween ? { ...cur } : target;
+  const drawIn = !reduced && !tween && CMP._sig !== sig;
+  // y grid rows are fixed on screen; their value labels follow the domain
+  const gY = [0, 1, 2, 3].map(j => TP + j * PH / 3);
+  const gLabel = (dom, j) => {
+    const t = dom.max - (dom.max - dom.min) * j / 3;
+    return fmtV(isLog ? Math.pow(10, t) : t);
+  };
+  const step = Math.max(1, Math.round((N - 1) / 5));
+  const xTicks = [];
+  for (let i = 0; i < N; i += step) xTicks.push(i);
+  if (xTicks[xTicks.length - 1] !== N - 1) xTicks.push(N - 1);
+  const xAxis = xTicks.map(i =>
+    `<text x="${X(i)}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === N - 1 ? "end" : "middle"}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${fmtT(SERIES.times[i])}</text>`).join("");
+  let dayLines = "";
+  for (let i = 1; i < N; i++)
+    if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
+      dayLines += `<line x1="${X(i)}" y1="${TP}" x2="${X(i)}" y2="${H - BB}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Comparison chart, ${ghosts.length + drawn.length} people">
+    <defs><clipPath id="cmpclip"><rect x="${P}" y="0" width="${W - P - RP}" height="${H - BB}"/></clipPath></defs>
+    ${gY.map((y, j) => `<line x1="${P}" y1="${y}" x2="${W - RP}" y2="${y}" stroke="var(--line)" stroke-width="1" ${j ? 'stroke-dasharray="2 5"' : ""}/>
+      <text class="cmpgl" x="${P + 2}" y="${y - 4}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${gLabel(dom0, j)}</text>`).join("")}
+    ${dayLines}
+    ${isLog ? `<text x="${W - RP - 6}" y="${TP + 10}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">log scale</text>` : ""}
+    <line id="cmpzero" x1="${P}" x2="${W - RP}" y1="0" y2="0" stroke="var(--faint)" stroke-dasharray="2 4" visibility="hidden"/>
+    <g clip-path="url(#cmpclip)">
+      ${ghosts.map((l, i) => `<path data-gi="${i}" d="${pathOf(l.vals, dom0)}" fill="none" stroke="var(--ghost)" stroke-width="1" stroke-linejoin="round" class="gline" onclick="cmpToggle('${l.k}')"><title>${esc((SERIES.series[l.k].n || l.k) + " · click to highlight")}</title></path>`).join("")}
+      ${drawn.map((l, i) => `<path data-si="${i}" d="${pathOf(l.vals, dom0)}" fill="none" stroke="${l.col}" stroke-width="${l.w}" stroke-linejoin="round" ${CMPSPECIAL[l.k] ? 'stroke-dasharray="8 5"' : ""} ${drawIn ? 'pathLength="1" class="sline"' : ""}><title>${esc(l.t ? l.t.n : (CMPSPECIAL[l.k] || l.k))}: ${fmtV(l.endV)}</title></path>`).join("")}
+    </g>
+    ${drawn.map((l, i) => `<circle data-di="${i}" cx="${W - RP + 4}" cy="0" r="3" fill="${l.col}" ${drawIn ? 'class="sdot" style="animation-delay:.8s"' : ""}/>
+      <text data-ti="${i}" x="${W - RP + 11}" y="0" font-size="11" font-family="var(--mono)" fill="${l.col}">${l.dn} ${fmtV(l.endV)}</text>`).join("")}
+    ${flat ? `<text x="${(P + W - RP) / 2}" y="${TP + PH / 2 - 8}" text-anchor="middle" font-size="11" fill="var(--faint)" font-family="var(--sans)">flat so far · this metric hasn't moved yet in the collected window</text>` : ""}
+    <line id="cmpxh" x1="0" x2="0" y1="${TP}" y2="${H - BB}" stroke="var(--faint)" visibility="hidden"/>
+    ${xAxis}
+  </svg><div class="tip2" id="cmptip"></div>`;
+  const svg = box.querySelector("svg");
+  const gEls = [...svg.querySelectorAll("[data-gi]")];
+  const sEls = [...svg.querySelectorAll("[data-si]")];
+  const dEls = [...svg.querySelectorAll("[data-di]")];
+  const tEls = [...svg.querySelectorAll("[data-ti]")];
+  const glEls = [...svg.querySelectorAll(".cmpgl")];
+  const zeroEl = svg.querySelector("#cmpzero");
+  function applyDomain(dom){
+    gEls.forEach((el, i) => el.setAttribute("d", pathOf(ghosts[i].vals, dom)));
+    sEls.forEach((el, i) => el.setAttribute("d", pathOf(drawn[i].vals, dom)));
+    const ends = drawn.map((l, i) => ({ i, y: yOf(l.vals[l.lastI], dom) })).sort((a, b) => a.y - b.y);
+    for (let j = 1; j < ends.length; j++)
+      if (ends[j].y - ends[j-1].y < 13) ends[j].y = ends[j-1].y + 13;
+    ends.forEach(e => {
+      dEls[e.i].setAttribute("cy", e.y.toFixed(1));
+      tEls[e.i].setAttribute("y", (e.y + 3.5).toFixed(1));
+    });
+    glEls.forEach((el, j) => el.textContent = gLabel(dom, j));
+    const wantZero = !isLog && (CMP.metric === "g" || CMP.metric === "gain");
+    const zy = TP + dom.max * PH / (dom.max - dom.min);
+    if (wantZero && zy > TP && zy < H - BB){
+      zeroEl.setAttribute("y1", zy.toFixed(1));
+      zeroEl.setAttribute("y2", zy.toFixed(1));
+      zeroEl.setAttribute("visibility", "visible");
+    } else zeroEl.setAttribute("visibility", "hidden");
+  }
+  applyDomain(dom0);
+  CMP._vis = { ...dom0 };
+  if (tween){
+    const t0 = performance.now(), from = { ...dom0 }, DUR = 750;
+    const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    (function frame(ts){
+      const p = Math.min(1, (ts - t0) / DUR), e = ease(p);
+      const dom = { min: from.min + (target.min - from.min) * e,
+                    max: from.max + (target.max - from.max) * e };
+      applyDomain(dom);
+      CMP._vis = dom;
+      CMP._raf = p < 1 ? requestAnimationFrame(frame) : null;
+    })(t0);
+  } else CMP._vis = { ...target };
+  CMP._dom = target; CMP._sig = sig; CMP._log = isLog;
+  // crosshair: values for every highlighted line at the hovered moment
+  const tip = $("#cmptip"), xh = $("#cmpxh");
+  svg.addEventListener("pointermove", e => {
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(N - 1, Math.round((px - P) / (W - P - RP) * (N - 1))));
+    xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i));
+    xh.setAttribute("visibility", "visible");
+    tip.style.display = "block";
+    tip.style.left = Math.max(12, Math.min(88, X(i) / W * 100)) + "%";
+    tip.style.top = "6px";
+    tip.innerHTML = `<b>${fmtT(SERIES.times[i])}</b><br>` + drawn.map(l =>
+      `<span class="sw" style="background:${l.col}"></span>${l.dn} ${l.vals[i] != null ? fmtV(l.vals[i]) : "-"}`).join("<br>");
+  });
+  svg.addEventListener("pointerleave", () => {
+    tip.style.display = "none";
+    xh.setAttribute("visibility", "hidden");
+  });
+}
+document.querySelectorAll("#cmpmetrics .chip").forEach(c =>
+  c.addEventListener("click", () => { CMP.metric = c.dataset.m; renderCmp(); saveUI(); }));
+$("#cmpfit").addEventListener("click", () => {
+  CMP.fit = CMP.fit === "all" ? "zoom" : "all";
+  const b = $("#cmpfit");
+  b.textContent = CMP.fit === "all" ? "VIEW: FULL" : "VIEW: ZOOM";
+  b.setAttribute("aria-pressed", CMP.fit === "all" ? "true" : "false");
+  renderCmp();
+  saveUI();
+});
+$("#cmpq2").addEventListener("input", e => { CMPQ = e.target.value.trim(); renderCmpList(); });
+$("#crchip").addEventListener("click", () => {
+  CRONLY = !CRONLY;
+  $("#crchip").setAttribute("aria-pressed", CRONLY ? "true" : "false");
+  render();
+  saveUI();
+});
+$("#cmpreset").addEventListener("click", () => {
+  CMP.sel = ["RIZPY"]; CMP.metric = "g"; CMP.fit = "zoom";
+  $("#cmpfit").textContent = "VIEW: ZOOM";
+  $("#cmpfit").setAttribute("aria-pressed", "false");
+  renderCmp();
+  saveUI();
+});
+$("#cmppng").addEventListener("click", () => {
+  const svg = document.querySelector("#cmpchart svg");
+  if (!svg) return;
+  const clone = svg.cloneNode(true);
+  // bake CSS-variable colors into concrete values so the standalone image matches the screen
+  const src = [svg, ...svg.querySelectorAll("*")], dst = [clone, ...clone.querySelectorAll("*")];
+  const props = [["stroke", "stroke"], ["fill", "fill"], ["font-family", "fontFamily"]];
+  src.forEach((el, i) => {
+    const cs = getComputedStyle(el);
+    props.forEach(([attr, js]) => {
+      const a = el.getAttribute(attr);
+      if (a && a.includes("var(")) dst[i].setAttribute(attr, cs[js]);
+    });
+  });
+  clone.setAttribute("width", 2000); clone.setAttribute("height", 680);
+  const bg = getComputedStyle(document.body).backgroundColor;
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = 2000; c.height = 680;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    const a = document.createElement("a");
+    a.href = c.toDataURL("image/png");
+    a.download = "su26-compare.png";
+    a.click();
+  };
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+});
+
+// ---------- cinema: animated data renders, exportable as video ----------
+const CIN = { raf: null, playing: false, rec: null, pos: null };
+const cinC = () => document.getElementById("cin-canvas");
+function cinColors(){
+  const cs = getComputedStyle(document.documentElement);
+  const v = n => cs.getPropertyValue(n).trim();
+  return { bg: v("--bg"), ink: v("--ink"), muted: v("--muted"), faint: v("--faint"),
+    line: v("--line"), up: v("--up"), ghost: v("--ghost"),
+    pal: [v("--c1"), v("--c2"), v("--c3"), v("--c4"), v("--c5")] };
+}
+// value at a fractional index, linearly interpolated between samples
+function cinAt(vals, u){
+  const i = Math.floor(u), f = u - i;
+  const a = vals[i], b = vals[Math.min(vals.length - 1, i + 1)];
+  if (a == null) return null;
+  if (b == null) return a;
+  return a + (b - a) * f;
+}
+function cinFmtT(s){ return s ? s.slice(5, 16).replace("T", " ").replace("-", "/") : ""; }
+const CINLBL = { g: "GROWTH %", gain: "FOLLOWERS GAINED", f: "FOLLOWERS",
+  lv: "LIVE VIEWERS", cv: "CLIP VIEWS", hl: "HOURS LIVE" };
+
+function cinPrep(){
+  const scene = $("#cin-scene").value, m = $("#cin-metric").value;
+  const col = cinColors(), fmtV = CMPFMT[m];
+  const title = $("#cin-title").value.trim();
+  if (scene === "end"){
+    const t = ALL.find(x => x.n === SPOT) || {};
+    const cs = campaignStats(t);
+    return { scene, m, col, fmtV, title: title || "SU26 · CAMPAIGN RECAP",
+      card: { f: t.f, gained: cs && !cs.pre ? cs.gained : null, pct: cs && !cs.pre ? cs.pct : null,
+        days: cs && !cs.pre ? cs.days : null, cv: t.cv, hl: t.hl,
+        yt: (ALL.find(x => x.s === "RIZPYT") || {}).f } };
+  }
+  if (!SERIES || SERIES.times.length < 2) return null;
+  const N = SERIES.times.length;
+  const prep = { scene, m, col, N, fmtV, times: SERIES.times,
+    title: title || "SU26 CLASS EXCHANGE" };
+  if (scene === "race"){
+    let pi = 0;
+    prep.lines = CMP.sel.map(k => {
+      const vals = cmpValues(k, m);
+      if (!vals || !vals.some(v => v != null)) return null;
+      return { k, dn: k === "CRAVG" ? "CR AVG" : k === "FIELD" ? "FIELD" : k,
+        vals, c: k === "RIZPY" ? col.up : col.pal[pi++ % col.pal.length],
+        w: k === "RIZPY" || CMPSPECIAL[k] ? 4 : 3, dash: !!CMPSPECIAL[k] };
+    }).filter(Boolean);
+    prep.ghosts = Object.keys(SERIES.series).filter(k => !CMP.sel.includes(k))
+      .map(k => cmpValues(k, m)).filter(v => v && v.some(x => x != null));
+    const all = prep.lines.flatMap(l => l.vals.filter(v => v != null));
+    if (!all.length) return null;
+    prep.min = Math.min(...all); prep.max = Math.max(...all);
+    if (prep.min === prep.max){ prep.min -= 1; prep.max += 1; }
+    const p4 = (prep.max - prep.min) * .06; prep.min -= p4; prep.max += p4;
+  } else if (scene === "bars"){
+    prep.people = Object.keys(SERIES.series)
+      .map(k => ({ k, n: SERIES.series[k].n || k, vals: cmpValuesRaw(k, m) }))
+      .filter(p => p.vals && p.vals.some(v => v != null));
+    if (!prep.people.length) return null;
+    CIN.pos = null;
+  } else {
+    const sp = (SPOTSAMPLES || []).filter(s => s[1] != null);
+    prep.spot = sp.length >= 2 ? sp.map(s => s[1]) : cmpValuesRaw("RIZPY", "f");
+    prep.spotTimes = sp.length >= 2 ? sp.map(s => s[0]) : SERIES.times;
+    if (!prep.spot || prep.spot.filter(v => v != null).length < 2) return null;
+    prep.N = prep.spot.length;
+    prep.times = prep.spotTimes;
+  }
+  return prep;
+}
+
+function cinDrawRace(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .055, mR = W * .16, mT = H * .14, mB = H * .11;
+  const u = p * (pr.N - 1);
+  const X = i => mL + i * (W - mL - mR) / (pr.N - 1);
+  const Y = v => mT + (pr.max - v) * (H - mT - mB) / (pr.max - pr.min);
+  ctx.strokeStyle = pr.col.line; ctx.lineWidth = 1 * s;
+  ctx.fillStyle = pr.col.faint; ctx.font = `${20 * s}px ui-monospace,Menlo,monospace`;
+  for (let j = 0; j < 4; j++){
+    const v = pr.min + (pr.max - pr.min) * j / 3, y = Y(v);
+    ctx.setLineDash(j ? [3 * s, 7 * s] : []);
+    ctx.beginPath(); ctx.moveTo(mL, y); ctx.lineTo(W - mR, y); ctx.stroke();
+    ctx.fillText(pr.fmtV(v), mL, y - 8 * s);
+  }
+  ctx.setLineDash([]);
+  for (let i = 1; i <= Math.floor(u); i++)
+    if (pr.times[i].slice(0, 10) !== pr.times[i-1].slice(0, 10)){
+      ctx.strokeStyle = pr.col.line; ctx.setLineDash([6 * s, 6 * s]);
+      ctx.beginPath(); ctx.moveTo(X(i), mT); ctx.lineTo(X(i), H - mB); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  const trace = (vals, upto) => {
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i <= Math.floor(upto); i++){
+      if (vals[i] == null) continue;
+      ctx[started ? "lineTo" : "moveTo"](X(i), Y(vals[i]));
+      started = true;
+    }
+    const tip = cinAt(vals, upto);
+    if (started && tip != null && upto > Math.floor(upto))
+      ctx.lineTo(mL + upto * (W - mL - mR) / (pr.N - 1), Y(tip));
+    return { started, tip };
+  };
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.strokeStyle = pr.col.ghost; ctx.lineWidth = 1.5 * s;
+  pr.ghosts.forEach(g => { trace(g, u); ctx.stroke(); });
+  const labels = [];
+  pr.lines.forEach(l => {
+    ctx.strokeStyle = l.c; ctx.lineWidth = l.w * s;
+    ctx.setLineDash(l.dash ? [14 * s, 9 * s] : []);
+    const { started, tip } = trace(l.vals, u);
+    ctx.stroke(); ctx.setLineDash([]);
+    if (started && tip != null){
+      const tx = mL + u * (W - mL - mR) / (pr.N - 1), ty = Y(tip);
+      ctx.fillStyle = l.c;
+      ctx.beginPath(); ctx.arc(tx, ty, 7 * s, 0, 7); ctx.fill();
+      labels.push({ y: ty, c: l.c, txt: `${l.dn} ${pr.fmtV(tip)}` });
+    }
+  });
+  labels.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++)
+    if (labels[i].y - labels[i-1].y < 30 * s) labels[i].y = labels[i-1].y + 30 * s;
+  ctx.font = `700 ${24 * s}px ui-monospace,Menlo,monospace`;
+  labels.forEach(l => { ctx.fillStyle = l.c; ctx.fillText(l.txt, W - mR + 16 * s, l.y + 8 * s); });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${22 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(CINLBL[pr.m], mL, 92 * s);
+  const ts = cinFmtT(pr.times[Math.round(u)]);
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${30 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(ts, W - mL, 58 * s);
+  ctx.textAlign = "left";
+}
+
+function cinDrawBars(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .055, mR = W * .07, mT = H * .17, rows = 10;
+  const u = p * (pr.N - 1);
+  const now = pr.people.map(pp => ({ ...pp, v: cinAt(pp.vals, u) })).filter(pp => pp.v != null);
+  now.sort((a, b) => b.v - a.v);
+  const top = now.slice(0, rows);
+  const rz = now.find(pp => pp.k === "RIZPY");
+  if (rz && !top.includes(rz)) top[rows - 1] = rz;
+  if (!CIN.pos) CIN.pos = {};
+  const rowH = (H - mT - H * .06) / rows;
+  top.forEach((pp, r) => {
+    if (CIN.pos[pp.k] == null) CIN.pos[pp.k] = r;
+    CIN.pos[pp.k] += (r - CIN.pos[pp.k]) * .12;
+  });
+  const maxV = Math.max(...top.map(pp => pp.v), 1e-9);
+  top.forEach((pp, r) => {
+    const y = mT + CIN.pos[pp.k] * rowH;
+    const bw = Math.max(4 * s, (pp.v / maxV) * (W - mL - mR - 320 * s));
+    const rank = now.indexOf(pp) + 1;
+    ctx.fillStyle = pp.k === "RIZPY" ? pr.col.up : (TAGS.has(pp.k) ? pr.col.ink : pr.col.muted);
+    ctx.fillRect(mL + 300 * s, y + rowH * .18, bw, rowH * .62);
+    ctx.fillStyle = pr.col.ink; ctx.font = `700 ${24 * s}px ui-monospace,Menlo,monospace`;
+    ctx.textAlign = "right";
+    ctx.fillText(String(rank).padStart(2, "0"), mL + 50 * s, y + rowH * .62);
+    ctx.textAlign = "left";
+    ctx.fillText(pp.n.slice(0, 16), mL + 70 * s, y + rowH * .62);
+    ctx.fillStyle = pp.k === "RIZPY" ? pr.col.up : pr.col.ink;
+    ctx.fillText(pr.fmtV(pp.v), mL + 310 * s + bw, y + rowH * .62);
+    if (TAGS.has(pp.k)){
+      ctx.fillStyle = pr.col.faint; ctx.font = `${16 * s}px ui-monospace,Menlo,monospace`;
+      ctx.fillText("CR", mL + 70 * s + ctx.measureText(pp.n.slice(0, 16)).width + 90 * s, y + rowH * .62);
+    }
+  });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title + " · " + CINLBL[pr.m], mL, 58 * s);
+  ctx.textAlign = "right";
+  ctx.fillText(cinFmtT(pr.times[Math.round(u)]), W - mL, 58 * s);
+  ctx.textAlign = "left";
+}
+
+function cinDrawEnd(ctx, W, H, p, pr){
+  const s = H / 1080, c = pr.card, x = W * .08;
+  ctx.fillStyle = pr.col.muted; ctx.font = `${26 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, x, H * .16);
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${56 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("RIZPY", x, H * .25);
+  if (c.f != null){
+    const start = c.f - (c.gained || 0);
+    ctx.font = `700 ${170 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(Math.round(start + (c.gained || 0) * p).toLocaleString(), x, H * .45);
+  }
+  if (c.gained != null){
+    ctx.fillStyle = c.gained >= 0 ? pr.col.up : pr.col.faint;
+    ctx.font = `700 ${48 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(`${c.gained >= 0 ? "+" : ""}${Math.round(c.gained * p).toLocaleString()} followers · ${fmtD(c.pct * p)}`, x, H * .55);
+  }
+  ctx.fillStyle = pr.col.muted; ctx.font = `${28 * s}px ui-monospace,Menlo,monospace`;
+  ctx.globalAlpha = Math.min(1, p * 1.6);
+  ctx.fillText([
+    c.yt != null ? fmtC(c.yt) + " YouTube subs" : "",
+    c.cv != null ? fmtC(Math.round(c.cv * p)) + " clip views" : "",
+    c.hl != null ? c.hl + "h streamed" : "",
+    c.days != null ? "day " + c.days + " of the campaign" : ""
+  ].filter(Boolean).join(" · "), x, H * .63);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = pr.col.up;
+  ctx.fillRect(x, H * .68, p * W * .4, 6 * s);
+  ctx.fillStyle = pr.col.faint; ctx.font = `${24 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("twitch.tv/rizpyyt", x, H * .88);
+}
+
+function cinDrawCounter(ctx, W, H, p, pr){
+  const s = H / 1080;
+  const u = p * (pr.N - 1);
+  const cur = cinAt(pr.spot, u), base = pr.spot.find(v => v != null);
+  if (cur == null) return;
+  const min = Math.min(...pr.spot.filter(v => v != null)), max = Math.max(...pr.spot.filter(v => v != null));
+  const span = (max - min) || 1;
+  const cy = H * .62, ch = H * .30;
+  ctx.strokeStyle = pr.col.up; ctx.lineWidth = 4 * s; ctx.lineJoin = "round";
+  ctx.beginPath();
+  let started = false;
+  const steps = Math.max(2, Math.floor(u) + 1);
+  for (let i = 0; i < steps; i++){
+    if (pr.spot[i] == null) continue;
+    const x = W * .08 + (i / (pr.N - 1)) * W * .84;
+    const y = cy + ch - ((pr.spot[i] - min) / span) * ch;
+    ctx[started ? "lineTo" : "moveTo"](x, y);
+    started = true;
+  }
+  const tx = W * .08 + (u / (pr.N - 1)) * W * .84;
+  const ty = cy + ch - ((cur - min) / span) * ch;
+  if (started) ctx.lineTo(tx, ty);
+  ctx.stroke();
+  if (started){
+    ctx.lineTo(tx, cy + ch); ctx.lineTo(W * .08, cy + ch); ctx.closePath();
+    ctx.globalAlpha = .12; ctx.fillStyle = pr.col.up; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = pr.col.up;
+    ctx.beginPath(); ctx.arc(tx, ty, 9 * s, 0, 7); ctx.fill();
+  }
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${150 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(Math.round(cur).toLocaleString(), W * .08, H * .34);
+  const gained = Math.round(cur - base);
+  ctx.fillStyle = gained >= 0 ? pr.col.up : pr.col.faint;
+  ctx.font = `700 ${44 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText((gained >= 0 ? "+" : "") + gained.toLocaleString() + " followers", W * .08, H * .43);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${26 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("RIZPY · twitch.tv/rizpyyt · " + cinFmtT(pr.times[Math.round(u)]), W * .08, H * .49);
+}
+
+function cinDraw(p, pr){
+  pr = pr || cinPrep();
+  const cv = cinC();
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const col = pr ? pr.col : cinColors();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = col.bg;
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!pr){
+    ctx.fillStyle = col.muted;
+    ctx.font = `${28 * cv.height / 1080}px system-ui,sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("Needs collected data for this scene. Run COLLECT NOW first.", cv.width / 2, cv.height / 2);
+    ctx.textAlign = "left";
+    return;
+  }
+  if (pr.scene === "race") cinDrawRace(ctx, cv.width, cv.height, p, pr);
+  else if (pr.scene === "bars") cinDrawBars(ctx, cv.width, cv.height, p, pr);
+  else if (pr.scene === "end") cinDrawEnd(ctx, cv.width, cv.height, p, pr);
+  else cinDrawCounter(ctx, cv.width, cv.height, p, pr);
+}
+
+function cinStop(){
+  CIN.playing = false;
+  if (CIN.raf){ cancelAnimationFrame(CIN.raf); CIN.raf = null; }
+  if (CIN.rec && CIN.rec.state !== "inactive") CIN.rec.stop();
+  $("#cin-rec").dataset.on = "";
+}
+function cinPlay(done){
+  cinStop();
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const cv = cinC();
+  cv.width = w; cv.height = h;
+  const pr = cinPrep();
+  if (!pr){ cinDraw(1, null); if (done) done(false); return; }
+  CIN.pos = null;
+  CIN.playing = true;
+  const dur = +$("#cin-dur").value * 1000, hold = 800;
+  const t0 = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 2.2);
+  (function loop(ts){
+    if (!CIN.playing) return;
+    const el = ts - t0;
+    cinDraw(ease(Math.min(1, el / dur)), pr);
+    if (el < dur + hold) CIN.raf = requestAnimationFrame(loop);
+    else { CIN.playing = false; CIN.raf = null; if (done) done(true); }
+  })(t0);
+}
+function cinRecord(){
+  if ($("#cin-fmt").value === "mp4") return cinRenderMp4();
+  return cinRecordWebm();
+}
+// MP4: offline frame-by-frame render through the hardware H.264 encoder,
+// muxed locally by mp4-muxer.js. Frame-perfect at any resolution and fps.
+async function cinRenderMp4(){
+  const status = $("#cin-status");
+  if (!window.Mp4Muxer || !("VideoEncoder" in window)){
+    status.textContent = "MP4 engine unavailable in this browser, recording WebM instead";
+    return cinRecordWebm();
+  }
+  cinStop();
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const fps = +$("#cin-fps").value, durS = +$("#cin-dur").value;
+  const cv = cinC();
+  cv.width = w; cv.height = h;
+  const pr = cinPrep();
+  if (!pr){ cinDraw(1, null); status.textContent = "no data for this scene yet"; return; }
+  const bitrate = Math.min(8e7, Math.round(w * h * fps * .15));
+  let cfg = null;
+  for (const codec of ["avc1.640034", "avc1.640033", "avc1.640032", "avc1.64002A", "avc1.640028"]){
+    try {
+      const c = { codec, width: w, height: h, bitrate, framerate: fps };
+      if ((await VideoEncoder.isConfigSupported(c)).supported){ cfg = c; break; }
+    } catch(e){}
+  }
+  if (!cfg){
+    status.textContent = "H.264 not supported at this size here, recording WebM instead";
+    return cinRecordWebm();
+  }
+  const muxer = new Mp4Muxer.Muxer({
+    target: new Mp4Muxer.ArrayBufferTarget(),
+    video: { codec: "avc", width: w, height: h },
+    fastStart: "in-memory"
+  });
+  const enc = new VideoEncoder({
+    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+    error: e => { status.textContent = "encoder error: " + e.message; }
+  });
+  enc.configure(cfg);
+  CIN.pos = null;
+  CIN.playing = true;
+  $("#cin-rec").dataset.on = "1";
+  const durF = fps * durS, total = durF + Math.round(fps * .8);
+  const ease = t => 1 - Math.pow(1 - t, 2.2);
+  const t0 = performance.now();
+  for (let i = 0; i < total; i++){
+    if (!CIN.playing) break;
+    cinDraw(ease(Math.min(1, i / durF)), pr);
+    const frame = new VideoFrame(cv, { timestamp: Math.round(i * 1e6 / fps), duration: Math.round(1e6 / fps) });
+    enc.encode(frame, { keyFrame: i % (fps * 2) === 0 });
+    frame.close();
+    while (enc.encodeQueueSize > 8) await new Promise(r => setTimeout(r, 2));
+    if (i % 5 === 0){
+      status.textContent = `rendering MP4 · frame ${i + 1}/${total}`;
+      await new Promise(r => requestAnimationFrame(r));
+    }
+  }
+  const cancelled = !CIN.playing;
+  CIN.playing = false;
+  $("#cin-rec").dataset.on = "";
+  if (cancelled){
+    try { enc.close(); } catch(e){}
+    status.textContent = "cancelled";
+    return;
+  }
+  status.textContent = "finishing MP4…";
+  await enc.flush();
+  enc.close();
+  muxer.finalize();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([muxer.target.buffer], { type: "video/mp4" }));
+  a.download = `su26-${pr.scene}-${h}p${fps}.mp4`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  status.textContent = `saved to Downloads · ${a.download} · rendered in ${((performance.now() - t0) / 1000).toFixed(1)}s`;
+}
+function cinRecordWebm(){
+  const cv = cinC(), fps = +$("#cin-fps").value;
+  const status = $("#cin-status");
+  if ($("#cin-scene").value !== "end" && (!SERIES || SERIES.times.length < 2)){ status.textContent = "no data to record yet"; return; }
+  const stream = cv.captureStream(fps);
+  const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9") ? "video/webm;codecs=vp9" : "video/webm";
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: Math.min(6e7, Math.round(w * h * fps * .12)) });
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(chunks, { type: "video/webm" }));
+    a.download = `su26-${$("#cin-scene").value}-${h}p${fps}.webm`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    status.textContent = "saved to Downloads · " + a.download;
+    $("#cin-rec").dataset.on = "";
+  };
+  CIN.rec = rec;
+  $("#cin-rec").dataset.on = "1";
+  status.textContent = "recording…";
+  rec.start();
+  cinPlay(ok => { if (rec.state !== "inactive") rec.stop(); if (!ok) status.textContent = "no data to record yet"; });
+}
+$("#cinemabtn").addEventListener("click", () => {
+  $("#cinema").hidden = false;
+  document.body.style.overflow = "hidden";
+  cinDraw(1);
+});
+$("#cin-close").addEventListener("click", () => {
+  cinStop();
+  $("#cinema").hidden = true;
+  document.body.style.overflow = "";
+});
+$("#cin-play").addEventListener("click", () => { $("#cin-status").textContent = ""; cinPlay(); });
+$("#cin-rec").addEventListener("click", cinRecord);
+["cin-scene", "cin-metric", "cin-res"].forEach(id =>
+  document.getElementById(id).addEventListener("change", () => {
+    const [w, h] = $("#cin-res").value.split("x").map(Number);
+    const cv = cinC(); cv.width = w; cv.height = h;
+    cinDraw(1);
+  }));
+
+// ---------- remember how the page was set up between visits ----------
+function saveUI(){
+  localStorage.setItem("su26_ui", JSON.stringify({
+    sel: CMP.sel, metric: CMP.metric, fit: CMP.fit, plat, cr: CRONLY, sk: sortKey, sd: sortDir
+  }));
+}
+(function restoreUI(){
+  try {
+    const u = JSON.parse(localStorage.getItem("su26_ui") || "null");
+    if (!u) return;
+    if (Array.isArray(u.sel) && u.sel.length) CMP.sel = u.sel.slice(0, 6);
+    if (CMPFMT[u.metric]) CMP.metric = u.metric;
+    if (u.fit === "all" || u.fit === "zoom") CMP.fit = u.fit;
+    if (typeof u.plat === "string") plat = u.plat;
+    CRONLY = !!u.cr;
+    if (typeof u.sk === "string") sortKey = u.sk;
+    if (u.sd === 1 || u.sd === -1) sortDir = u.sd;
+    document.querySelectorAll(".chip[data-plat]").forEach(x =>
+      x.setAttribute("aria-pressed", x.dataset.plat === plat ? "true" : "false"));
+    $("#crchip").setAttribute("aria-pressed", CRONLY ? "true" : "false");
+    $("#cmpfit").textContent = CMP.fit === "all" ? "VIEW: FULL" : "VIEW: ZOOM";
+    $("#cmpfit").setAttribute("aria-pressed", CMP.fit === "all" ? "true" : "false");
+    render();
+    renderCmp();
+  } catch(e){}
+})();
+
+// ---------- campaign log ----------
+let NOTES = [];
+function renderNotes(){
+  const el = $("#notelist");
+  if (!el) return;
+  el.innerHTML = NOTES.slice().reverse().map(n =>
+    `<div class="noteitem"><span class="nt">${n.t.replace("T", " ")}</span><span>${esc(n.text)}</span><button class="chip nx" title="Remove" onclick="delNote('${n.id}')">×</button></div>`
+  ).join("") || '<div class="notesempty">Nothing logged yet. Add moments as they happen: shoutouts, big clips going up, collabs, drama. Each becomes a hoverable marker on RIZPY\'s chart, so spikes always have an explanation.</div>';
+}
+async function loadNotes(){
+  NOTES = await fetch(PUBLIC ? "notes.json" : "/api/notes", { cache: "no-store" })
+    .then(r => r.ok ? r.json() : []).catch(() => []);
+  renderNotes(); renderSpot(); renderTelem();
+  if (!focusEl.hidden) renderFocus();
+}
+async function addNote(){
+  if (PUBLIC) return;
+  const v = $("#notein").value.trim();
+  if (!v) return;
+  $("#notein").value = "";
+  await fetch("/api/notes", { method: "POST", body: JSON.stringify({ text: v }) }).catch(() => {});
+  loadNotes();
+}
+async function delNote(id){
+  if (PUBLIC) return;
+  await fetch("/api/notes", { method: "POST", body: JSON.stringify({ delete: id }) }).catch(() => {});
+  loadNotes();
+}
+function renderSpot(){
+  const t = ALL.find(x => x.n === SPOT);
+  if (!t) return;
+  const ranked = ALL.filter(x => x.f != null).sort((a,b) => b.f - a.f);
+  const rankF = t.f != null ? ranked.indexOf(t) + 1 : null;
+  const cs = campaignStats(t);
+  const chart = (cs && cs.series.length >= 3)
+    ? spotChart(cs.series, 560, 210, 10)
+    : `<div class="empty">RIZPY's real chart draws itself here after 3+ collected samples (one lands every 5 minutes). The shaded zone marks the campaign window.</div>`;
+  const campVal = !cs ? "-" : cs.pre ? "starts Jul 15" : fmtD(cs.pct);
+  const gainVal = !cs ? "-" : cs.pre ? "-" : (cs.gained >= 0 ? "+" : "") + cs.gained.toLocaleString();
+  const rateVal = !cs || cs.pre ? "-" : (cs.gained >= 0 ? "+" : "") + Math.round(cs.gained / cs.days).toLocaleString() + "/day";
+  const pb = preBaseVal();
+  const cur = cs ? cs.cur : t.f;
+  const sincePre = (pb && cur != null) ? (cur - pb) / pb * 100 : null;
+  if (t.f != null) document.title = "RIZPY " + t.f.toLocaleString() + " · SU26";
+  const td0 = todayDelta();
+  const tiles = [
+    ["Followers", t.f != null ? t.f.toLocaleString() : "-", "", ""],
+    ["Today", td0 != null ? (td0 >= 0 ? "+" : "") + td0.toLocaleString() : "-",
+      td0 == null ? "" : td0 >= 0 ? "uu" : "dd", "Net follower change today, from the 5-minute samples"],
+    ["Gained", gainVal, !cs || cs.pre ? "" : cs.gained >= 0 ? "uu" : "dd", "Followers gained since the campaign opened Jul 15"],
+    ["Campaign Δ", campVal, !cs || cs.pre ? "small" : cs.pct >= 0 ? "uu" : "dd", "Growth since the campaign baseline, Jul 15"],
+    ["Pace", rateVal, "", "Average followers per campaign day"],
+    ["7d Δ", t.d != null ? fmtD(t.d) : "-", t.d == null ? "" : t.d >= 0 ? "uu" : "dd", "Weekly growth"],
+    ["Clip views", t.cv != null ? fmtC(t.cv) : "-", "", "Views on Twitch clips of his channel created since Jul 15"],
+    ["Clips", t.clips != null ? String(t.clips) + (t.clips >= 100 ? "+" : "") : "-", "", "Twitch clips created since Jul 15"],
+    ["Hours live", t.hl != null ? t.hl + "h" : "-", "", "Hours streamed since Jul 15, from VODs"],
+    ["Class rank", rankF ? "#" + rankF + " of " + ranked.length : "-", "", "By followers, among tracked names"]
+  ];
+  if (pb){
+    tiles.push(["Before · " + PRE_BASE.label, fmtC(pb), "", "One month before campus"]);
+    tiles.push(["Since " + PRE_BASE.label, sincePre != null ? fmtD(sincePre) : "-",
+      sincePre == null ? "" : sincePre >= 0 ? "uu" : "dd", "Growth from the month-ago baseline"]);
+  }
+  $("#spot").innerHTML = `
+    <div>
+      <div class="head">${t.img ? `<img class="avatar" src="${t.img}" alt="">` : '<div class="avatar ph">R</div>'}
+        <div><div class="tick">${t.s}</div><div class="nm2">${t.n} · <a href="https://twitch.tv/${t.login || deriveLogin(t.n)}" target="_blank" rel="noopener">twitch.tv/${t.login || deriveLogin(t.n)}</a>${t.bt ? " · " + (t.bt==="partner"?"Partner":"Affiliate") : ""}${t.created ? " · since " + t.created : ""}</div></div>
+        ${t.lv != null ? `<span class="pill u lp" style="margin-left:auto" title="${esc(t.lvGame||"")}${t.lvTitle ? " · " + esc(t.lvTitle) : ""}">▶ LIVE · ${fmtC(t.lv)}</span>` : ""}
+        <button class="chip" onclick="toggleFocus(true)" title="Fullscreen display for OBS / screen share">FOCUS</button>
+      </div>
+      <div class="bio2">${t.desc ? esc(t.desc) : "Class of '26."}</div>
+      ${pb ? "" : `<div class="preset"><input id="pbin" type="number" min="1" placeholder="${PRE_BASE.label} follower count" aria-label="Pre-campaign follower baseline"><button class="chip" onclick="setPreBase()">SET BASELINE</button><span class="hint">his count a month ago, from twitchtracker.com/rizpyyt · unlocks before/after tiles</span></div>`}
+      <div class="stats">${tiles.map(([k, v, cls, tt]) =>
+        `<div class="stat"${tt ? ` title="${tt}"` : ""}><div class="k">${k}</div><div class="v2${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
+      </div>
+    </div>
+    <div class="spotright">${chart}</div>`;
+}
+function cmpRows(a, b){
+  const av = a[sortKey], bv = b[sortKey];
+  if (av==null && bv==null) return a.n.localeCompare(b.n);
+  if (av==null) return 1;
+  if (bv==null) return -1;
+  const c = typeof av === "string" ? av.localeCompare(bv, undefined, {sensitivity:"base"}) : av - bv;
+  return c * sortDir;
+}
+// best match floats to the top: exact name > name starts with > name contains > ticker > bio
+function matchScore(t){
+  if (!query) return 0;
+  const n = t.n.toLowerCase(), s = t.s.toLowerCase();
+  if (n === query || s === query) return 5;
+  if (n.startsWith(query) || s.startsWith(query)) return 4;
+  if (n.includes(query)) return 3;
+  if (s.includes(query)) return 2;
+  if ((t.bio||"").toLowerCase().includes(query) || (t.desc||"").toLowerCase().includes(query)) return 1;
+  return 0;
+}
+function render(){
+  const rows = ALL.filter(t => plat==="all" || t.p===plat).filter(t => !CRONLY || TAGS.has(t.s));
+  rows.forEach(t => { t._m = matchScore(t); });
+  rows.sort((a,b) => (b._m - a._m) || cmpRows(a,b));
+  $("#rows").innerHTML = rows.map((t, i) => {
+    const name = t.p === "Twitch"
+      ? `<a href="https://twitch.tv/${t.login || deriveLogin(t.n)}" target="_blank" rel="noopener"><span class="nm">${t.n}</span></a>`
+      : `<span class="nm">${t.n}</span>`;
+    return `<tr class="${[query && !t._m ? "dim" : "", t.n === SPOT ? "spotrow" : ""].join(" ").trim()}" style="animation-delay:${Math.min(i*10, 350)}ms">
+    <td class="rk2">${i + 1}</td>
+    <td class="sym" title="Click to add to Compare" onclick="cmpToggle('${t.s}')">${t.s}${t.gt?'<span class="gt">GT</span>':""}</td>
+    <td class="who"><div class="nmrow">${t.img?`<img src="${t.img}" alt="" loading="lazy">`:""}${name}${t.bt?`<span class="badge">${t.bt==="partner"?"Partner":"Affiliate"}</span>`:""}${t.created?`<span class="badge">since ${t.created}</span>`:""}${t.game?`<span class="badge">${esc(t.game.slice(0,20))}</span>`:""}<button class="crtag${TAGS.has(t.s)?" on":""}" onclick="toggleTag('${t.s}')" title="${TAGS.has(t.s)?"Content Rewards campaign · click to untag":"Tag as a Content Rewards campaign"}">CR</button></div><div class="bio">${(t.u && t.desc) ? esc(t.desc.slice(0,110)) : t.bio}</div></td>
+    <td class="plat">${t.p}</td>
+    <td class="num"${t.f==null?"":` title="${t.f.toLocaleString()}"`}>${t.f==null?'<span class="approx">-</span>':(t.v?"● ":'<span class="approx">≈ </span>')+fmtC(t.f)}</td>
+    <td class="delta">${t.d==null?'<span class="approx">-</span>':`<span class="pill ${t.d>=0?"u":"d"}">${t.d>=0?"▲":"▼"} ${fmtD(t.d)}${t.dReal?"":" ≈"}</span>`}</td>
+    <td class="delta">${t.td==null?'<span class="approx">-</span>':`<span class="pill ${t.td>=0?"u":"d"}">${t.td>=0?"▲":"▼"} ${fmtD(t.td)}</span>`}</td>
+    <td class="num">${t.gain==null?'<span class="approx">-</span>':`<span class="pill ${t.gain>=0?"u":"d"}">${(t.gain>=0?"+":"")+t.gain.toLocaleString()}</span>`}</td>
+    <td class="num">${t.cv==null?'<span class="approx">-</span>':fmtC(t.cv)}</td>
+    <td class="spark">${spark(t)}</td>
+    <td class="num">${t.peak!=null?fmtC(t.peak):'<span class="approx">-</span>'}</td>
+    <td class="delta">${t.lv!=null?`<span class="pill u lp" title="${esc(t.lvGame||"")}${t.lvTitle?" · "+esc(t.lvTitle):""}">▶ ${fmtC(t.lv)}</span>`:'<span class="approx">-</span>'}</td></tr>`;
+  }).join("")
+    || `<tr><td colspan="12" style="color:var(--muted);padding:20px">No matches.</td></tr>`;
+  LASTROWS = rows;
+  $("#count").textContent = query ? rows.filter(t => t._m).length + " matches, best first" : rows.length + " shown";
+  document.querySelectorAll(".hsort").forEach(b => {
+    b.querySelector(".arr").textContent = b.dataset.key === sortKey ? (sortDir < 0 ? "▼" : "▲") : "";
+  });
+}
+$("#q").addEventListener("input", e => {
+  query = e.target.value.trim().toLowerCase();
+  document.querySelector(".board").scrollTop = 0;
+  render();
+});
+document.querySelectorAll(".chip[data-plat]").forEach(c => c.addEventListener("click", () => {
+  plat = c.dataset.plat;
+  document.querySelectorAll(".chip[data-plat]").forEach(x => x.setAttribute("aria-pressed", x===c ? "true" : "false"));
+  render();
+  saveUI();
+}));
+document.querySelectorAll(".hsort").forEach(b => b.addEventListener("click", () => {
+  const k = b.dataset.key;
+  const numeric = k === "f" || k === "d" || k === "td" || k === "lv" || k === "gain" || k === "peak" || k === "cv";
+  sortDir = sortKey === k ? -sortDir : (numeric ? -1 : 1);
+  sortKey = k;
+  render();
+  saveUI();
+}));
+render();
+renderMovers();
+renderSpot();
+
+// ---------- focus mode: fullscreen RIZPY display for OBS / screen share ----------
+const focusEl = document.createElement("div");
+focusEl.id = "focus"; focusEl.hidden = true;
+document.body.appendChild(focusEl);
+function toggleFocus(on){
+  focusEl.hidden = !on;
+  document.body.style.overflow = on ? "hidden" : "";
+  if (on) renderFocus();
+}
+function renderFocus(){
+  const t = ALL.find(x => x.n === SPOT);
+  if (!t) return;
+  const cs = campaignStats(t);
+  const cur = cs ? cs.cur : t.f;
+  focusEl.innerHTML = `
+    <button class="chip f-exit" onclick="toggleFocus(false)">ESC</button>
+    <div class="f-tick">RIZPY <span class="f-sub">· ${t.n} · Streamer University class of '26</span></div>
+    <div class="f-row">
+      <div class="f-num" id="f-num">${cur != null ? cur.toLocaleString() : "-"}</div>
+      ${cs && !cs.pre ? `<div class="f-pct ${cs.pct >= 0 ? "u" : "d"}">${cs.pct >= 0 ? "▲" : "▼"} ${fmtD(cs.pct)}<span class="f-sub"> since Jul 15</span></div>` : ""}
+      ${t.lv != null ? `<span class="pill u lp" style="font-size:clamp(14px,1.8vw,24px);padding:6px 12px">▶ LIVE · ${fmtC(t.lv)} watching</span>` : ""}
+    </div>
+    <div class="f-sub">${cs
+      ? (cs.pre ? "campaign opens Jul 15 · baseline locked at " + cs.base.toLocaleString() + " followers"
+        : `${cs.gained >= 0 ? "+" : ""}${cs.gained.toLocaleString()} followers gained · day ${cs.days} of the campaign · ${(SPOTSAMPLES && SPOTSAMPLES.length) ? "sampled every 4 hours" : "daily samples"}`)
+      : "waiting for the first collected sample"}${(() => { const td = todayDelta();
+        return td != null ? ` · ${td >= 0 ? "+" : ""}${td.toLocaleString()} today` : ""; })()}${t.cv != null ? ` · ${fmtC(t.cv)} clip views` : ""}${t.hl != null ? ` · ${t.hl}h live` : ""}${(() => { const yt = ALL.find(x => x.s === "RIZPYT");
+        return yt && yt.f != null ? ` · YouTube ${fmtC(yt.f)} subs` : ""; })()}</div>
+    ${(() => { const pb = preBaseVal();
+      return (pb && cur != null)
+        ? `<div class="f-sub">before / after: ${pb.toLocaleString()} on ${PRE_BASE.label} → ${cur.toLocaleString()} now · <b class="${cur >= pb ? "u" : "d"}" style="color:var(--${cur >= pb ? "up" : "down"})">${fmtD((cur - pb) / pb * 100)}</b> in one month</div>`
+        : ""; })()}
+    ${cs && cs.series.length >= 3 ? spotChart(cs.series, 1200, 300, 12) : ""}`;
+  if (cur != null && !reduced){
+    const el = $("#f-num"), t0 = performance.now();
+    const from = Math.max(0, cur - Math.max(50, Math.round(cur * 0.02)));
+    (function tickUp(ts){
+      const p = Math.min(1, (ts - t0) / 1200), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(from + (cur - from) * e).toLocaleString();
+      if (p < 1) requestAnimationFrame(tickUp);
+    })(t0);
+  }
+}
+if (new URLSearchParams(location.search).has("focus")) toggleFocus(true);
+
+// ---------- sync data written by collector.mjs (history.json + spot-history.json) ----------
+async function syncServer(){
+  let got = false;
+  try {
+    const [hr, sr, er, pfr, evr] = await Promise.all([
+      fetch("history.json", { cache: "no-store" }).catch(() => null),
+      fetch("spot-history.json", { cache: "no-store" }).catch(() => null),
+      fetch("extras.json", { cache: "no-store" }).catch(() => null),
+      fetch("profiles.json", { cache: "no-store" }).catch(() => null),
+      fetch("events.json", { cache: "no-store" }).catch(() => null)
+    ]);
+    if (evr && evr.ok){
+      EVENTS = await evr.json();
+      got = true;
+    }
+    if (pfr && pfr.ok){
+      const pf = await pfr.json();
+      ALL.forEach(t => {
+        const p0 = pf[t.s];
+        if (!p0) return;
+        t.img = t.img || p0.img;
+        if (!t.desc && p0.desc) t.desc = p0.desc;
+        t.bt = t.bt || p0.bt;
+        t.created = t.created || p0.created;
+      });
+      got = true;
+    }
+    if (er && er.ok){
+      const ex = await er.json();
+      ALL.forEach(t => {
+        const e = ex[t.s];
+        if (!e) return;
+        if (e.clipViews != null) t.cv = e.clipViews;
+        if (e.clips != null) t.clips = e.clips;
+        if (e.hoursLive != null) t.hl = e.hoursLive;
+      });
+      got = true;
+    }
+    if (sr && sr.ok){
+      const sp = await sr.json();
+      if (sp && sp.samples && sp.samples.length){
+        SPOTSAMPLES = sp.samples;
+        got = true;
+        const spotT = ALL.find(x => x.n === SPOT);
+        const pk = Math.max(...sp.samples.map(s => s[2] || 0));
+        if (spotT && pk > (PEAKS[spotT.s] || 0)){ PEAKS[spotT.s] = pk; spotT.peak = pk; savePeaks(); }
+      }
+    }
+    if (hr && hr.ok){
+      const h = await hr.json();
+      got = true;
+      for (const [d, vals] of Object.entries(h)) HIST[d] = Object.assign({}, vals, HIST[d] || {});
+      const dates = Object.keys(HIST).sort();
+      const cutoff = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 10);
+      ALL.forEach(t => {
+        const pts = dates.map(d => [d, HIST[d][t.s]]).filter(x => x[1] != null);
+        if (!pts.length) return;
+        const latest = pts[pts.length - 1][1];
+        if (!t.liveF){ t.f = latest; t.v = t.v || 1; }
+        const win = pts.filter(x => x[0] >= cutoff);
+        if (win.length >= 2){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
+        const base = BASE[t.s] ?? pts[0][1];
+        if (base){ t.td = (latest - base) / base * 100; t.gain = latest - base; }
+      });
+      // RIZPY gets the finest truth available: straight from the 5-minute samples,
+      // baselined at his first-ever recorded value (daily buckets hide same-day moves)
+      const spotR = ALL.find(x => x.n === SPOT);
+      if (spotR && SPOTSAMPLES){
+        const vals = SPOTSAMPLES.filter(s => s[1] != null);
+        if (vals.length >= 2){
+          const first = vals[0], last = vals[vals.length - 1];
+          spotR.f = last[1]; spotR.v = spotR.v || 1;
+          spotR.gain = last[1] - first[1];
+          if (first[1]) spotR.td = spotR.gain / first[1] * 100;
+          const cut7 = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 16).replace(" ", "T");
+          const win = vals.filter(s => s[0] >= cut7);
+          if (win.length >= 2 && win[0][1]){
+            spotR.d = (last[1] - win[0][1]) / win[0][1] * 100;
+            spotR.dReal = 1;
+          }
+        }
+      }
+      const reach = ALL.filter(t => t.f != null);
+      $("#kpi-reach").textContent = fmtC(reach.reduce((a,t) => a + t.f, 0));
+      $("#kpi-reach-sub").textContent = "followers · " + reach.length + " tracked names";
+      updateGeneral();
+    }
+  } catch(e){}
+  if (got){
+    render(); renderMovers(); renderSpot(); renderWall(); renderWire(); renderTelem();
+    if (!focusEl.hidden) renderFocus();
+  }
+}
+if (PUBLIC) document.querySelector(".mast-name").textContent += " · LIVE MIRROR";
+syncServer();
+loadNotes();
+loadSeries();
+loadTags();
+loadChat();
+renderWall();
+renderWire();
+$("#notein").addEventListener("keydown", e => { if (e.key === "Enter") addNote(); });
+setInterval(() => { syncServer(); loadNotes(); loadSeries(); loadTags(); loadChat(); }, 5 * 60 * 1000);
+
+// ---------- theme toggle ----------
+{
+  const modes = ["auto", "light", "dark"];
+  let mi = Math.max(0, modes.indexOf(localStorage.getItem("su26_theme") || "auto"));
+  const apply = () => {
+    const m = modes[mi];
+    if (m === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = m;
+    $("#themebtn").textContent = m.toUpperCase();
+    localStorage.setItem("su26_theme", m);
+  };
+  $("#themebtn").addEventListener("click", () => { mi = (mi + 1) % 3; apply(); });
+  apply();
+}
+
+// ---------- keyboard: / focuses search, Esc clears ----------
+addEventListener("keydown", e => {
+  const q = $("#q");
+  if (e.key === "/" && document.activeElement !== q && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){
+    e.preventDefault(); q.focus();
+  } else if (e.key === "Escape" && document.activeElement === q){
+    q.value = ""; query = ""; render();
+  } else if (e.key === "Escape" && !document.getElementById("cinema").hidden){
+    cinStop();
+    document.getElementById("cinema").hidden = true;
+    document.body.style.overflow = "";
+  } else if (e.key === "Escape" && !focusEl.hidden){
+    toggleFocus(false);
+  }
+});
+
+// ---------- CSV export of the board as currently filtered/sorted ----------
+$("#csv").addEventListener("click", () => {
+  const head = "rank,ticker,name,platform,followers,change_7d_pct,total_change_pct,followers_gained,clip_views,clips,hours_live,peak_viewers,live_viewers\n";
+  const body = LASTROWS.map((t, i) =>
+    [i+1, t.s, `"${t.n.replace(/"/g,'""')}"`, t.p, t.f ?? "", t.d != null ? t.d.toFixed(2) : "", t.td != null ? t.td.toFixed(2) : "", t.gain ?? "", t.cv ?? "", t.clips ?? "", t.hl ?? "", t.peak ?? "", t.lv ?? ""].join(",")
+  ).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([head + body], { type: "text/csv" }));
+  a.download = "su26-board.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// ---------- scroll-in reveals ----------
+if (!reduced){
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ e.target.classList.add("in"); obs.unobserve(e.target); }
+  }), { threshold: .08 });
+  document.querySelectorAll("h2, .chart-card, .boards, .board, footer").forEach(el => {
+    el.classList.add("reveal"); obs.observe(el);
+  });
+}
+
+// ---------- live mode (official Twitch Helix API, free) ----------
+const LSK = { cid:"su26_cid", tok:"su26_tok", hist:"su26_hist" };
+const $s = $("#livestatus"), $cid = $("#cid"), $conn = $("#connect"), $ref = $("#refresh");
+$cid.value = localStorage.getItem(LSK.cid) || "";
+
+// catch the OAuth redirect back from Twitch (#access_token=...)
+if (location.hash.includes("access_token=")){
+  const tok = new URLSearchParams(location.hash.slice(1)).get("access_token");
+  if (tok) localStorage.setItem(LSK.tok, tok);
+  history.replaceState(null, "", location.pathname);
+}
+
+$conn.addEventListener("click", () => {
+  if (location.protocol === "file:"){
+    $s.textContent = "LIVE DATA: open the page via http://localhost:8026 to connect (Twitch can't redirect back to a file)";
+    return;
+  }
+  const cid = $cid.value.trim();
+  if (!cid){ $s.textContent = "LIVE DATA: paste your Client ID first"; return; }
+  localStorage.setItem(LSK.cid, cid);
+  const u = new URL("https://id.twitch.tv/oauth2/authorize");
+  u.searchParams.set("client_id", cid);
+  u.searchParams.set("redirect_uri", location.origin);
+  u.searchParams.set("response_type", "token");
+  location.href = u.toString();
+});
+$ref.addEventListener("click", goLive);
+
+// setup from the page itself: keys go to the local hub server, which writes config.json
+async function saveCfg(){
+  if (PUBLIC) return;
+  const body = {
+    client_id: $("#cid").value.trim(),
+    client_secret: $("#csec").value.trim(),
+    youtube_api_key: $("#cyt").value.trim()
+  };
+  if (!body.client_id && !body.client_secret && !body.youtube_api_key){
+    $s.textContent = "LIVE DATA: nothing to save, paste your keys first"; return;
+  }
+  const r = await fetch("/api/config", { method: "POST", body: JSON.stringify(body) })
+    .then(r => r.json()).catch(() => null);
+  $("#csec").value = ""; $("#cyt").value = "";
+  if (body.client_id) localStorage.setItem(LSK.cid, body.client_id);
+  $s.textContent = r && r.ok
+    ? "LIVE DATA: keys saved on this Mac. Hit COLLECT NOW to grab the first snapshot."
+    : "LIVE DATA: save failed. Is the page open via http://localhost:8026?";
+  loadCfg();
+}
+async function collectNow(){
+  if (PUBLIC) return;
+  const btn = $("#collectbtn");
+  btn.disabled = true; btn.textContent = "COLLECTING…";
+  $s.textContent = "LIVE DATA: collecting, takes about 30-60 seconds…";
+  const r = await fetch("/api/collect", { method: "POST" }).then(r => r.json()).catch(() => null);
+  btn.disabled = false; btn.textContent = "COLLECT NOW";
+  $s.textContent = r ? "COLLECTOR: " + (r.out || (r.ok ? "done" : "failed")) : "COLLECTOR: request failed";
+  if (r && r.ok){ syncServer(); loadSeries(); }
+}
+async function loadCfg(){
+  const c = await fetch("/api/config").then(r => r.ok ? r.json() : null).catch(() => null);
+  if (!c) return;
+  if (c.client_id && !$("#cid").value) $("#cid").value = c.client_id;
+  $("#csec").placeholder = c.has_secret ? "Client Secret: saved ✓ (paste again to replace)" : "Twitch Client Secret";
+  $("#cyt").placeholder = c.has_youtube ? "YouTube key: saved ✓" : "YouTube API key (optional)";
+}
+loadCfg();
+
+function deriveLogin(n){ return n.toLowerCase().replace(/[^a-z0-9_]/g,""); }
+async function tw(path, params){
+  const u = new URL("https://api.twitch.tv/helix/" + path);
+  for (const [k, vs] of Object.entries(params)) [].concat(vs).forEach(v => u.searchParams.append(k, v));
+  const r = await fetch(u, { headers: {
+    "Authorization": "Bearer " + localStorage.getItem(LSK.tok),
+    "Client-Id": localStorage.getItem(LSK.cid) }});
+  if (r.status === 401){ localStorage.removeItem(LSK.tok);
+    throw new Error("session expired. Hit CONNECT TWITCH again (one click)"); }
+  if (!r.ok) throw new Error("Twitch API error " + r.status);
+  return r.json();
+}
+async function goLive(){
+  const twitch = ALL.filter(t => t.p === "Twitch");
+  twitch.forEach(t => { t.login = t.login || deriveLogin(t.n); });
+  $s.textContent = "LIVE DATA: connecting…";
+  try {
+    // resolve usernames → channel ids (100 per request)
+    const byLogin = {};
+    for (let i = 0; i < twitch.length; i += 100){
+      const res = await tw("users", { login: twitch.slice(i, i+100).map(t => t.login) });
+      res.data.forEach(u => byLogin[u.login.toLowerCase()] = u);
+    }
+    const found = twitch.filter(t => byLogin[t.login]);
+    found.forEach(t => {
+      const u = byLogin[t.login];
+      t.id = u.id; t.img = u.profile_image_url; t.desc = u.description || "";
+      t.bt = u.broadcaster_type || ""; t.created = "'" + u.created_at.slice(2, 4);
+    });
+    // what each channel streams (category)
+    for (let i = 0; i < found.length; i += 100){
+      const res = await tw("channels", { broadcaster_id: found.slice(i, i+100).map(t => t.id) });
+      res.data.forEach(ch => {
+        const t = found.find(x => x.id === ch.broadcaster_id);
+        if (t && ch.game_name) t.game = ch.game_name;
+      });
+    }
+    // who is streaming right now + current viewers
+    const liveBy = {};
+    for (let i = 0; i < found.length; i += 100){
+      const res = await tw("streams", { user_id: found.slice(i, i+100).map(t => t.id), first: 100 });
+      res.data.forEach(st => liveBy[st.user_id] = st);
+    }
+    found.forEach(t => {
+      const st = liveBy[t.id];
+      t.lv = st ? st.viewer_count : null;
+      t.lvGame = st ? st.game_name : ""; t.lvTitle = st ? st.title : "";
+      if (t.lv != null && t.lv > (PEAKS[t.s] || 0)) PEAKS[t.s] = t.lv;
+      if (PEAKS[t.s] != null) t.peak = PEAKS[t.s];
+    });
+    savePeaks();
+    // follower totals, 8 requests at a time
+    let done = 0;
+    const queue = [...found];
+    await Promise.all(Array.from({ length: 8 }, async () => {
+      while (queue.length){
+        const t = queue.pop();
+        try {
+          const res = await tw("channels/followers", { broadcaster_id: t.id, first: 1 });
+          t.f = res.total; t.v = t.v || 1; t.liveF = 1;
+        } catch(e){ /* leave snapshot value */ }
+        done++;
+        if (done % 10 === 0) $s.textContent = `LIVE DATA: fetching followers ${done}/${found.length}`;
+      }
+    }));
+    // save today's snapshot locally; real Δ once you have 2+ days of history
+    const today = new Date().toISOString().slice(0, 10);
+    const hist = JSON.parse(localStorage.getItem(LSK.hist) || "{}");
+    hist[today] = {};
+    found.forEach(t => { if (t.liveF) hist[today][t.s] = t.f; });
+    const dates = Object.keys(hist).sort();
+    while (dates.length > 35) delete hist[dates.shift()];
+    localStorage.setItem(LSK.hist, JSON.stringify(hist));
+    HIST = hist;
+    const past = dates.filter(d => d < today);
+    if (past.length){
+      const base = hist[past[0]];
+      found.forEach(t => {
+        if (t.liveF && base[t.s]){ t.d = (t.f - base[t.s]) / base[t.s] * 100; t.dReal = 1; }
+      });
+    }
+    // Total Δ: growth since the Jul 13 baseline (or the first day this page ever saw them)
+    const allDates = Object.keys(hist).sort();
+    found.forEach(t => {
+      if (!t.liveF) return;
+      let base = BASE[t.s];
+      if (base == null){
+        for (const dd of allDates){ if (hist[dd][t.s] != null){ base = hist[dd][t.s]; break; } }
+      }
+      if (base){ t.td = (t.f - base) / base * 100; t.gain = t.f - base; }
+    });
+    updateGeneral();
+    // refresh KPIs + status line
+    const withF = ALL.filter(t => t.f != null);
+    $("#kpi-reach").textContent = fmtC(withF.reduce((a, t) => a + t.f, 0));
+    $("#kpi-reach-sub").textContent = "followers · " + withF.length + " tracked names";
+    const missed = twitch.length - found.length;
+    const liveList = Object.values(liveBy);
+    const watching = liveList.reduce((a, st) => a + st.viewer_count, 0);
+    $("#kpi-live").textContent = liveList.length + " live";
+    $("#kpi-live-sub").textContent = liveList.length ? fmtC(watching) + " watching right now" : "nobody streaming right now";
+    $s.innerHTML = `<span class="on">● LIVE</span> · ${found.length} Twitch channels · ${liveList.length} streaming now` +
+      (missed ? ` · ${missed} handles not found` : "") +
+      ` · updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` +
+      ` · auto-refreshes every 15 min` +
+      (past.length ? "" : " · Δ switches to your real history after day 2");
+    $ref.hidden = false;
+    render();
+    renderMovers();
+    renderSpot();
+    if (!window.__su26timer) window.__su26timer = setInterval(goLive, 15 * 60 * 1000);
+  } catch(e){ $s.textContent = "LIVE DATA: " + e.message; }
+}
+if (localStorage.getItem(LSK.tok) && localStorage.getItem(LSK.cid)) goLive();
+</script>
+</html>

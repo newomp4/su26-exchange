@@ -1,0 +1,2567 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SU26 Exchange · Content Rewards edition</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23E57100'/%3E%3Cpath d='M22 62 42 42l14 14 22-26' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  @font-face{font-family:"Inter";src:url("fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+  @font-face{font-family:"Inter Display";src:url("fonts/InterDisplay-Medium.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:"Inter Display";src:url("fonts/InterDisplay-SemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+  /* ============================================================
+     Content Rewards skin · tokens lifted from the Product V2 file
+     (Creator · Light + Brand/Agency Light pages, dark from Creator · Dark)
+     ============================================================ */
+  :root{
+    color-scheme:light;
+    --pagebg:#ffffff; --winbg:#ffffff; --winline:#e8e8e8;
+    --bg:#fbfbfb; --card:#ffffff; --ink:#252525;
+    --muted:rgba(37,37,37,.72); --faint:rgba(37,37,37,.48);
+    --line:rgba(37,37,37,.10); --hair:rgba(37,37,37,.06); --hair2:rgba(37,37,37,.04);
+    --up:#00994d; --down:#ff3355;
+    --up-bg:rgba(0,153,77,.09); --down-bg:rgba(255,51,85,.09);
+    --brand:#e57100; --brand2:#ff6207; --brand-tint:rgba(229,113,0,.08);
+    --c1:#588ee9; --c2:#e57100; --c3:#da5597; --c4:#9f6ef0; --c5:#38b2a3;
+    --ghost:rgba(37,37,37,.10);
+    --chipbg:rgba(37,37,37,.06); --chipbg2:rgba(37,37,37,.11);
+    --inputbg:rgba(37,37,37,.04);
+    --ok:#10b981;
+    --sh:0 1px 2px rgba(0,0,0,.03);
+    --sh2:0 2px 4px rgba(0,0,0,.06);
+    --shpop:0 12px 32px rgba(0,0,0,.10);
+    --sans:"Inter","Inter Display",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+    --mono:var(--sans);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      color-scheme:dark;
+      --pagebg:#111111; --winbg:#161616; --winline:rgba(224,224,224,.09);
+      --bg:#111111; --card:#1c1c1c; --ink:#e0e0e0;
+      --muted:rgba(224,224,224,.72); --faint:rgba(224,224,224,.48);
+      --line:rgba(224,224,224,.12); --hair:rgba(224,224,224,.07); --hair2:rgba(224,224,224,.05);
+      --up:#34d399; --down:#ff5c73;
+      --up-bg:rgba(52,211,153,.12); --down-bg:rgba(255,92,115,.12);
+      --brand:#fb923c; --brand2:#ff6207; --brand-tint:rgba(251,146,60,.10);
+      --c1:#6da4f5; --c2:#fb923c; --c3:#ef7cb2; --c4:#b48af0; --c5:#4cc8b8;
+      --ghost:rgba(224,224,224,.14);
+      --chipbg:rgba(224,224,224,.08); --chipbg2:rgba(224,224,224,.14);
+      --inputbg:rgba(224,224,224,.06);
+      --sh:0 1px 2px rgba(0,0,0,.22); --sh2:0 2px 4px rgba(0,0,0,.32);
+      --shpop:0 12px 32px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --pagebg:#111111; --winbg:#161616; --winline:rgba(224,224,224,.09);
+    --bg:#111111; --card:#1c1c1c; --ink:#e0e0e0;
+    --muted:rgba(224,224,224,.72); --faint:rgba(224,224,224,.48);
+    --line:rgba(224,224,224,.12); --hair:rgba(224,224,224,.07); --hair2:rgba(224,224,224,.05);
+    --up:#34d399; --down:#ff5c73;
+    --up-bg:rgba(52,211,153,.12); --down-bg:rgba(255,92,115,.12);
+    --brand:#fb923c; --brand2:#ff6207; --brand-tint:rgba(251,146,60,.10);
+    --c1:#6da4f5; --c2:#fb923c; --c3:#ef7cb2; --c4:#b48af0; --c5:#4cc8b8;
+    --ghost:rgba(224,224,224,.14);
+    --chipbg:rgba(224,224,224,.08); --chipbg2:rgba(224,224,224,.14);
+    --inputbg:rgba(224,224,224,.06);
+    --sh:0 1px 2px rgba(0,0,0,.22); --sh2:0 2px 4px rgba(0,0,0,.32);
+    --shpop:0 12px 32px rgba(0,0,0,.55);
+  }
+  :root[data-theme="light"]{
+    color-scheme:light;
+    --pagebg:#ffffff; --winbg:#ffffff; --winline:#e8e8e8;
+    --bg:#fbfbfb; --card:#ffffff; --ink:#252525;
+    --muted:rgba(37,37,37,.72); --faint:rgba(37,37,37,.48);
+    --line:rgba(37,37,37,.10); --hair:rgba(37,37,37,.06); --hair2:rgba(37,37,37,.04);
+    --up:#00994d; --down:#ff3355;
+    --up-bg:rgba(0,153,77,.09); --down-bg:rgba(255,51,85,.09);
+    --brand:#e57100; --brand2:#ff6207; --brand-tint:rgba(229,113,0,.08);
+    --c1:#588ee9; --c2:#e57100; --c3:#da5597; --c4:#9f6ef0; --c5:#38b2a3;
+    --ghost:rgba(37,37,37,.10);
+    --chipbg:rgba(37,37,37,.06); --chipbg2:rgba(37,37,37,.11);
+    --inputbg:rgba(37,37,37,.04);
+    --sh:0 1px 2px rgba(0,0,0,.03); --sh2:0 2px 4px rgba(0,0,0,.06);
+    --shpop:0 12px 32px rgba(0,0,0,.10);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--pagebg);color:var(--ink);font-family:var(--sans);margin:0;
+    font-size:13px;line-height:1.5;letter-spacing:-.02em;font-optical-sizing:auto;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  ::selection{background:rgba(229,113,0,.22)}
+  svg text{font-variant-numeric:tabular-nums}
+  :focus-visible{outline:none;box-shadow:0 0 0 2px color-mix(in srgb, var(--brand) 45%, transparent)}
+
+  /* ---------- top header (60px, hairline bottom) ---------- */
+  .top{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+    height:60px;padding:0 20px;background:var(--pagebg);border-bottom:1px solid var(--winline)}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#ff8a2a,#e55700);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+  .logo svg{width:16px;height:16px;display:block}
+  .brand-name{font-family:"Inter Display",var(--sans);font-weight:600;font-size:14px;letter-spacing:.01em;white-space:nowrap}
+  .brand-note{font-size:11.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:nowrap}
+  .pillmini{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--hair);
+    background:var(--card);border-radius:999px;padding:5px 10px;font-size:11px;color:var(--muted);
+    white-space:nowrap;box-shadow:var(--sh)}
+  .pillmini b{color:var(--ink);font-weight:500}
+  #mast-data.stale{color:var(--down)}
+  .odot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);
+    animation:pulse 2s infinite;flex:none}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  /* ---------- app window: sidebar + main ---------- */
+  .shell{padding:12px 8px 8px}
+  .window{max-width:1560px;margin:0 auto;background:var(--winbg);border:1px solid var(--winline);
+    border-radius:16px;display:flex;align-items:stretch;min-height:calc(100vh - 92px)}
+  .side{width:256px;flex:none;padding:12px;border-right:1px solid var(--hair)}
+  .side-in{position:sticky;top:76px}
+  .ws{display:flex;gap:9px;align-items:center;padding:6px 6px 14px;border-bottom:1px solid var(--hair);margin-bottom:10px}
+  .ws-logo{width:32px;height:32px;flex:none;border-radius:8px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#ff8a2a,#e55700);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+  .ws-logo svg{width:17px;height:17px;display:block}
+  .ws-name{font-family:"Inter Display",var(--sans);font-weight:600;font-size:14px;letter-spacing:.01em;line-height:1.3}
+  .ws-live{display:flex;gap:5px;align-items:center;font-size:10px;font-weight:600;color:var(--ok)}
+  .folder{font-size:11.5px;color:var(--faint);font-weight:500;padding:2px 8px 8px}
+  .nav{display:flex;flex-direction:column;gap:4px}
+  .nav a,.nav button{display:flex;align-items:center;gap:9px;height:32px;padding:0 12px;border-radius:10px;
+    color:var(--muted);font:inherit;font-size:14px;font-weight:500;letter-spacing:-.02em;
+    text-decoration:none;background:none;border:0;cursor:pointer;text-align:left;width:100%}
+  .nav a:hover,.nav button:hover{background:var(--inputbg);color:var(--ink)}
+  .nav a.active{background:var(--chipbg);color:var(--ink)}
+  .nav svg{width:16px;height:16px;flex:none}
+  .nav .ext{margin-left:auto;color:var(--faint)}
+  .side-sec{font-size:11px;color:var(--faint);font-weight:500;padding:16px 8px 6px}
+  .side-foot{margin-top:16px;border:1px solid var(--hair);border-radius:12px;background:var(--card);
+    box-shadow:var(--sh);padding:10px 12px;font-size:11px;color:var(--muted);line-height:1.8}
+  .side-foot b{color:var(--ink);font-weight:600}
+
+  .main{flex:1;min-width:0;background:var(--bg);border-radius:0 16px 16px 0;display:flex;flex-direction:column}
+  .pagebar{display:flex;align-items:center;gap:10px;padding:12px 24px;min-height:56px;
+    border-bottom:1px solid var(--hair);position:sticky;top:60px;z-index:20;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:0 16px 0 0}
+  .pb-title{font-size:14px;font-weight:500;letter-spacing:-.02em}
+  .pb-sub{font-size:11.5px;color:var(--faint)}
+  .pb-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .content{padding:20px 24px 48px}
+  section{scroll-margin-top:132px}
+  #livebox{scroll-margin-top:132px}
+
+  /* ---------- buttons / chips (CR pills) ---------- */
+  .chip{appearance:none;border:0;background:var(--chipbg);color:var(--ink);font:inherit;
+    font-size:12px;font-weight:500;letter-spacing:-.02em;padding:8px 12px;border-radius:999px;
+    cursor:pointer;white-space:nowrap;transition:background .15s}
+  .chip:hover{background:var(--chipbg2)}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--pagebg)}
+  .chip:disabled{opacity:.55;cursor:default}
+  .seg{display:inline-flex;gap:2px;background:var(--chipbg);padding:2px;border-radius:12px}
+  .seg .chip{background:transparent;border-radius:10px;color:var(--muted)}
+  .seg .chip:hover{color:var(--ink);background:transparent}
+  .seg .chip[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:var(--sh2)}
+
+  input[type="search"],input[type="text"],input[type="password"],input[type="number"],
+  .preset input,.livebody input,#cin-title{
+    background:var(--inputbg);border:0;border-radius:10px;padding:8px 12px;font:inherit;
+    font-size:12px;color:var(--ink);letter-spacing:-.01em}
+  input::placeholder{color:var(--faint)}
+  select{background:var(--chipbg);border:0;border-radius:999px;padding:7px 11px;font:inherit;
+    font-size:12px;font-weight:500;color:var(--ink);cursor:pointer}
+
+  /* ---------- ticker tape ---------- */
+  .tape{border:1px solid var(--hair);border-radius:999px;background:var(--card);box-shadow:var(--sh);
+    overflow:hidden;white-space:nowrap;padding:8px 0;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+  .tape-inner{display:inline-block;animation:tape 60s linear infinite}
+  .tape:hover .tape-inner{animation-play-state:paused}
+  .tape span{margin-right:28px;font-size:12px;font-variant-numeric:tabular-nums}
+  .tape .u{color:var(--up)} .tape .d{color:var(--down)}
+  .tape .sym{font-weight:500}
+  @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){
+    .tape-inner{animation:none}
+    .odot{animation:none}
+  }
+
+  /* ---------- KPI stat tiles ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:8px;margin-top:16px}
+  .kpi{background:var(--card);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--sh);
+    padding:13px 14px;display:flex;gap:12px;align-items:center;min-width:0}
+  .kpi .ic{width:36px;height:36px;flex:none;border-radius:999px;display:grid;place-items:center;
+    background:color-mix(in srgb, var(--a, var(--brand)) 9%, transparent);color:var(--a, var(--brand))}
+  .kpi .ic svg{width:18px;height:18px}
+  .kpi .kt{min-width:0}
+  .kpi .k{font-size:12px;color:var(--muted);margin-top:1px}
+  .kpi .v{font-size:14px;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.3}
+  .kpi .v.up{color:var(--up)} .kpi .v.dn{color:var(--down)}
+  .kpi .s{font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* ---------- section headings ---------- */
+  h2{font-size:14px;font-weight:500;letter-spacing:-.02em;color:var(--ink);
+    margin:30px 0 10px;display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  h2 .rule{display:none}
+  h2 .note{font-size:12px;color:var(--faint);font-weight:500}
+
+  /* ---------- cards ---------- */
+  .chart-card{border:1px solid var(--hair);background:var(--card);border-radius:16px;
+    box-shadow:var(--sh);padding:16px;position:relative}
+  .chart-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+  .chart-title{font-weight:500;font-size:14px}
+  .chart-delta{font-variant-numeric:tabular-nums;font-weight:500;color:var(--muted)}
+  .chart-delta.up{color:var(--up)}
+  #idxwrap{position:relative}
+  #idx{width:100%;height:220px;display:block;touch-action:pan-y}
+  .tip{position:absolute;pointer-events:none;background:var(--card);color:var(--ink);
+    border:1px solid var(--hair);border-radius:10px;box-shadow:var(--shpop);
+    font-size:11px;padding:5px 9px;white-space:nowrap;transform:translate(-50%,-130%);
+    display:none;z-index:3;font-variant-numeric:tabular-nums}
+  details.data{margin-top:10px;font-size:11px;color:var(--muted)}
+  details.data summary{cursor:pointer;color:var(--faint)}
+  details.data table{border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums}
+  details.data td,details.data th{border:1px solid var(--hair);padding:3px 8px;text-align:right;font-weight:500}
+
+  /* ---------- controls row ---------- */
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;align-items:center}
+  .controls input[type="search"]{width:230px}
+  .legend{margin-left:auto;font-size:10.5px;color:var(--faint)}
+
+  /* ---------- the big board table ---------- */
+  .board{border:1px solid var(--hair);background:var(--card);border-radius:16px;box-shadow:var(--sh);
+    overflow:auto;max-height:72vh}
+  .board::-webkit-scrollbar,#cmplist::-webkit-scrollbar{width:10px;height:10px}
+  .board::-webkit-scrollbar-thumb,#cmplist::-webkit-scrollbar-thumb{
+    background:color-mix(in srgb, var(--ink) 14%, transparent);border-radius:999px;
+    border:3px solid transparent;background-clip:content-box}
+  .board::-webkit-scrollbar-track,#cmplist::-webkit-scrollbar-track{background:transparent}
+  table.mkt{width:100%;border-collapse:collapse;min-width:1080px}
+  .mkt th{font-size:11px;color:var(--muted);text-align:left;padding:11px 12px;font-weight:500;
+    white-space:nowrap;user-select:none;position:sticky;top:0;background:color-mix(in srgb, var(--brand) 7%, var(--card));z-index:2;
+    box-shadow:inset 0 -1px 0 var(--hair)}
+  .mkt th.num{text-align:right}
+  .mkt th button{all:unset;cursor:pointer;font-weight:500}
+  .mkt th button:hover{color:var(--ink)}
+  .mkt th .arr{font-size:9px;color:var(--brand)}
+  .mkt td{padding:10px 12px;border-bottom:1px solid var(--hair2);vertical-align:middle;font-size:12.5px}
+  .mkt tr:last-child td{border-bottom:none}
+  .mkt tr:hover td{background:color-mix(in srgb, var(--ink) 2%, var(--card))}
+  td.sym{font-weight:500;white-space:nowrap;cursor:pointer}
+  td.sym .gt{font-size:9px;border:1px solid color-mix(in srgb, var(--brand) 40%, transparent);
+    color:var(--brand);border-radius:999px;padding:1px 6px;margin-left:6px;font-weight:600}
+  td.who{min-width:230px}
+  td.who .nm{font-weight:500;font-size:12.5px}
+  td.who .bio{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35}
+  td.plat{font-size:11px;color:var(--muted);white-space:nowrap}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.num .approx{color:var(--faint)}
+  td.delta{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}
+  .pill{padding:3px 9px;border-radius:999px;font-weight:500;font-size:11.5px;
+    font-variant-numeric:tabular-nums;display:inline-block}
+  td.delta .pill.u,.pill.u{color:var(--up);background:var(--up-bg)}
+  td.delta .pill.d,.pill.d{color:var(--down);background:var(--down-bg)}
+  td.spark{width:120px}
+  td.spark svg{display:block;overflow:visible}
+  td.rk2{color:var(--faint);font-size:10.5px;width:30px;font-variant-numeric:tabular-nums}
+  tr.spotrow td:first-child{box-shadow:inset 2px 0 0 var(--brand)}
+  tr.spotrow .nm{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--brand)}
+  .mkt tbody tr:hover td:first-child{box-shadow:inset 2px 0 0 var(--brand)}
+  .mkt tbody tr.dim{opacity:.35}
+  td.who a{text-decoration:none;color:inherit}
+  td.who a:hover .nm{text-decoration:underline;text-underline-offset:3px}
+
+  /* who cell extras */
+  .nmrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .nmrow img{width:24px;height:24px;border-radius:8px;background:var(--chipbg);flex:none}
+  .badge{font-size:10px;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+    padding:1px 7px;white-space:nowrap;font-weight:500}
+  .crtag{font-size:9.5px;font-weight:600;border:1px solid var(--line);border-radius:999px;
+    background:none;color:var(--faint);padding:2px 7px;cursor:pointer;opacity:0;transition:opacity .15s,background .15s;font-family:inherit}
+  .mkt tr:hover .crtag{opacity:1}
+  .crtag.on{opacity:1;background:var(--brand);color:var(--pagebg);border-color:var(--brand)}
+  .crmini{font-size:9px;font-weight:600;border:1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+    border-radius:999px;padding:0 5px;color:var(--brand);flex:none}
+
+  /* ---------- top movers ---------- */
+  .movers{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px}
+  .mover{background:var(--card);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--sh);
+    padding:13px 14px 46px;position:relative;overflow:hidden}
+  .mover .sym{font-weight:500;font-size:12px}
+  .mover .nm2{font-size:11px;color:var(--muted)}
+  .mover .big{font-size:18px;font-weight:500;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+  .mover .big.u{color:var(--up)} .mover .big.d{color:var(--down)}
+  .mover svg{position:absolute;right:0;bottom:0;left:0;width:100%;height:34px;display:block}
+
+  /* ---------- motion ---------- */
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  tbody tr{animation:rise .35s cubic-bezier(.2,.7,.3,1) both}
+  .mover{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  .kpi{animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+  .kpi:nth-child(2){animation-delay:60ms}.kpi:nth-child(3){animation-delay:120ms}
+  .kpi:nth-child(4){animation-delay:180ms}.kpi:nth-child(5){animation-delay:240ms}
+  .kpi:nth-child(6){animation-delay:300ms}
+  .mkt td{transition:background .15s}
+  .sline{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease-out forwards}
+  .sdot{opacity:0;animation:pop .25s ease-out forwards}
+  .areain{opacity:0;animation:pop .7s .9s ease-out forwards}
+  .pill.lp{animation:pulse 2.4s infinite}
+  .reveal{opacity:0;transform:translateY(10px);transition:opacity .5s cubic-bezier(.2,.7,.3,1),transform .5s cubic-bezier(.2,.7,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pop{to{opacity:1}}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    tbody tr,.mover,.kpi,.spot,.pill.lp{animation:none}
+    .sline{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+    .sdot,.areain{animation:none;opacity:1}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+
+  /* ---------- spotlight (hero card with the CR gradient-banner treatment) ---------- */
+  .spot{border:1px solid color-mix(in srgb, var(--brand) 22%, var(--hair));border-radius:16px;
+    background:linear-gradient(180deg,var(--brand-tint),transparent 58%) var(--card);
+    box-shadow:var(--sh);padding:16px;display:grid;gap:16px;grid-template-columns:1fr;
+    animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+  @media (min-width:720px){.spot{grid-template-columns:minmax(280px,1fr) 1.3fr}}
+  .spot .head{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .spot .avatar{width:56px;height:56px;border-radius:14px;background:var(--chipbg);flex:none}
+  .spot .tick{font-size:20px;font-weight:500;letter-spacing:-.02em}
+  .spot .nm2{font-size:11.5px;color:var(--muted)}
+  .spot .bio2{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .spot .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:6px;margin-top:12px}
+  .spot .stat{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:8px 10px;min-width:0;
+    display:flex;flex-direction:column-reverse;justify-content:flex-end;gap:2px}
+  .spot .avatar.ph{display:flex;align-items:center;justify-content:center;font-weight:700;
+    font-size:24px;color:var(--brand);background:color-mix(in srgb, var(--brand) 9%, transparent)}
+  .spotright{display:flex;flex-direction:column;justify-content:center;min-width:0}
+  .spotright svg{width:100%;height:210px;display:block}
+  .spot .k{font-size:10.5px;color:var(--faint)}
+  .spot .v2{font-size:14px;font-weight:500;margin-top:0;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .spot .v2.uu{color:var(--up)} .spot .v2.dd{color:var(--down)}
+  .spot .v2.small{font-size:11.5px;line-height:1.4;padding-top:4px;font-weight:500}
+  .spot svg{width:100%;height:140px;display:block}
+  .spot .empty{color:var(--faint);font-size:12px;border:1px dashed var(--line);border-radius:12px;
+    height:140px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;line-height:1.6}
+  .spot a{color:inherit}
+
+  /* ---------- compare ---------- */
+  .cmpwrap{display:grid;grid-template-columns:1fr 240px;gap:14px}
+  @media (max-width:860px){.cmpwrap{grid-template-columns:1fr}}
+  #cmpchart{position:relative;min-width:0}
+  #cmpchart svg{width:100%;height:340px;display:block}
+  .cmppanel{border:1px solid var(--hair);border-radius:14px;background:var(--card);
+    display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .cmppanel input{border-radius:10px;margin:8px;width:calc(100% - 16px);background:var(--inputbg);
+    border:0;padding:8px 12px;font:inherit;font-size:12px;color:var(--ink)}
+  #cmplist{overflow-y:auto;max-height:304px}
+  .cmprow{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:11.5px;cursor:pointer;
+    border-top:1px solid var(--hair2)}
+  .cmprow:hover{background:color-mix(in srgb, var(--ink) 2%, var(--card))}
+  .cmprow .cdot{width:9px;height:9px;border-radius:3px;flex:none}
+  .cmprow .cdot.ghost{background:var(--ghost)}
+  .cmprow .cnm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cmprow .cval{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cmprow .cx{color:var(--faint);padding-left:2px}
+  .cmprow.pin{background:color-mix(in srgb, var(--ink) 3%, var(--card));font-weight:500}
+  .cmprow.pin:hover .cx{color:var(--down)}
+  .cmprow.nod .cnm{color:var(--faint)}
+  .cmphr{font-size:10px;color:var(--faint);padding:8px 12px 3px}
+  .gline{cursor:pointer}
+  .gline:hover{stroke:var(--muted)}
+  .tip2{position:absolute;pointer-events:none;background:var(--card);color:var(--ink);
+    border:1px solid var(--hair);border-radius:12px;box-shadow:var(--sh2),var(--shpop);
+    font-size:12px;padding:10px 12px;white-space:nowrap;display:none;z-index:3;min-width:170px;
+    font-variant-numeric:tabular-nums;transform:translateX(-50%);line-height:1.8}
+  .tip2 .sw{display:inline-block;width:6px;height:6px;border-radius:50%;flex:none}
+  .tip2 .ttd{color:var(--faint);margin-bottom:5px}
+  .tip2 .ttr{display:flex;align-items:center;gap:6px}
+  .tip2 .ttl{color:var(--faint)}
+  .tip2 .ttv{margin-left:auto;padding-left:16px;color:var(--ink)}
+  .cmpempty{color:var(--faint);font-size:12px;border:1px dashed var(--line);border-radius:12px;
+    height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 24px;line-height:1.6}
+
+  /* ---------- market wall ---------- */
+  #wall{display:flex;flex-wrap:wrap;gap:6px}
+  .wtile{position:relative;padding:9px 11px;border:1px solid var(--hair);background:var(--card);
+    border-radius:12px;box-shadow:var(--sh);cursor:pointer;min-width:88px;flex:1 0 88px;max-width:150px;
+    transition:transform .12s,box-shadow .12s}
+  .wtile:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+  .wtile .wt{font-weight:500;font-size:11px}
+  .wtile .wf{font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;margin-top:2px}
+  .wtile .wd{font-size:10px;font-variant-numeric:tabular-nums;margin-top:1px;color:var(--muted)}
+  .wtile.s2{flex:1.6 0 122px;max-width:210px}
+  .wtile.s2 .wf{font-size:15px}
+  .wtile.s3{flex:2.4 0 170px;max-width:290px}
+  .wtile.s3 .wf{font-size:18px;letter-spacing:-.02em}
+  .wtile.up .wd{color:var(--up)}
+  .wtile.dn .wd{color:var(--down)}
+  .wtile.cr{border-color:color-mix(in srgb, var(--brand) 55%, transparent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--brand) 55%, transparent),var(--sh)}
+  .wtile.cr::after{content:"CR";position:absolute;top:5px;right:6px;font-size:8px;font-weight:600;
+    color:var(--brand);border:1px solid color-mix(in srgb, var(--brand) 45%, transparent);
+    border-radius:999px;padding:0 4px}
+  .wu1{background:color-mix(in srgb, var(--up) 6%, var(--card))}
+  .wu2{background:color-mix(in srgb, var(--up) 13%, var(--card))}
+  .wu3{background:color-mix(in srgb, var(--up) 22%, var(--card))}
+  .wu4{background:color-mix(in srgb, var(--up) 32%, var(--card))}
+  .wd1{background:color-mix(in srgb, var(--down) 6%, var(--card))}
+  .wd2{background:color-mix(in srgb, var(--down) 13%, var(--card))}
+  .wd3{background:color-mix(in srgb, var(--down) 22%, var(--card))}
+  .wd4{background:color-mix(in srgb, var(--down) 32%, var(--card))}
+
+  /* ---------- campaign log ---------- */
+  .notesbox{border:1px solid var(--hair);background:var(--card);border-radius:16px;box-shadow:var(--sh);padding:14px 16px}
+  .notesbox .preset{margin-top:0}
+  .noteitem{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-top:1px solid var(--hair2);font-size:12px}
+  .noteitem:first-child{border-top:none}
+  .noteitem .nt{color:var(--faint);font-size:10.5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .noteitem .nx{margin-left:auto;padding:2px 9px}
+  #notelist{margin-top:10px}
+  .notesempty{color:var(--faint);font-size:12px;line-height:1.6}
+  .preset{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  .preset input{width:260px;max-width:100%}
+  .preset .hint{font-size:10.5px;color:var(--faint)}
+
+  /* ---------- focus mode ---------- */
+  #focus{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;
+    justify-content:center;padding:5vw;gap:2.2vh}
+  #focus[hidden]{display:none}
+  #focus .f-tick{font-size:clamp(22px,3vw,40px);font-weight:600;letter-spacing:-.02em}
+  #focus .f-sub{color:var(--muted);font-size:clamp(11px,1.3vw,15px);font-weight:400;letter-spacing:-.01em}
+  #focus .f-num{font-size:clamp(56px,11vw,170px);font-weight:600;letter-spacing:-.04em;
+    font-variant-numeric:tabular-nums;line-height:1}
+  #focus .f-row{display:flex;gap:2.5vw;align-items:baseline;flex-wrap:wrap}
+  #focus .f-pct{font-size:clamp(20px,3.6vw,52px);font-weight:600;font-variant-numeric:tabular-nums}
+  #focus .f-pct.u{color:var(--up)} #focus .f-pct.d{color:var(--down)}
+  #focus svg{width:100%;height:32vh;display:block}
+  #focus .f-exit{position:absolute;top:16px;right:16px}
+
+  /* ---------- cinema ---------- */
+  #cinema{position:fixed;inset:0;background:var(--bg);z-index:70;display:flex;flex-direction:column}
+  #cinema[hidden]{display:none}
+  .cin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;
+    background:var(--card);border-bottom:1px solid var(--hair)}
+  #cin-title{width:180px}
+  #cin-status{font-size:11px;color:var(--muted)}
+  #cin-rec[data-on="1"]{background:var(--down);color:#fff}
+  .cin-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:16px}
+  #cin-canvas{width:min(92vw,calc(76vh * 16 / 9));height:auto;border:1px solid var(--hair);
+    border-radius:12px;background:var(--bg);box-shadow:var(--sh2)}
+
+  /* ---------- live data ---------- */
+  .livebox{border:1px solid var(--hair);background:var(--card);border-radius:16px;box-shadow:var(--sh);
+    margin:0 0 12px;font-size:12px;overflow:hidden}
+  .livebox summary{padding:11px 16px;cursor:pointer;color:var(--muted);list-style:none;font-weight:500}
+  .livebox summary::-webkit-details-marker{display:none}
+  .livebox summary:hover{color:var(--ink)}
+  .livebox .on{color:var(--up);font-weight:600}
+  .livebody{padding:2px 16px 14px;color:var(--muted);line-height:1.8}
+  .livebody b{color:var(--ink)}
+  .livebody input{width:300px;max-width:100%;margin:4px 8px 4px 0}
+  .livebody code{background:var(--inputbg);border-radius:6px;padding:1px 6px;font-family:ui-monospace,Menlo,monospace;font-size:11px}
+
+  footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--hair);
+    font-size:11.5px;color:var(--faint);line-height:1.7}
+  footer b{color:var(--muted)}
+
+  /* ---------- CR icon set + fidelity extras ---------- */
+  .nico{width:16px;height:16px;flex:none}
+  .nav .uf{display:none}
+  .nav a.active .uf{display:inline}
+  .nav a.active .uo{display:none}
+  .wschev{width:12px;height:12px;margin-left:auto;color:var(--faint);flex:none}
+  .folder{display:flex;align-items:center;gap:7px}
+  .flogo{width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#ff8a2a,#e55700);
+    display:grid;place-items:center;flex:none}
+  .flogo svg{width:9px;height:9px;display:block}
+  .fchev{width:10px;height:10px;color:var(--faint);flex:none}
+  .icbtn{width:36px;height:36px;border:0;border-radius:999px;background:var(--chipbg);
+    display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:none}
+  .icbtn:hover{background:var(--chipbg2)}
+  .icbtn svg{width:16px;height:16px}
+  .crmark{display:none;align-items:center;gap:7px;font-family:"Inter Display",var(--sans);
+    font-weight:500;font-size:14px;letter-spacing:.01em;color:var(--ink)}
+  @media (min-width:1180px){.crmark{display:flex}}
+  .searchwrap{position:relative;display:inline-block}
+  .searchwrap .sic{position:absolute;left:11px;top:50%;transform:translateY(-50%);
+    width:13px;height:13px;color:var(--faint);pointer-events:none}
+  .searchwrap input{padding-left:31px}
+  .cmppanel .searchwrap{display:block;margin:8px}
+  .cmppanel .searchwrap input{margin:0;width:100%}
+  .pic{width:12px;height:12px;color:var(--faint);flex:none}
+
+  /* ---------- small screens ---------- */
+  @media (max-width:960px){
+    .side{display:none}
+    .main{border-radius:16px}
+    .pagebar{border-radius:16px 16px 0 0}
+    .brand-note{display:none}
+    .content{padding:16px 14px 40px}
+    .kpis{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+  }
+</style>
+
+<!-- Content Rewards icon set, vector paths extracted from the Product V2 Figma file -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M9.5 20L9.5 21C10.05 21 10.5 20.55 10.5 20L9.5 20ZM14.5 20L13.5 20C13.5 20.55 13.95 21 14.5 21L14.5 20ZM18.75 8.1L19.33 7.29L18.75 8.1ZM13.75 4.51L13.17 5.32L13.17 5.32L13.75 4.51ZM10.25 4.51L10.83 5.32L10.83 5.32L10.25 4.51ZM5.25 8.1L4.67 7.29L5.25 8.1ZM9.5 20L10.5 20L10.5 16.5L9.5 16.5L8.5 16.5L8.5 20L9.5 20ZM14.5 16.5L13.5 16.5L13.5 20L14.5 20L15.5 20L15.5 16.5L14.5 16.5ZM14.5 20L14.5 21L17 21L17 20L17 19L14.5 19L14.5 20ZM20 17L21 17L21 10.54L20 10.54L19 10.54L19 17L20 17ZM18.75 8.1L19.33 7.29L14.33 3.7L13.75 4.51L13.17 5.32L18.17 8.91L18.75 8.1ZM10.25 4.51L9.67 3.7L4.67 7.29L5.25 8.1L5.83 8.91L10.83 5.32L10.25 4.51ZM4 10.54L3 10.54L3 17L4 17L5 17L5 10.54L4 10.54ZM7 20L7 21L9.5 21L9.5 20L9.5 19L7 19L7 20ZM4 17L3 17C3 19.21 4.79 21 7 21L7 20L7 19C5.9 19 5 18.1 5 17L4 17ZM5.25 8.1L4.67 7.29C3.62 8.04 3 9.25 3 10.54L4 10.54L5 10.54C5 9.89 5.31 9.29 5.83 8.91L5.25 8.1ZM20 10.54L21 10.54C21 9.25 20.38 8.04 19.33 7.29L18.75 8.1L18.17 8.91C18.69 9.29 19 9.89 19 10.54L20 10.54ZM17 20L17 21C19.21 21 21 19.21 21 17L20 17L19 17C19 18.1 18.1 19 17 19L17 20ZM14.5 16.5L15.5 16.5C15.5 14.57 13.93 13 12 13L12 14L12 15C12.83 15 13.5 15.67 13.5 16.5L14.5 16.5ZM13.75 4.51L14.33 3.7C12.94 2.69 11.06 2.69 9.67 3.7L10.25 4.51L10.83 5.32C11.53 4.82 12.47 4.82 13.17 5.32L13.75 4.51ZM9.5 16.5L10.5 16.5C10.5 15.67 11.17 15 12 15L12 14L12 13C10.07 13 8.5 14.57 8.5 16.5L9.5 16.5Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-home-f" viewBox="0 0 24 24"><path d="M13.7 3.45C12.68 2.75 11.32 2.75 10.3 3.45L4.3 7.58C3.49 8.14 3 9.06 3 10.05L3 18C3 19.66 4.34 21 6 21L8.5 21C9.05 21 9.5 20.55 9.5 20L9.5 16.5C9.5 15.12 10.62 14 12 14C13.38 14 14.5 15.12 14.5 16.5L14.5 20C14.5 20.55 14.95 21 15.5 21L18 21C19.66 21 21 19.66 21 18L21 10.05C21 9.06 20.51 8.14 19.7 7.58L13.7 3.45Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M13.37 1.86C12.82 0.71 11.18 0.71 10.63 1.86L8.27 6.78L2.82 7.49C1.56 7.66 1.04 9.22 1.98 10.1L5.95 13.85L4.96 19.2C4.72 20.47 6.06 21.42 7.18 20.82L12 18.22L16.82 20.82C17.94 21.42 19.28 20.47 19.04 19.2L18.05 13.85L22.02 10.1C22.96 9.22 22.44 7.66 21.18 7.49L15.73 6.78L13.37 1.86Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-star-f" viewBox="0 0 24 24"><path d="M13.37 1.86C12.82 0.71 11.18 0.71 10.63 1.86L8.27 6.78L2.82 7.49C1.56 7.66 1.04 9.22 1.98 10.1L5.95 13.85L4.96 19.2C4.72 20.47 6.06 21.42 7.18 20.82L12 18.22L16.82 20.82C17.94 21.42 19.28 20.47 19.04 19.2L18.05 13.85L22.02 10.1C22.96 9.22 22.44 7.66 21.18 7.49L15.73 6.78L13.37 1.86Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-fire" viewBox="0 0 24 24"><path d="M12.01 1.71C11.75 1.5 11.4 1.45 11.09 1.55C10.77 1.66 10.53 1.91 10.44 2.23C9.9 4.16 8.8 5.22 7.38 6.59C7.19 6.77 7 6.96 6.79 7.16L6.79 7.16C6.16 7.78 5.51 8.48 4.98 9.27C3.39 11.63 3 14.3 4.19 16.99L4.19 16.99C6.17 21.46 10.6 22.74 14.3 21.61C18.01 20.47 21.05 16.9 20.41 11.74C20.22 10.14 19.67 8.48 18.33 7.17C18.12 6.97 17.83 6.86 17.54 6.89C17.25 6.92 16.98 7.08 16.81 7.32C16.67 7.52 16.35 7.91 15.97 8.36C15.91 7.56 15.74 6.79 15.45 6.04C14.83 4.41 13.69 3 12.01 1.71Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-fire-f" viewBox="0 0 24 24"><path d="M12.01 1.71C11.75 1.5 11.4 1.45 11.09 1.55C10.77 1.66 10.53 1.91 10.44 2.23C9.9 4.16 8.8 5.22 7.38 6.59C7.19 6.77 7 6.96 6.79 7.16L6.79 7.16C6.16 7.78 5.51 8.48 4.98 9.27C3.39 11.63 3 14.3 4.19 16.99L4.19 16.99C6.17 21.46 10.6 22.74 14.3 21.61C18.01 20.47 21.05 16.9 20.41 11.74C20.22 10.14 19.67 8.48 18.33 7.17C18.12 6.97 17.83 6.86 17.54 6.89C17.25 6.92 16.98 7.08 16.81 7.32C16.67 7.52 16.35 7.91 15.97 8.36C15.91 7.56 15.74 6.79 15.45 6.04C14.83 4.41 13.69 3 12.01 1.71Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-pie" viewBox="0 0 24 24"><path d="M21.72 14.37C21.9 13.61 22 12.82 22 12C22 6.81 18.05 2.55 13 2.05L13 11.29L21.72 14.37ZM21.05 16.26L11.67 12.94C11.27 12.8 11 12.42 11 12L11 2.05C5.95 2.55 2 6.81 2 12C2 17.52 6.48 22 12 22C16 22 19.45 19.65 21.05 16.26Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-pie-f" viewBox="0 0 24 24"><path d="M21.72 14.37C21.9 13.61 22 12.82 22 12C22 6.81 18.05 2.55 13 2.05L13 11.29L21.72 14.37ZM21.05 16.26L11.67 12.94C11.27 12.8 11 12.42 11 12L11 2.05C5.95 2.55 2 6.81 2 12C2 17.52 6.48 22 12 22C16 22 19.45 19.65 21.05 16.26Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-bars" viewBox="0 0 24 24"><path d="M4.25 5.25L19.75 5.25C20.16 5.25 20.5 5.59 20.5 6C20.5 6.41 20.16 6.75 19.75 6.75L4.25 6.75C3.84 6.75 3.5 6.41 3.5 6C3.5 5.59 3.84 5.25 4.25 5.25ZM4.25 11.25L19.75 11.25C20.16 11.25 20.5 11.59 20.5 12C20.5 12.41 20.16 12.75 19.75 12.75L4.25 12.75C3.84 12.75 3.5 12.41 3.5 12C3.5 11.59 3.84 11.25 4.25 11.25ZM4.25 17.25L19.75 17.25C20.16 17.25 20.5 17.59 20.5 18C20.5 18.41 20.16 18.75 19.75 18.75L4.25 18.75C3.84 18.75 3.5 18.41 3.5 18C3.5 17.59 3.84 17.25 4.25 17.25Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-bars-f" viewBox="0 0 24 24"><path d="M4.25 5.25L19.75 5.25C20.16 5.25 20.5 5.59 20.5 6C20.5 6.41 20.16 6.75 19.75 6.75L4.25 6.75C3.84 6.75 3.5 6.41 3.5 6C3.5 5.59 3.84 5.25 4.25 5.25ZM4.25 11.25L19.75 11.25C20.16 11.25 20.5 11.59 20.5 12C20.5 12.41 20.16 12.75 19.75 12.75L4.25 12.75C3.84 12.75 3.5 12.41 3.5 12C3.5 11.59 3.84 11.25 4.25 11.25ZM4.25 17.25L19.75 17.25C20.16 17.25 20.5 17.59 20.5 18C20.5 18.41 20.16 18.75 19.75 18.75L4.25 18.75C3.84 18.75 3.5 18.41 3.5 18C3.5 17.59 3.84 17.25 4.25 17.25Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><path d="M10 4L11 4C11 3.45 10.55 3 10 3L10 4ZM10 10L10 11C10.55 11 11 10.55 11 10L10 10ZM4 10L3 10C3 10.55 3.45 11 4 11L4 10ZM5.09 4.22L5.55 5.11L5.09 4.22ZM4.22 5.09L5.11 5.55L4.22 5.09ZM14 4L14 3C13.45 3 13 3.45 13 4L14 4ZM20 10L20 11C20.55 11 21 10.55 21 10L20 10ZM14 10L13 10C13 10.55 13.45 11 14 11L14 10ZM18.91 4.22L18.45 5.11L18.91 4.22ZM19.78 5.09L18.89 5.55L19.78 5.09ZM4 14L4 13C3.45 13 3 13.45 3 14L4 14ZM10 14L11 14C11 13.45 10.55 13 10 13L10 14ZM10 20L10 21C10.55 21 11 20.55 11 20L10 20ZM5.09 19.78L5.55 18.89L5.09 19.78ZM4.22 18.91L5.11 18.45L4.22 18.91ZM14 14L14 13C13.45 13 13 13.45 13 14L14 14ZM20 14L21 14C21 13.45 20.55 13 20 13L20 14ZM14 20L13 20C13 20.55 13.45 21 14 21L14 20ZM19.78 18.91L18.89 18.45L19.78 18.91ZM18.91 19.78L18.45 18.89L18.91 19.78ZM7.2 4L7.2 5L10 5L10 4L10 3L7.2 3L7.2 4ZM10 4L9 4L9 10L10 10L11 10L11 4L10 4ZM10 10L10 9L4 9L4 10L4 11L10 11L10 10ZM4 10L5 10L5 7.2L4 7.2L3 7.2L3 10L4 10ZM7.2 4L7.2 3C6.66 3 6.19 3 5.8 3.03C5.41 3.06 5.02 3.13 4.64 3.33L5.09 4.22L5.55 5.11C5.6 5.08 5.7 5.05 5.97 5.02C6.25 5 6.62 5 7.2 5L7.2 4ZM4 7.2L5 7.2C5 6.62 5 6.25 5.02 5.97C5.05 5.7 5.08 5.6 5.11 5.55L4.22 5.09L3.33 4.64C3.13 5.02 3.06 5.41 3.03 5.8C3 6.19 3 6.66 3 7.2L4 7.2ZM5.09 4.22L4.64 3.33C4.07 3.61 3.61 4.07 3.33 4.64L4.22 5.09L5.11 5.55C5.2 5.36 5.36 5.2 5.55 5.11L5.09 4.22ZM14 4L14 5L16.8 5L16.8 4L16.8 3L14 3L14 4ZM20 7.2L19 7.2L19 10L20 10L21 10L21 7.2L20 7.2ZM20 10L20 9L14 9L14 10L14 11L20 11L20 10ZM14 10L15 10L15 4L14 4L13 4L13 10L14 10ZM16.8 4L16.8 5C17.38 5 17.75 5 18.03 5.02C18.3 5.05 18.4 5.08 18.45 5.11L18.91 4.22L19.36 3.33C18.98 3.13 18.59 3.06 18.2 3.03C17.81 3 17.34 3 16.8 3L16.8 4ZM20 7.2L21 7.2C21 6.66 21 6.19 20.97 5.8C20.94 5.41 20.87 5.02 20.67 4.64L19.78 5.09L18.89 5.55C18.92 5.6 18.95 5.7 18.98 5.97C19 6.25 19 6.62 19 7.2L20 7.2ZM18.91 4.22L18.45 5.11C18.64 5.2 18.8 5.36 18.89 5.55L19.78 5.09L20.67 4.64C20.39 4.07 19.93 3.61 19.36 3.33L18.91 4.22ZM4 14L4 15L10 15L10 14L10 13L4 13L4 14ZM10 14L9 14L9 20L10 20L11 20L11 14L10 14ZM10 20L10 19L7.2 19L7.2 20L7.2 21L10 21L10 20ZM4 16.8L5 16.8L5 14L4 14L3 14L3 16.8L4 16.8ZM7.2 20L7.2 19C6.62 19 6.25 19 5.97 18.98C5.7 18.95 5.6 18.92 5.55 18.89L5.09 19.78L4.64 20.67C5.02 20.87 5.41 20.94 5.8 20.97C6.19 21 6.66 21 7.2 21L7.2 20ZM4 16.8L3 16.8C3 17.34 3 17.81 3.03 18.2C3.06 18.59 3.13 18.98 3.33 19.36L4.22 18.91L5.11 18.45C5.08 18.4 5.05 18.3 5.02 18.03C5 17.75 5 17.38 5 16.8L4 16.8ZM5.09 19.78L5.55 18.89C5.36 18.8 5.2 18.64 5.11 18.45L4.22 18.91L3.33 19.36C3.61 19.93 4.07 20.39 4.64 20.67L5.09 19.78ZM14 14L14 15L20 15L20 14L20 13L14 13L14 14ZM20 14L19 14L19 16.8L20 16.8L21 16.8L21 14L20 14ZM16.8 20L16.8 19L14 19L14 20L14 21L16.8 21L16.8 20ZM14 20L15 20L15 14L14 14L13 14L13 20L14 20ZM20 16.8L19 16.8C19 17.38 19 17.75 18.98 18.03C18.95 18.3 18.92 18.4 18.89 18.45L19.78 18.91L20.67 19.36C20.87 18.98 20.94 18.59 20.97 18.2C21 17.81 21 17.34 21 16.8L20 16.8ZM16.8 20L16.8 21C17.34 21 17.81 21 18.2 20.97C18.59 20.94 18.98 20.87 19.36 20.67L18.91 19.78L18.45 18.89C18.4 18.92 18.3 18.95 18.03 18.98C17.75 19 17.38 19 16.8 19L16.8 20ZM19.78 18.91L18.89 18.45C18.8 18.64 18.64 18.8 18.45 18.89L18.91 19.78L19.36 20.67C19.93 20.39 20.39 19.93 20.67 19.36L19.78 18.91Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-grid-f" viewBox="0 0 24 24"><path d="M7.16 3C6.63 3 6.18 3 5.8 3.03C5.41 3.06 5.02 3.13 4.64 3.33C4.07 3.61 3.61 4.07 3.33 4.64C3.13 5.02 3.06 5.41 3.03 5.8C3 6.18 3 6.63 3 7.16L3 10C3 10.55 3.45 11 4 11L10 11C10.55 11 11 10.55 11 10L11 4C11 3.45 10.55 3 10 3L7.16 3ZM19.36 3.33C18.98 3.13 18.59 3.06 18.2 3.03C17.82 3 17.37 3 16.84 3L14 3C13.45 3 13 3.45 13 4L13 10C13 10.55 13.45 11 14 11L20 11C20.55 11 21 10.55 21 10L21 7.16C21 6.63 21 6.18 20.97 5.8C20.94 5.41 20.87 5.02 20.67 4.64C20.39 4.07 19.93 3.61 19.36 3.33ZM4 13C3.45 13 3 13.45 3 14L3 16.84C3 17.37 3 17.82 3.03 18.2C3.06 18.59 3.13 18.98 3.33 19.36C3.61 19.93 4.07 20.39 4.64 20.67C5.02 20.87 5.41 20.94 5.8 20.97C6.18 21 6.63 21 7.16 21L10 21C10.55 21 11 20.55 11 20L11 14C11 13.45 10.55 13 10 13L4 13ZM14 13C13.45 13 13 13.45 13 14L13 20C13 20.55 13.45 21 14 21L16.84 21C17.37 21 17.82 21 18.2 20.97C18.59 20.94 18.98 20.87 19.36 20.67C19.93 20.39 20.39 19.93 20.67 19.36C20.87 18.98 20.94 18.59 20.97 18.2C21 17.82 21 17.37 21 16.84L21 14C21 13.45 20.55 13 20 13L14 13Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-videos" viewBox="0 0 24 24"><path d="M4 4C4 3.45 4.45 3 5 3L19 3C19.55 3 20 3.45 20 4C20 4.55 19.55 5 19 5L5 5C4.45 5 4 4.55 4 4ZM2 9C2 7.34 3.34 6 5 6L19 6C20.66 6 22 7.34 22 9L22 18C22 19.66 20.66 21 19 21L5 21C3.34 21 2 19.66 2 18L2 9ZM10.57 10.6C10.91 10.43 11.32 10.48 11.62 10.72L14.12 12.72C14.36 12.91 14.5 13.2 14.5 13.5C14.5 13.8 14.36 14.09 14.12 14.28L11.62 16.28C11.32 16.52 10.91 16.57 10.57 16.4C10.22 16.23 10 15.88 10 15.5L10 11.5C10 11.12 10.22 10.77 10.57 10.6Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-videos-f" viewBox="0 0 24 24"><path d="M4 4C4 3.45 4.45 3 5 3L19 3C19.55 3 20 3.45 20 4C20 4.55 19.55 5 19 5L5 5C4.45 5 4 4.55 4 4ZM2 9C2 7.34 3.34 6 5 6L19 6C20.66 6 22 7.34 22 9L22 18C22 19.66 20.66 21 19 21L5 21C3.34 21 2 19.66 2 18L2 9ZM10.57 10.6C10.91 10.43 11.32 10.48 11.62 10.72L14.12 12.72C14.36 12.91 14.5 13.2 14.5 13.5C14.5 13.8 14.36 14.09 14.12 14.28L11.62 16.28C11.32 16.52 10.91 16.57 10.57 16.4C10.22 16.23 10 15.88 10 15.5L10 11.5C10 11.12 10.22 10.77 10.57 10.6Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 24 24"><path d="M9.79 3.19C10.28 2.44 11.11 2 12 2C12.89 2 13.72 2.44 14.21 3.19L14.77 4.02C15 4.36 15.41 4.52 15.8 4.43L16.49 4.27C17.4 4.06 18.35 4.33 19.01 4.99C19.67 5.65 19.94 6.6 19.73 7.51L19.57 8.2C19.48 8.59 19.64 9 19.98 9.23L20.81 9.79C21.56 10.28 22 11.11 22 12C22 12.89 21.56 13.72 20.81 14.21L19.98 14.77C19.64 15 19.48 15.41 19.57 15.8L19.73 16.49C19.94 17.4 19.67 18.35 19.01 19.01C18.35 19.67 17.4 19.94 16.49 19.73L15.8 19.57C15.41 19.48 15 19.64 14.77 19.98L14.21 20.81C13.72 21.56 12.89 22 12 22C11.11 22 10.28 21.56 9.79 20.81L9.23 19.98C9 19.64 8.59 19.48 8.2 19.57L7.51 19.73C6.6 19.94 5.65 19.67 4.99 19.01C4.33 18.35 4.06 17.4 4.27 16.49L4.43 15.8C4.52 15.41 4.36 15 4.02 14.77L3.19 14.21C2.44 13.72 2 12.89 2 12C2 11.11 2.44 10.28 3.19 9.79L4.02 9.23C4.36 9 4.52 8.59 4.43 8.2L4.27 7.51C4.06 6.6 4.33 5.65 4.99 4.99C5.65 4.33 6.6 4.06 7.51 4.27L8.2 4.43C8.59 4.52 9 4.36 9.23 4.02L9.79 3.19ZM8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5C10.07 15.5 8.5 13.93 8.5 12Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-gear-f" viewBox="0 0 24 24"><path d="M9.79 3.19C10.28 2.44 11.11 2 12 2C12.89 2 13.72 2.44 14.21 3.19L14.77 4.02C15 4.36 15.41 4.52 15.8 4.43L16.49 4.27C17.4 4.06 18.35 4.33 19.01 4.99C19.67 5.65 19.94 6.6 19.73 7.51L19.57 8.2C19.48 8.59 19.64 9 19.98 9.23L20.81 9.79C21.56 10.28 22 11.11 22 12C22 12.89 21.56 13.72 20.81 14.21L19.98 14.77C19.64 15 19.48 15.41 19.57 15.8L19.73 16.49C19.94 17.4 19.67 18.35 19.01 19.01C18.35 19.67 17.4 19.94 16.49 19.73L15.8 19.57C15.41 19.48 15 19.64 14.77 19.98L14.21 20.81C13.72 21.56 12.89 22 12 22C11.11 22 10.28 21.56 9.79 20.81L9.23 19.98C9 19.64 8.59 19.48 8.2 19.57L7.51 19.73C6.6 19.94 5.65 19.67 4.99 19.01C4.33 18.35 4.06 17.4 4.27 16.49L4.43 15.8C4.52 15.41 4.36 15 4.02 14.77L3.19 14.21C2.44 13.72 2 12.89 2 12C2 11.11 2.44 10.28 3.19 9.79L4.02 9.23C4.36 9 4.52 8.59 4.43 8.2L4.27 7.51C4.06 6.6 4.33 5.65 4.99 4.99C5.65 4.33 6.6 4.06 7.51 4.27L8.2 4.43C8.59 4.52 9 4.36 9.23 4.02L9.79 3.19ZM8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5C10.07 15.5 8.5 13.93 8.5 12Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-bubble" viewBox="0 0 24 24"><path d="M12 3C15.06 3 17.69 3.79 19.57 5.36C21.47 6.94 22.5 9.23 22.5 12C22.5 14.77 21.47 17.06 19.57 18.64C17.69 20.21 15.06 21 12 21C10.38 21 8.56 20.85 6.92 20.14C6.64 20.29 6.25 20.48 5.8 20.64C4.84 20.97 3.46 21.2 2.07 20.55C1.8 20.42 1.6 20.17 1.53 19.88C1.46 19.59 1.52 19.28 1.7 19.04C2.39 18.13 2.61 17.43 2.67 16.98C2.73 16.54 2.65 16.3 2.64 16.27L2.64 16.27C2.64 16.27 2.64 16.27 2.64 16.27L2.64 16.27C2.64 16.27 2.63 16.27 2.63 16.26L2.63 16.25L2.61 16.22C2.54 16.03 2.27 15.37 2.01 14.58C1.77 13.82 1.5 12.82 1.5 12C1.5 9.23 2.53 6.94 4.43 5.36C6.31 3.79 8.94 3 12 3Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-bubble-f" viewBox="0 0 24 24"><path d="M12 3C15.06 3 17.69 3.79 19.57 5.36C21.47 6.94 22.5 9.23 22.5 12C22.5 14.77 21.47 17.06 19.57 18.64C17.69 20.21 15.06 21 12 21C10.38 21 8.56 20.85 6.92 20.14C6.64 20.29 6.25 20.48 5.8 20.64C4.84 20.97 3.46 21.2 2.07 20.55C1.8 20.42 1.6 20.17 1.53 19.88C1.46 19.59 1.52 19.28 1.7 19.04C2.39 18.13 2.61 17.43 2.67 16.98C2.73 16.54 2.65 16.3 2.64 16.27L2.64 16.27C2.64 16.27 2.64 16.27 2.64 16.27L2.64 16.27C2.64 16.27 2.63 16.27 2.63 16.26L2.63 16.25L2.61 16.22C2.54 16.03 2.27 15.37 2.01 14.58C1.77 13.82 1.5 12.82 1.5 12C1.5 9.23 2.53 6.94 4.43 5.36C6.31 3.79 8.94 3 12 3Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M18.3 8.99L17.3 9.04L17.3 9.04L18.3 8.99ZM5.7 8.99L6.7 9.04L6.7 9.04L5.7 8.99ZM4.09 15.83L3.19 15.38L3.19 15.38L4.09 15.83ZM18.78 13.56L19.68 13.12L19.68 13.12L18.78 13.56ZM18.47 12.37L17.47 12.42L17.47 12.42L18.47 12.37ZM19.91 15.83L19.02 16.28L19.02 16.28L19.91 15.83ZM5.53 12.37L4.53 12.32L5.53 12.37ZM5.22 13.56L6.11 14.01L6.11 14.01L5.22 13.56ZM16 17L15 17C15 18.66 13.66 20 12 20L12 21L12 22C14.76 22 17 19.76 17 17L16 17ZM12 21L12 20C10.34 20 9 18.66 9 17L8 17L7 17C7 19.76 9.24 22 12 22L12 21ZM4.81 17L4.81 18L19.19 18L19.19 17L19.19 16L4.81 16L4.81 17ZM19.91 15.83L20.81 15.38L19.68 13.12L18.78 13.56L17.89 14.01L19.02 16.28L19.91 15.83ZM18.47 12.37L19.47 12.32L19.3 8.94L18.3 8.99L17.3 9.04L17.47 12.42L18.47 12.37ZM5.7 8.99L4.7 8.94L4.53 12.32L5.53 12.37L6.53 12.42L6.7 9.04L5.7 8.99ZM5.22 13.56L4.32 13.12L3.19 15.38L4.09 15.83L4.98 16.28L6.11 14.01L5.22 13.56ZM12 3L12 2C8.11 2 4.9 5.05 4.7 8.94L5.7 8.99L6.7 9.04C6.84 6.22 9.17 4 12 4L12 3ZM18.3 8.99L19.3 8.94C19.1 5.05 15.89 2 12 2L12 3L12 4C14.83 4 17.16 6.22 17.3 9.04L18.3 8.99ZM4.09 15.83L3.19 15.38C3.07 15.63 3 15.91 3 16.19L4 16.19L5 16.19C5 16.22 4.99 16.25 4.98 16.28L4.09 15.83ZM18.78 13.56L19.68 13.12C19.55 12.87 19.48 12.6 19.47 12.32L18.47 12.37L17.47 12.42C17.5 12.97 17.64 13.52 17.89 14.01L18.78 13.56ZM20 16.19L21 16.19C21 15.91 20.93 15.63 20.81 15.38L19.91 15.83L19.02 16.28C19.01 16.25 19 16.22 19 16.19L20 16.19ZM5.53 12.37L4.53 12.32C4.52 12.6 4.45 12.87 4.32 13.12L5.22 13.56L6.11 14.01C6.36 13.52 6.5 12.97 6.53 12.42L5.53 12.37ZM19.19 17L19.19 18C20.19 18 21 17.19 21 16.19L20 16.19L19 16.19C19 16.09 19.09 16 19.19 16L19.19 17ZM4.81 17L4.81 16C4.91 16 5 16.09 5 16.19L4 16.19L3 16.19C3 17.19 3.81 18 4.81 18L4.81 17Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-bell-f" viewBox="0 0 24 24"><path d="M12 2C8.11 2 4.9 5.05 4.7 8.94L4.52 12.53C4.52 12.67 4.48 12.8 4.42 12.93L3.19 15.38C3.07 15.63 3 15.91 3 16.19C3 17.19 3.81 18 4.81 18L7.1 18C7.56 20.28 9.58 22 12 22C14.42 22 16.44 20.28 16.9 18L19.19 18C20.19 18 21 17.19 21 16.19C21 15.91 20.93 15.63 20.81 15.38L19.58 12.93C19.52 12.8 19.48 12.67 19.48 12.53L19.3 8.94C19.1 5.05 15.89 2 12 2ZM12 20C10.69 20 9.58 19.17 9.17 18L14.83 18C14.42 19.17 13.31 20 12 20Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M3.5 7C3.5 4.79 5.29 3 7.5 3C9.71 3 11.5 4.79 11.5 7C11.5 9.21 9.71 11 7.5 11C5.29 11 3.5 9.21 3.5 7ZM12.5 7C12.5 4.79 14.29 3 16.5 3C18.71 3 20.5 4.79 20.5 7C20.5 9.21 18.71 11 16.5 11C14.29 11 12.5 9.21 12.5 7ZM7.5 12C10.37 12 13.09 13.98 14.11 17.61C14.64 19.51 13.02 21 11.35 21L3.65 21C1.98 21 0.36 19.51 0.89 17.61C1.91 13.98 4.63 12 7.5 12ZM16.03 17.08C15.55 15.33 14.71 13.85 13.63 12.7C14.53 12.24 15.5 12 16.5 12C19.37 12 22.09 13.98 23.11 17.61C23.64 19.51 22.02 21 20.35 21L15.33 21C16.1 19.95 16.45 18.56 16.03 17.08Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-users-f" viewBox="0 0 24 24"><path d="M3.5 7C3.5 4.79 5.29 3 7.5 3C9.71 3 11.5 4.79 11.5 7C11.5 9.21 9.71 11 7.5 11C5.29 11 3.5 9.21 3.5 7ZM12.5 7C12.5 4.79 14.29 3 16.5 3C18.71 3 20.5 4.79 20.5 7C20.5 9.21 18.71 11 16.5 11C14.29 11 12.5 9.21 12.5 7ZM7.5 12C10.37 12 13.09 13.98 14.11 17.61C14.64 19.51 13.02 21 11.35 21L3.65 21C1.98 21 0.36 19.51 0.89 17.61C1.91 13.98 4.63 12 7.5 12ZM16.03 17.08C15.55 15.33 14.71 13.85 13.63 12.7C14.53 12.24 15.5 12 16.5 12C19.37 12 22.09 13.98 23.11 17.61C23.64 19.51 22.02 21 20.35 21L15.33 21C16.1 19.95 16.45 18.56 16.03 17.08Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-clip" viewBox="0 0 24 24"><path d="M14 2C11.24 2 9 4.24 9 7L9 15C9 16.66 10.34 18 12 18C13.66 18 15 16.66 15 15L15 7C15 6.45 14.55 6 14 6C13.45 6 13 6.45 13 7L13 15C13 15.55 12.55 16 12 16C11.45 16 11 15.55 11 15L11 7C11 5.34 12.34 4 14 4C15.66 4 17 5.34 17 7L17 15C17 17.76 14.76 20 12 20C9.24 20 7 17.76 7 15L7 11C7 10.45 6.55 10 6 10C5.45 10 5 10.45 5 11L5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15L19 7C19 4.24 16.76 2 14 2Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-clip-f" viewBox="0 0 24 24"><path d="M14 2C11.24 2 9 4.24 9 7L9 15C9 16.66 10.34 18 12 18C13.66 18 15 16.66 15 15L15 7C15 6.45 14.55 6 14 6C13.45 6 13 6.45 13 7L13 15C13 15.55 12.55 16 12 16C11.45 16 11 15.55 11 15L11 7C11 5.34 12.34 4 14 4C15.66 4 17 5.34 17 7L17 15C17 17.76 14.76 20 12 20C9.24 20 7 17.76 7 15L7 11C7 10.45 6.55 10 6 10C5.45 10 5 10.45 5 11L5 15C5 18.87 8.13 22 12 22C15.87 22 19 18.87 19 15L19 7C19 4.24 16.76 2 14 2Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-wreath" viewBox="0 0 24 24"><path d="M7.65 2.4C7.34 1.98 6.75 1.88 6.31 2.16C5.14 2.92 4.3 3.87 4.08 5.08C4 5.58 4.02 6.07 4.14 6.56C3.91 6.48 3.67 6.41 3.42 6.35C2.9 6.23 2.39 6.53 2.23 7.03C1.83 8.36 1.8 9.63 2.42 10.7C2.57 10.96 2.76 11.19 2.97 11.4C2.72 11.45 2.47 11.51 2.21 11.59C1.71 11.74 1.41 12.26 1.53 12.78C1.85 14.13 2.46 15.24 3.53 15.85C3.9 16.07 4.3 16.2 4.71 16.27C4.53 16.41 4.35 16.57 4.18 16.74C3.79 17.13 3.78 17.75 4.15 18.14C5.01 19.05 5.98 19.67 7.07 19.79C7.92 19.88 8.72 19.65 9.45 19.19C9.37 19.47 9.12 19.8 8.52 20.1C8.02 20.35 7.82 20.95 8.07 21.44C8.31 21.94 8.91 22.14 9.41 21.9C10.63 21.29 11.35 20.34 11.48 19.24C11.72 17.17 9.86 15.43 7.9 15.25C7.93 15.12 7.92 14.99 7.89 14.85C7.65 13.82 7.23 12.92 6.56 12.28C6.62 12.2 6.67 12.1 6.7 12C7.05 10.83 7.12 9.69 6.69 8.7C7.76 7.97 8.53 7.05 8.74 5.9C8.95 4.69 8.49 3.5 7.65 2.4ZM17.69 2.16C17.25 1.88 16.66 1.98 16.35 2.4C15.51 3.5 15.05 4.69 15.26 5.9C15.47 7.05 16.24 7.97 17.31 8.7C16.88 9.69 16.95 10.83 17.3 12C17.33 12.1 17.38 12.2 17.44 12.28C16.77 12.92 16.35 13.82 16.11 14.85C16.08 14.99 16.07 15.12 16.1 15.25C14.14 15.43 12.28 17.17 12.52 19.24C12.65 20.34 13.37 21.29 14.59 21.9C15.09 22.14 15.69 21.94 15.93 21.44C16.18 20.95 15.98 20.35 15.48 20.1C14.88 19.8 14.63 19.47 14.55 19.19C15.28 19.65 16.08 19.88 16.93 19.79C18.02 19.67 18.99 19.05 19.85 18.14C20.22 17.75 20.21 17.13 19.82 16.74C19.65 16.57 19.47 16.41 19.29 16.27C19.7 16.2 20.1 16.07 20.47 15.85C21.54 15.24 22.15 14.13 22.47 12.78C22.59 12.26 22.29 11.74 21.79 11.59C21.53 11.51 21.28 11.45 21.03 11.4C21.24 11.19 21.43 10.96 21.58 10.7C22.2 9.63 22.17 8.36 21.77 7.03C21.61 6.53 21.1 6.23 20.58 6.35C20.33 6.41 20.09 6.48 19.86 6.56C19.98 6.07 20 5.58 19.92 5.08C19.7 3.87 18.86 2.92 17.69 2.16Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-wreath-f" viewBox="0 0 24 24"><path d="M7.65 2.4C7.34 1.98 6.75 1.88 6.31 2.16C5.14 2.92 4.3 3.87 4.08 5.08C4 5.58 4.02 6.07 4.14 6.56C3.91 6.48 3.67 6.41 3.42 6.35C2.9 6.23 2.39 6.53 2.23 7.03C1.83 8.36 1.8 9.63 2.42 10.7C2.57 10.96 2.76 11.19 2.97 11.4C2.72 11.45 2.47 11.51 2.21 11.59C1.71 11.74 1.41 12.26 1.53 12.78C1.85 14.13 2.46 15.24 3.53 15.85C3.9 16.07 4.3 16.2 4.71 16.27C4.53 16.41 4.35 16.57 4.18 16.74C3.79 17.13 3.78 17.75 4.15 18.14C5.01 19.05 5.98 19.67 7.07 19.79C7.92 19.88 8.72 19.65 9.45 19.19C9.37 19.47 9.12 19.8 8.52 20.1C8.02 20.35 7.82 20.95 8.07 21.44C8.31 21.94 8.91 22.14 9.41 21.9C10.63 21.29 11.35 20.34 11.48 19.24C11.72 17.17 9.86 15.43 7.9 15.25C7.93 15.12 7.92 14.99 7.89 14.85C7.65 13.82 7.23 12.92 6.56 12.28C6.62 12.2 6.67 12.1 6.7 12C7.05 10.83 7.12 9.69 6.69 8.7C7.76 7.97 8.53 7.05 8.74 5.9C8.95 4.69 8.49 3.5 7.65 2.4ZM17.69 2.16C17.25 1.88 16.66 1.98 16.35 2.4C15.51 3.5 15.05 4.69 15.26 5.9C15.47 7.05 16.24 7.97 17.31 8.7C16.88 9.69 16.95 10.83 17.3 12C17.33 12.1 17.38 12.2 17.44 12.28C16.77 12.92 16.35 13.82 16.11 14.85C16.08 14.99 16.07 15.12 16.1 15.25C14.14 15.43 12.28 17.17 12.52 19.24C12.65 20.34 13.37 21.29 14.59 21.9C15.09 22.14 15.69 21.94 15.93 21.44C16.18 20.95 15.98 20.35 15.48 20.1C14.88 19.8 14.63 19.47 14.55 19.19C15.28 19.65 16.08 19.88 16.93 19.79C18.02 19.67 18.99 19.05 19.85 18.14C20.22 17.75 20.21 17.13 19.82 16.74C19.65 16.57 19.47 16.41 19.29 16.27C19.7 16.2 20.1 16.07 20.47 15.85C21.54 15.24 22.15 14.13 22.47 12.78C22.59 12.26 22.29 11.74 21.79 11.59C21.53 11.51 21.28 11.45 21.03 11.4C21.24 11.19 21.43 10.96 21.58 10.7C22.2 9.63 22.17 8.36 21.77 7.03C21.61 6.53 21.1 6.23 20.58 6.35C20.33 6.41 20.09 6.48 19.86 6.56C19.98 6.07 20 5.58 19.92 5.08C19.7 3.87 18.86 2.92 17.69 2.16Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M12 4C15.95 4 19.79 6.27 22.36 10.58C22.88 11.46 22.88 12.54 22.36 13.42C19.79 17.73 15.95 20 12 20C8.05 20 4.21 17.73 1.64 13.42C1.12 12.54 1.12 11.46 1.64 10.58C4.21 6.27 8.05 4 12 4ZM8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5C10.07 15.5 8.5 13.93 8.5 12Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-eye-f" viewBox="0 0 24 24"><path d="M12 4C15.95 4 19.79 6.27 22.36 10.58C22.88 11.46 22.88 12.54 22.36 13.42C19.79 17.73 15.95 20 12 20C8.05 20 4.21 17.73 1.64 13.42C1.12 12.54 1.12 11.46 1.64 10.58C4.21 6.27 8.05 4 12 4ZM8.5 12C8.5 10.07 10.07 8.5 12 8.5C13.93 8.5 15.5 10.07 15.5 12C15.5 13.93 13.93 15.5 12 15.5C10.07 15.5 8.5 13.93 8.5 12Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-sparkle" viewBox="0 0 24 24"><path d="M12.96 2.71C12.83 2.29 12.44 2 12 2C11.56 2 11.17 2.29 11.04 2.71C10.32 5.11 9.39 6.82 8.11 8.11C6.82 9.39 5.11 10.32 2.71 11.04C2.29 11.17 2 11.56 2 12C2 12.44 2.29 12.83 2.71 12.96C5.11 13.68 6.82 14.61 8.11 15.89C9.39 17.18 10.32 18.89 11.04 21.29C11.17 21.71 11.56 22 12 22C12.44 22 12.83 21.71 12.96 21.29C13.68 18.89 14.61 17.18 15.89 15.89C17.18 14.61 18.89 13.68 21.29 12.96C21.71 12.83 22 12.44 22 12C22 11.56 21.71 11.17 21.29 11.04C18.89 10.32 17.18 9.39 15.89 8.11C14.61 6.82 13.68 5.11 12.96 2.71Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-sparkle-f" viewBox="0 0 24 24"><path d="M12.96 2.71C12.83 2.29 12.44 2 12 2C11.56 2 11.17 2.29 11.04 2.71C10.32 5.11 9.39 6.82 8.11 8.11C6.82 9.39 5.11 10.32 2.71 11.04C2.29 11.17 2 11.56 2 12C2 12.44 2.29 12.83 2.71 12.96C5.11 13.68 6.82 14.61 8.11 15.89C9.39 17.18 10.32 18.89 11.04 21.29C11.17 21.71 11.56 22 12 22C12.44 22 12.83 21.71 12.96 21.29C13.68 18.89 14.61 17.18 15.89 15.89C17.18 14.61 18.89 13.68 21.29 12.96C21.71 12.83 22 12.44 22 12C22 11.56 21.71 11.17 21.29 11.04C18.89 10.32 17.18 9.39 15.89 8.11C14.61 6.82 13.68 5.11 12.96 2.71Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-dollar" viewBox="0 0 24 24"><path d="M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12ZM12 5.6C12.41 5.6 12.75 5.93 12.75 6.35L12.75 7.21C13.61 7.38 14.36 7.82 14.83 8.48C15.08 8.81 15 9.28 14.67 9.52C14.33 9.77 13.86 9.69 13.62 9.36C13.33 8.96 12.75 8.64 12 8.64L11.71 8.64C10.7 8.64 10.18 9.27 10.18 9.72L10.18 9.79C10.18 10.14 10.43 10.56 11.03 10.8L13.53 11.8C14.55 12.21 15.32 13.1 15.32 14.21C15.32 15.63 14.11 16.6 12.75 16.82L12.75 17.65C12.75 18.07 12.41 18.4 12 18.4C11.59 18.4 11.25 18.07 11.25 17.65L11.25 16.79C10.39 16.62 9.64 16.18 9.17 15.52C8.92 15.19 9 14.72 9.33 14.48C9.67 14.23 10.14 14.31 10.38 14.64C10.67 15.04 11.25 15.36 12 15.36L12.19 15.36C13.25 15.36 13.82 14.7 13.82 14.21C13.82 13.86 13.57 13.44 12.97 13.2L10.47 12.2C9.45 11.79 8.68 10.9 8.68 9.79L8.68 9.72C8.68 8.31 9.91 7.35 11.25 7.17L11.25 6.35C11.25 5.93 11.59 5.6 12 5.6Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-dollar-f" viewBox="0 0 24 24"><path d="M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12ZM12 5.6C12.41 5.6 12.75 5.93 12.75 6.35L12.75 7.21C13.61 7.38 14.36 7.82 14.83 8.48C15.08 8.81 15 9.28 14.67 9.52C14.33 9.77 13.86 9.69 13.62 9.36C13.33 8.96 12.75 8.64 12 8.64L11.71 8.64C10.7 8.64 10.18 9.27 10.18 9.72L10.18 9.79C10.18 10.14 10.43 10.56 11.03 10.8L13.53 11.8C14.55 12.21 15.32 13.1 15.32 14.21C15.32 15.63 14.11 16.6 12.75 16.82L12.75 17.65C12.75 18.07 12.41 18.4 12 18.4C11.59 18.4 11.25 18.07 11.25 17.65L11.25 16.79C10.39 16.62 9.64 16.18 9.17 15.52C8.92 15.19 9 14.72 9.33 14.48C9.67 14.23 10.14 14.31 10.38 14.64C10.67 15.04 11.25 15.36 12 15.36L12.19 15.36C13.25 15.36 13.82 14.7 13.82 14.21C13.82 13.86 13.57 13.44 12.97 13.2L10.47 12.2C9.45 11.79 8.68 10.9 8.68 9.79L8.68 9.72C8.68 8.31 9.91 7.35 11.25 7.17L11.25 6.35C11.25 5.93 11.59 5.6 12 5.6Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-history" viewBox="0 0 24 24"><path d="M4 5C4 4.45 3.55 4 3 4C2.45 4 2 4.45 2 5L3 5L4 5ZM3 9L2 9C2 9.55 2.45 10 3 10L3 9ZM7 10C7.55 10 8 9.55 8 9C8 8.45 7.55 8 7 8L7 9L7 10ZM3 5L2 5L2 9L3 9L4 9L4 5L3 5ZM3 9L3 10L7 10L7 9L7 8L3 8L3 9ZM4.45 14.67C4.27 14.15 3.7 13.87 3.18 14.06C2.66 14.24 2.39 14.81 2.57 15.33L3.51 15L4.45 14.67ZM2.78 8.11C2.57 8.62 2.81 9.21 3.32 9.42C3.83 9.64 4.41 9.4 4.63 8.89L3.71 8.5L2.78 8.11ZM21 12L20 12C20 16.42 16.42 20 12 20L12 21L12 22C17.52 22 22 17.52 22 12L21 12ZM12 3L12 4C16.42 4 20 7.58 20 12L21 12L22 12C22 6.48 17.52 2 12 2L12 3ZM12 21L12 20C8.52 20 5.55 17.78 4.45 14.67L3.51 15L2.57 15.33C3.94 19.22 7.64 22 12 22L12 21ZM3.71 8.5L4.63 8.89C5.84 6.01 8.69 4 12 4L12 3L12 2C7.85 2 4.3 4.52 2.78 8.11L3.71 8.5ZM13 8C13 7.45 12.55 7 12 7C11.45 7 11 7.45 11 8L12 8L13 8ZM12 12L11 12C11 12.27 11.11 12.52 11.29 12.71L12 12ZM14.29 15.71C14.68 16.1 15.32 16.1 15.71 15.71C16.1 15.32 16.1 14.68 15.71 14.29L15 15L14.29 15.71ZM12 8L11 8L11 12L12 12L13 12L13 8L12 8ZM12 12L11.29 12.71L14.29 15.71L15 15L15.71 14.29L12.71 11.29L12 12Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-history-f" viewBox="0 0 24 24"><path d="M4 6L4 5C4 4.45 3.55 4 3 4C2.45 4 2 4.45 2 5L2 9C2 9.55 2.45 10 3 10L7 10C7.55 10 8 9.55 8 9C8 8.45 7.55 8 7 8L5.07 8C6.45 5.61 9.04 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20C8.52 20 5.55 17.78 4.45 14.67C4.27 14.15 3.7 13.87 3.18 14.06C2.66 14.24 2.39 14.81 2.57 15.33C3.94 19.22 7.64 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C8.73 2 5.82 3.57 4 6ZM12 7C12.55 7 13 7.45 13 8L13 11.59L15.71 14.29C16.1 14.68 16.1 15.32 15.71 15.71C15.32 16.1 14.68 16.1 14.29 15.71L11.29 12.71C11.11 12.52 11 12.27 11 12L11 8C11 7.45 11.45 7 12 7Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><path d="M19.29 20.71C19.68 21.1 20.32 21.1 20.71 20.71C21.1 20.32 21.1 19.68 20.71 19.29L20 20L19.29 20.71ZM16.76 15.34C16.37 14.95 15.73 14.95 15.34 15.34C14.95 15.73 14.95 16.37 15.34 16.76L16.05 16.05L16.76 15.34ZM18 11L17 11C17 14.31 14.31 17 11 17L11 18L11 19C15.42 19 19 15.42 19 11L18 11ZM11 18L11 17C7.69 17 5 14.31 5 11L4 11L3 11C3 15.42 6.58 19 11 19L11 18ZM4 11L5 11C5 7.69 7.69 5 11 5L11 4L11 3C6.58 3 3 6.58 3 11L4 11ZM11 4L11 5C14.31 5 17 7.69 17 11L18 11L19 11C19 6.58 15.42 3 11 3L11 4ZM20 20L20.71 19.29L16.76 15.34L16.05 16.05L15.34 16.76L19.29 20.71L20 20Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-search-f" viewBox="0 0 24 24"><path d="M19.29 20.71C19.68 21.1 20.32 21.1 20.71 20.71C21.1 20.32 21.1 19.68 20.71 19.29L20 20L19.29 20.71ZM16.76 15.34C16.37 14.95 15.73 14.95 15.34 15.34C14.95 15.73 14.95 16.37 15.34 16.76L16.05 16.05L16.76 15.34ZM18 11L17 11C17 14.31 14.31 17 11 17L11 18L11 19C15.42 19 19 15.42 19 11L18 11ZM11 18L11 17C7.69 17 5 14.31 5 11L4 11L3 11C3 15.42 6.58 19 11 19L11 18ZM4 11L5 11C5 7.69 7.69 5 11 5L11 4L11 3C6.58 3 3 6.58 3 11L4 11ZM11 4L11 5C14.31 5 17 7.69 17 11L18 11L19 11C19 6.58 15.42 3 11 3L11 4ZM20 20L20.71 19.29L16.76 15.34L16.05 16.05L15.34 16.76L19.29 20.71L20 20Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 12 12"><path d="M3.93 4.22C3.64 3.93 3.16 3.93 2.87 4.22C2.58 4.51 2.58 4.99 2.87 5.28L3.4 4.75L3.93 4.22ZM9.13 5.28C9.42 4.99 9.42 4.51 9.13 4.22C8.84 3.93 8.36 3.93 8.07 4.22L8.6 4.75L9.13 5.28ZM5.82 7.17L6.35 6.64L5.82 7.17ZM5.82 7.17L6.35 6.64L3.93 4.22L3.4 4.75L2.87 5.28L5.29 7.7L5.82 7.17ZM6.18 7.17L6.71 7.7L9.13 5.28L8.6 4.75L8.07 4.22L5.65 6.64L6.18 7.17ZM5.82 7.17L5.29 7.7C5.68 8.09 6.32 8.09 6.71 7.7L6.18 7.17L5.65 6.64C5.84 6.45 6.16 6.45 6.35 6.64L5.82 7.17Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-chev-f" viewBox="0 0 12 12"><path d="M3.93 4.22C3.64 3.93 3.16 3.93 2.87 4.22C2.58 4.51 2.58 4.99 2.87 5.28L3.4 4.75L3.93 4.22ZM9.13 5.28C9.42 4.99 9.42 4.51 9.13 4.22C8.84 3.93 8.36 3.93 8.07 4.22L8.6 4.75L9.13 5.28ZM5.82 7.17L6.35 6.64L5.82 7.17ZM5.82 7.17L6.35 6.64L3.93 4.22L3.4 4.75L2.87 5.28L5.29 7.7L5.82 7.17ZM6.18 7.17L6.71 7.7L9.13 5.28L8.6 4.75L8.07 4.22L5.65 6.64L6.18 7.17ZM5.82 7.17L5.29 7.7C5.68 8.09 6.32 8.09 6.71 7.7L6.18 7.17L5.65 6.64C5.84 6.45 6.16 6.45 6.35 6.64L5.82 7.17Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><path d="M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22ZM11 12.41L11 7L13 7L13 11.59L15.91 14.5L14.5 15.91L11 12.41Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-clock-f" viewBox="0 0 24 24"><path d="M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22ZM11 12.41L11 7L13 7L13 11.59L15.91 14.5L14.5 15.91L11 12.41Z" fill="currentColor" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-pulse" viewBox="0 0 24 24"><path d="M7.38 10.84L9 5.31L13.56 20.89C13.98 22.33 16.02 22.33 16.44 20.89L18.54 13.72C18.66 13.29 19.05 13 19.5 13L22 13C22.55 13 23 12.55 23 12C23 11.45 22.55 11 22 11L19.5 11C18.17 11 16.99 11.88 16.62 13.16L15 18.69L10.44 3.11C10.02 1.67 7.98 1.67 7.56 3.11L5.46 10.28C5.34 10.71 4.95 11 4.5 11L2 11C1.45 11 1 11.45 1 12C1 12.55 1.45 13 2 13L4.5 13C5.83 13 7.01 12.12 7.38 10.84Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+  <symbol id="ic-pulse-f" viewBox="0 0 24 24"><path d="M7.38 10.84L9 5.31L13.56 20.89C13.98 22.33 16.02 22.33 16.44 20.89L18.54 13.72C18.66 13.29 19.05 13 19.5 13L22 13C22.55 13 23 12.55 23 12C23 11.45 22.55 11 22 11L19.5 11C18.17 11 16.99 11.88 16.62 13.16L15 18.69L10.44 3.11C10.02 1.67 7.98 1.67 7.56 3.11L5.46 10.28C5.34 10.71 4.95 11 4.5 11L2 11C1.45 11 1 11.45 1 12C1 12.55 1.45 13 2 13L4.5 13C5.83 13 7.01 12.12 7.38 10.84Z" fill="currentColor" fill-rule="nonzero"/></symbol>
+</svg>
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5 6 7l3 3 5-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <span class="brand-name">SU26 Exchange</span>
+    <span class="brand-note">Streamer University 2026 · class exchange</span>
+  </div>
+  <div class="top-right">
+    <span class="pillmini"><span class="odot"></span>Campus <b>Jul 15–20</b></span>
+    <span class="pillmini" title="When the collector last saved a sample"><svg class="pic"><use href="#ic-clock-f"/></svg>Data <b id="mast-data">baked Jul 13</b></span>
+    <button class="chip" id="cinemabtn" title="Animated renders of the data, exportable as video">Cinema</button>
+    <button class="chip" id="themebtn" title="Theme: auto / light / dark">LIGHT</button>
+  </div>
+</header>
+
+<div class="shell">
+<div class="window">
+
+  <aside class="side">
+    <div class="side-in">
+      <div class="ws">
+        <span class="ws-logo" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5 6 7l3 3 5-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div>
+          <div class="ws-name">SU26 Exchange</div>
+          <div class="ws-live"><span class="odot"></span>120 tracked · collector on</div>
+        </div>
+        <svg class="wschev"><use href="#ic-chev"/></svg>
+      </div>
+      <div class="folder"><span class="flogo"><svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5 6 7l3 3 5-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Content Rewards<svg class="fchev"><use href="#ic-chev"/></svg></div>
+      <nav class="nav" aria-label="Sections">
+        <a href="#s-overview" data-sec="s-overview" class="active"><svg class="nico"><use class="uo" href="#ic-home"/><use class="uf" href="#ic-home-f"/></svg>Overview</a>
+        <a href="#s-spot" data-sec="s-spot"><svg class="nico"><use class="uo" href="#ic-star"/><use class="uf" href="#ic-star-f"/></svg>Spotlight</a>
+        <a href="#s-movers" data-sec="s-movers"><svg class="nico"><use class="uo" href="#ic-fire"/><use class="uf" href="#ic-fire-f"/></svg>Top movers</a>
+        <a href="#s-compare" data-sec="s-compare"><svg class="nico"><use class="uo" href="#ic-pie"/><use class="uf" href="#ic-pie-f"/></svg>Compare</a>
+        <a href="#s-board" data-sec="s-board"><svg class="nico"><use class="uo" href="#ic-bars"/><use class="uf" href="#ic-bars-f"/></svg>The big board</a>
+        <a href="#s-wall" data-sec="s-wall"><svg class="nico"><use class="uo" href="#ic-grid"/><use class="uf" href="#ic-grid-f"/></svg>Market wall</a>
+      </nav>
+      <div class="side-sec">Tools</div>
+      <nav class="nav" aria-label="Tools">
+        <button onclick="document.getElementById('cinemabtn').click()"><svg class="nico"><use href="#ic-videos"/></svg>Cinema studio</button>
+        <button onclick="openLive()"><svg class="nico"><use href="#ic-gear"/></svg>Live data setup</button>
+        <a href="/" title="The original terminal-style dashboard"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3H3v10h10v-3"/><path d="M9.5 3H13v3.5"/><path d="M13 3 7.5 8.5"/></svg>Classic view<span class="ext">↗</span></a>
+      </nav>
+      <div class="side-foot">
+        <b>Campus week</b> · Jul 15–20, 2026<br>
+        Collector: hourly class sweep,<br>RIZPY sampled every 5 min
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="pagebar">
+      <span class="pb-title" id="pagetitle">Overview</span>
+      <span class="pb-sub">RIZPY campaign command hub</span>
+      <span class="pb-right">
+        <button class="chip" onclick="collectNow()" title="Run the collector once right now">Collect now</button>
+        <button class="icbtn" onclick="document.getElementById('s-spot').scrollIntoView({behavior:'smooth'})" title="Spotlight &amp; campaign log"><svg><use href="#ic-bubble-f"/></svg></button>
+        <button class="icbtn" onclick="openLive()" title="Live data setup"><svg><use href="#ic-bell"/></svg></button>
+        <span class="crmark"><span class="flogo"><svg viewBox="0 0 16 16" fill="none"><path d="M2 11.5 6 7l3 3 5-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Content Rewards</span>
+      </span>
+    </div>
+    <div class="content">
+
+      <section id="s-overview" data-nav="Overview">
+        <div class="tape" aria-hidden="true"><div class="tape-inner" id="tape"></div></div>
+
+        <div class="kpis">
+          <div class="kpi" style="--a:#e57100"><span class="ic"><svg><use href="#ic-users-f"/></svg></span><div class="kt"><div class="v" data-count="120">0</div><div class="k">Students admitted</div><div class="s">Class of 2026</div></div></div>
+          <div class="kpi" style="--a:#1a67e5"><span class="ic"><svg><use href="#ic-clip-f"/></svg></span><div class="kt"><div class="v" data-count="1000000" data-fmt="compact">0</div><div class="k">Applications</div><div class="s">1M+ submitted</div></div></div>
+          <div class="kpi" style="--a:#ae4eee"><span class="ic"><svg><use href="#ic-wreath-f"/></svg></span><div class="kt"><div class="v">0.012%</div><div class="k">Acceptance rate</div><div class="s">harder than Harvard ×300</div></div></div>
+          <div class="kpi" style="--a:#ed1285"><span class="ic"><svg><use href="#ic-eye-f"/></svg></span><div class="kt"><div class="v" id="kpi-reach">-</div><div class="k">Tracked class reach</div><div class="s" id="kpi-reach-sub">followers · 28 tracked names</div></div></div>
+          <div class="kpi" style="--a:#00994d"><span class="ic"><svg><use href="#ic-sparkle-f"/></svg></span><div class="kt"><div class="v up" id="kpi-idx">-</div><div class="k">Class index</div><div class="s" id="kpi-idx-sub">weekly growth, follower-weighted</div></div></div>
+          <div class="kpi" style="--a:#ff3355"><span class="ic"><svg><use href="#ic-pulse-f"/></svg></span><div class="kt"><div class="v" id="kpi-live">-</div><div class="k">Live right now</div><div class="s" id="kpi-live-sub">connect live data below</div></div></div>
+          <div class="kpi" style="--a:#0d9488"><span class="ic"><svg><use href="#ic-history-f"/></svg></span><div class="kt"><div class="v" id="kpi-gen">-</div><div class="k">General increase</div><div class="s" id="kpi-gen-sub">since Jul 13 · needs live data</div></div></div>
+          <div class="kpi" style="--a:#ff6207"><span class="ic"><svg><use href="#ic-dollar-f"/></svg></span><div class="kt"><div class="v" id="kpi-cr">-</div><div class="k">CR campaigns · 7d</div><div class="s" id="kpi-cr-sub">tag people on the board</div></div></div>
+        </div>
+
+        <h2>SU26 class index <span class="rule"></span><span class="note" id="idx-note">follower-weighted · illustrative until collected samples build</span></h2>
+        <div class="chart-card">
+          <div class="chart-head">
+            <span class="chart-title">Class index</span>
+            <span class="chart-delta up" id="idx-headline"></span>
+          </div>
+          <div id="idxwrap">
+            <svg id="idx" preserveAspectRatio="none" role="img" aria-label="Class index line chart, last 30 days, rising after the July 6 roster reveal"></svg>
+            <div class="tip" id="idxtip"></div>
+          </div>
+          <details class="data"><summary>Data table (weekly)</summary><div id="idxtable"></div></details>
+        </div>
+      </section>
+
+      <section id="s-spot" data-nav="Spotlight">
+        <h2>Spotlight <span class="rule"></span><span class="note">RIZPY · pinned, tracked extra close</span></h2>
+        <div class="spot" id="spot"></div>
+
+        <h2>Campaign log <span class="rule"></span><span class="note">what happened when · each entry becomes a marker on RIZPY's charts</span></h2>
+        <div class="notesbox">
+          <div class="preset"><input id="notein" placeholder="e.g. Kai shoutout on main stream, big clip posted, collab with Sketch" aria-label="Log a campaign moment"><button class="chip" onclick="addNote()">Log it</button></div>
+          <div id="notelist"></div>
+        </div>
+      </section>
+
+      <section id="s-movers" data-nav="Top movers">
+        <h2>Top movers <span class="rule"></span><span class="note">biggest weekly gains among tracked names</span></h2>
+        <div class="movers" id="movers"></div>
+      </section>
+
+      <section id="s-compare" data-nav="Compare">
+        <h2>Compare <span class="rule"></span><span class="note">head to head on any metric · click tickers on the board below to add lines</span></h2>
+        <div class="chart-card">
+          <div class="controls" style="margin-bottom:8px">
+            <span class="seg" id="cmpmetrics">
+              <button class="chip" data-m="g" aria-pressed="true" title="Each line as % growth from its own starting point, so any two people are comparable">Growth %</button>
+              <button class="chip" data-m="gain" aria-pressed="false">Gained</button>
+              <button class="chip" data-m="f" aria-pressed="false">Followers</button>
+              <button class="chip" data-m="lv" aria-pressed="false">Live viewers</button>
+              <button class="chip" data-m="cv" aria-pressed="false">Clip views</button>
+              <button class="chip" data-m="hl" aria-pressed="false">Hours live</button>
+            </span>
+            <button class="chip" id="cmpfit" aria-pressed="false" title="FULL fits the whole class in frame; ZOOM closes in on the highlighted people">VIEW: ZOOM</button>
+            <button class="chip" id="cmpreset" title="Back to RIZPY on growth %, zoomed">Reset</button>
+            <button class="chip" id="cmppng" title="Save the chart as an image">Export PNG</button>
+          </div>
+          <div class="cmpwrap">
+            <div id="cmpchart"></div>
+            <aside class="cmppanel">
+              <span class="searchwrap"><svg class="sic"><use href="#ic-search"/></svg><input id="cmpq2" type="search" placeholder="Search the class" aria-label="Search people to pin"></span>
+              <div id="cmplist"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-board" data-nav="The big board">
+        <h2>The big board <span class="rule"></span><span class="note">the whole class · click any column header to rank by it</span></h2>
+        <div class="controls">
+          <span class="searchwrap"><svg class="sic"><use href="#ic-search"/></svg><input id="q" type="search" placeholder="Search (press /)" aria-label="Search students"></span>
+          <span class="seg">
+            <button class="chip" data-plat="all" aria-pressed="true">All</button>
+            <button class="chip" data-plat="Twitch" aria-pressed="false">Twitch</button>
+            <button class="chip" data-plat="YouTube" aria-pressed="false">YouTube</button>
+            <button class="chip" data-plat="Instagram" aria-pressed="false">IG</button>
+            <button class="chip" data-plat="TikTok" aria-pressed="false">TikTok</button>
+            <button class="chip" data-plat="Kick" aria-pressed="false">Kick</button>
+          </span>
+          <button class="chip" id="crchip" aria-pressed="false" title="Only people running Content Rewards campaigns with us">CR only</button>
+          <button class="chip" id="csv" title="Download the board as a spreadsheet">Export CSV</button>
+          <span class="legend"><span id="count"></span> · ● tracker &nbsp; ≈ estimate &nbsp; - no public data &nbsp; GT golden ticket</span>
+        </div>
+        <details class="livebox" id="livebox">
+          <summary id="livestatus">LIVE DATA: OFF. Showing Jul 13 snapshot. Click to set up free live Twitch tracking.</summary>
+          <div class="livebody">
+            One-time setup (free): go to <code>dev.twitch.tv/console/apps</code>, log in with a Twitch account
+            (needs 2FA turned on in Twitch settings), hit <b>Register Your Application</b>. Name it anything, set
+            OAuth Redirect URL to <code>http://localhost:8026</code>, category Website Integration, client type Public.
+            Copy the <b>Client ID</b>, click <b>New Secret</b> and copy that too, paste both below and hit
+            <b>Save keys</b>, then <b>Collect now</b>. Keys go only to the little server on this Mac (stored in
+            config.json inside the dashboard folder); after that the every-4-hours auto-collection just works.<br>
+            <input id="cid" placeholder="Twitch Client ID" aria-label="Twitch Client ID">
+            <input id="csec" type="password" placeholder="Twitch Client Secret" aria-label="Twitch Client Secret">
+            <input id="cyt" placeholder="YouTube API key (optional)" aria-label="YouTube API key"><br>
+            <button class="chip" onclick="saveCfg()">Save keys</button>
+            <button class="chip" id="collectbtn" onclick="collectNow()">Collect now</button>
+            <button class="chip" id="connect" title="Optional: also stream live numbers into this browser tab">Connect Twitch</button>
+            <button class="chip" id="refresh" hidden>Refresh now</button>
+          </div>
+        </details>
+        <div class="board">
+          <table class="mkt">
+            <thead><tr>
+              <th>#</th>
+              <th><button class="hsort" data-key="s">Ticker <span class="arr"></span></button></th>
+              <th><button class="hsort" data-key="n">Name <span class="arr"></span></button></th>
+              <th><button class="hsort" data-key="p">Platform <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="f">Followers <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="d">7d Δ <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="td" title="Since the Jul 13 2026 baseline">Total Δ <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="gain" title="Raw followers gained since the Jul 13 baseline">Gained <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="cv" title="Views on Twitch clips created since Jul 15">Clip views <span class="arr"></span></button></th>
+              <th>Trend</th>
+              <th class="num"><button class="hsort" data-key="peak" title="Highest concurrent viewers this hub has observed">Peak <span class="arr"></span></button></th>
+              <th class="num"><button class="hsort" data-key="lv">Live now <span class="arr"></span></button></th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s-wall" data-nav="Market wall">
+        <h2>Market wall <span class="rule"></span><span class="note">size = followers · color = today's move · CR clients ringed · click to compare</span></h2>
+        <div id="wall"></div>
+      </section>
+
+      <div id="cinema" hidden>
+        <div class="cin-bar">
+          <select id="cin-scene" aria-label="Scene">
+            <option value="race">Line race · your compare picks</option>
+            <option value="bars">Leaderboard race · top 10</option>
+            <option value="counter">RIZPY counter</option>
+            <option value="end">End card · campaign recap</option>
+          </select>
+          <input id="cin-title" placeholder="Custom title (optional)" aria-label="Custom title">
+          <select id="cin-metric" aria-label="Metric">
+            <option value="g">Growth %</option><option value="gain">Gained</option>
+            <option value="f">Followers</option><option value="lv">Live viewers</option>
+            <option value="cv">Clip views</option><option value="hl">Hours live</option>
+          </select>
+          <select id="cin-dur" aria-label="Duration">
+            <option value="5">5s</option><option value="10" selected>10s</option>
+            <option value="20">20s</option><option value="30">30s</option>
+          </select>
+          <select id="cin-res" aria-label="Resolution">
+            <option value="1280x720">720p</option><option value="1920x1080" selected>1080p</option>
+            <option value="2560x1440">1440p</option><option value="3840x2160">4K</option>
+          </select>
+          <select id="cin-fps" aria-label="Frame rate">
+            <option value="24">24fps</option><option value="30" selected>30fps</option><option value="60">60fps</option>
+          </select>
+          <select id="cin-fmt" aria-label="Format" title="MP4 renders offline frame-perfect; WebM records in real time">
+            <option value="mp4" selected>MP4</option><option value="webm">WebM</option>
+          </select>
+          <button class="chip" id="cin-play">Preview</button>
+          <button class="chip" id="cin-rec">⬤ Record</button>
+          <span id="cin-status"></span>
+          <button class="chip" id="cin-close" style="margin-left:auto">Esc</button>
+        </div>
+        <div class="cin-stage"><canvas id="cin-canvas" width="1920" height="1080"></canvas></div>
+      </div>
+
+      <footer id="foot">
+        <b>Methodology.</b> Streamer University 2026 was announced by Kai Cenat on July 6, 2026: 120 students
+        admitted from 1M+ applications; campus runs July 15-20, 2026. Follower "prices" marked ● were read from
+        public trackers (Streams Charts, TwitchTracker, Social Blade) on July 13, 2026; figures marked ≈ are
+        estimates from the most recent public data and can be off. The 7d Δ column is computed from this hub's
+        own recorded history once it exists (marked without ≈); until then it shows weekly estimates converted
+        from 30-day tracker rates (marked ≈). RIZPY's numbers come straight from his 5-minute samples. Sparklines
+        without recorded history are illustrative; the endpoints are the data. With live mode connected, Twitch numbers come straight from the
+        official Twitch API in your browser, and % change is computed from daily snapshots this page saves
+        locally. That part is real data, not estimates. Instagram/TikTok have no free API, so those stay
+        snapshots. Subscriber counts: Twitch keeps subs private to each broadcaster (public "sub counts" on
+        tracker sites are estimates), so they are not shown here; YouTube subscriber and view counts are public
+        and get tracked once a YouTube API key is added to the collector. TikTok, Instagram and X have no free
+        official follower API. Roster per the official reveal and fan-compiled lists; a handful of the 120 names
+        were announced on stream only. Not affiliated with Streamer University. Not financial advice, and no,
+        you cannot actually buy shares in JasonTheWeen.
+      </footer>
+
+    </div>
+  </main>
+</div>
+</div>
+<script src="mp4-muxer.js"></script>
+<script>
+"use strict";
+// ---------- data ----------
+// v:2 = count+growth from tracker, v:1 = count from tracker / growth est, v:0 = estimate
+const T = [
+  {s:"STABLE", n:"Stable Ronaldo", p:"Twitch",   login:"stableronaldo", f:4772886, d:1.8, v:1, bio:"FaZe Clan member; Fortnite pro turned IRL megastreamer"},
+  {s:"PLAQUE", n:"PlaqueBoyMax",  p:"Twitch",    login:"plaqueboymax", f:2444000, d:0.9, v:2, bio:"Music streams: artists record songs live on \"In the Booth\""},
+  {s:"WEEN",   n:"JasonTheWeen",  p:"Twitch",    login:"jasontheween", f:2369000, d:4.5, v:2, bio:"One of Twitch's fastest risers; ranked #21 on the platform in 2026"},
+  {s:"SKETCH", n:"Sketch",        p:"Twitch",    login:"thesketchreal", f:1692220, d:1.2, v:1, bio:"\"What's up brother\", Madden/NFL streamer, 2024's breakout"},
+  {s:"LACY",   n:"Lacy",          p:"Twitch",    login:"lacy", f:2050000, d:2.1, v:0, bio:"FaZe member; IRL + gaming, runs with Jason and Ronaldo"},
+  {s:"MARLON", n:"Marlon",        p:"Twitch",    login:"marlon", f:1600000, d:1.5, v:0, bio:"High-energy IRL streamer"},
+  {s:"SILKY",  n:"Silky",         p:"Twitch",    login:"silky", f:1250000, d:1.1, v:0, bio:"Comedy streamer; SU'25 alum back for a second year"},
+  {s:"SOFEY",  n:"Aishah Sofey",  p:"Instagram", f:16000000,d:1.9, v:0, bio:"Model / influencer; the most-debated pick of the class"},
+  {s:"SKAI",   n:"Skai Jackson",  p:"Instagram", f:9600000, d:0.5, v:0, bio:"Former Disney star (Jessie, Bunk'd)"},
+  {s:"SARA",   n:"Sara Saffari",  p:"Instagram", f:7700000, d:0.8, v:0, bio:"Fitness influencer & YouTuber"},
+  {s:"DREAM",  n:"DreamDoll",     p:"Instagram", f:7500000, d:0.6, v:0, bio:"Rapper & TV personality (Love & Hip Hop: NY, Bad Girls Club)"},
+  {s:"EFE",    n:"CarterEfe",     p:"Instagram", f:4000000, d:0.7, v:0, bio:"Nigerian comedian & Afrobeats artist (\"Machala\")"},
+  {s:"DRUM",   n:"OfficeDrummer", p:"Twitch",    login:"officedrummer", f:3400000, d:2.4, v:0, bio:"Suit-and-tie drummer; office drum covers went mega-viral"},
+  {s:"JERE",   n:"Jeremiah Brown",p:"TikTok",    f:2500000, d:3.2, v:0, bio:"Love Island USA S7; TikTok's Rising Star of the Year (FindJeremiah)"},
+  {s:"KIERA",  n:"Kiera Please",  p:"TikTok",    f:2400000, d:0.4, v:0, bio:"Cosplay & pop-culture creator"},
+  {s:"CNYC",   n:"Clarence NYC",  p:"YouTube",   f:2300000, d:0.3, v:0, bio:"YouTuber; one half of Chris & Queen with Queen Naija"},
+  {s:"KANEL",  n:"Kanel Joseph",  p:"YouTube",   f:2200000, d:1.4, v:0, bio:"Chaotic IRL prank & event streamer"},
+  {s:"NAIJA",  n:"Queen Naija",   p:"YouTube",   f:2100000, d:0.4, v:0, bio:"Platinum R&B singer (\"Medicine\"); started on YouTube"},
+  {s:"CGC",    n:"Chris Gone Crazy",p:"Twitch",  login:"chrisgonecrazy", f:1800000, d:1.0, v:0, bio:"Comedy creator"},
+  {s:"BIGANT", n:"RealBigAnt",    p:"TikTok",    f:1500000, d:2.0, v:0, bio:"TikTok comedy creator"},
+  {s:"TATUM",  n:"Tatum Bittick", p:"TikTok",    f:1300000, d:1.6, v:0, bio:"Singer & lifestyle creator"},
+  {s:"JAIDA",  n:"Jaidabunni",    p:"YouTube",   f:900000,  d:2.2, v:0, bio:"Lifestyle & reaction YouTuber"},
+  {s:"YUSUF",  n:"Yusuf7n",       p:"Twitch",    login:"yusuf7n", f:800000, d:1.3, v:0, bio:"Fortnite creator"},
+  {s:"SMOKE",  n:"Smokecertified",p:"YouTube",   f:800000,  d:3.5, v:0, gt:1, bio:"Golden-ticket admit; gaming YouTuber"},
+  {s:"MCQN",   n:"McQueen",       p:"YouTube",   f:500000,  d:8.0, v:0, gt:1, bio:"Golden-ticket admit"},
+  {s:"PINK",   n:"s0pink",        p:"Twitch",    login:"s0pink", f:420000, d:5.0, v:0, bio:"Rising variety streamer"},
+  {s:"MOOK",   n:"Mookie",        p:"Twitch",    login:"mookie", f:350000, d:4.2, v:0, bio:"Rising comedy streamer"},
+  {s:"BONNIE", n:"Bonnie Rabbit", p:"Twitch",    login:"bonnierabbit", f:280000, d:6.1, v:0, bio:"Rising IRL / variety streamer"},
+];
+
+const ROSTER = [
+  ["Aikooofficial","TW",1],["Straight2ThBank","TW",1],["coolbutterflyyyy","TW",1],
+  ["A2guapo","TW"],["Avazura","TW"],["2xceeej","TW"],["Andrej Mihelson","TW"],["Andrewuhrik","TW"],
+  ["AngelCrackedU","TW"],["Aozami","TW"],["BenjyChavez_","TW"],["Blazian","TW"],["Bonita","TW"],
+  ["Braeden","TW"],["Giovanna Ramos","TW"],["Madaichakell","TW"],["Madi2hottyy","TW"],["Malek_04","TW"],
+  ["MandooMillions","TW"],["MeesterKeem","TW"],["Miya","TW"],["Mya Nicole","TW"],["Noemi","TW"],
+  ["NotBilzo","TW"],["OnlyLarryKing","TW"],["Payton Baeton","TW"],["Pudgie16","TW"],["Reemknocks","TW"],
+  ["RizpyYT","TW"],["Rula Empire","TW"],["Runik","TW"],["Sarah Farrugia","TW"],["Seleolu","TW"],
+  ["Shaz Delicious","TW"],["Sierra Sprague","TW"],["SUHMMIEE","TW"],["Sukiimellow","TW"],["Suburbbaby","TW"],
+  ["Taylor Jasmine","TW"],["Ysabella Grace","TW"],["Coolitshawty","TW"],["CuteGunz","TW"],["DamiiLive","TW"],
+  ["Dopeboyoli","TW"],["E11ysa","TW"],["Elinameng","TW"],["Ezee","TW"],["Flako","TW"],["Fumibean","TW"],
+  ["ftgioo","TW"],["ilikehaskell","TW"],["itsregtoofunny","TW"],["Shonyx","TW"],["Cinnamon Roll","TW"],
+  ["thatsdaveontv","TW"],["iwastori","TW"],["Jadamalaytv","TW"],["Jaymommy0","TW"],["Jshock9nine","TW"],
+  ["Jordyn Lucas","TW"],["JuicyJacob","TW"],["KiCosmic","TW"],["KiiingJojo","TW"],["King68TheGreat","TW"],
+  ["TheMightyBA","TW"],["Therealnialovee","TW"],["Leii","TW"],["Tiana Musarra","TW"],["Wabewrld","TW"],
+  ["WardrobeWinter","TW"],["WRLDKailee","TW"],["XscapeVerse","TW"],["Yaboyywill","TW"],["GEO","TW"],
+  ["Yugi2x","TW"],["Stanley Meng","TW"],["Marlea","TW"],["Davis","TW"],["AmberrTyson","TW"],
+  ["Edwardkso","TW"],["Laila Simone","TW"],["Lanializa","TW"],["DCTHADESIGNER","TW"],["Catrnado","TW"],
+  ["ChakraShooter","TW"],["NotQuiteLikeDub","TW"],["LuhLiv","TW"],["Raphael Solo Live","TW"],["Rizz","TW"],
+  ["Rawdogmoon","TW"],["Crystalizaguirre","KICK"],["FlippenJosh","KICK"],["Blasianbeautyalexis","KICK"]
+];
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fmtC = n => n >= 1e6 ? (n/1e6).toFixed(n<1e7?2:1)+"M" : n >= 1e5 ? Math.round(n/1e3)+"K" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : ""+n;
+const fmtD = d => (d>=0?"+":"-") + Math.abs(d).toFixed(Math.abs(d) < 1 ? 2 : 1) + "%";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let HIST = JSON.parse(localStorage.getItem("su26_hist") || "{}");
+let SERIES = null; // per-ticker time series from the collector, via /api/series
+// highest concurrent viewers this hub has ever observed per channel
+let PEAKS = JSON.parse(localStorage.getItem("su26_peaks") || "{}");
+function savePeaks(){ localStorage.setItem("su26_peaks", JSON.stringify(PEAKS)); }
+// real recorded history for a symbol (needs 3+ saved days)
+function histPts(sym){
+  const pts = Object.keys(HIST).sort().map(d => HIST[d][sym]).filter(v => v != null);
+  return pts.length >= 3 ? pts : null;
+}
+function rng(seed){ let a = 0; for (const c of seed) a = (a*31 + c.charCodeAt(0)) >>> 0;
+  return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+// 30-day series ending at +d%, reveal bump at day 23 (Jul 6)
+function series(sym, d){
+  const r = rng(sym), n = 30, pts = [1];
+  const bump = d * 0.6, drift = (d - bump) / (n - 1);
+  for (let i = 1; i < n; i++){
+    let v = pts[i-1] + drift/100 + (r() - .5) * 0.004;
+    if (i === 23) v += bump/100;
+    pts.push(v);
+  }
+  const scale = (1 + d/100) / pts[n-1];       // pin the endpoint to the real Δ
+  return pts.map((v,i) => v * (1 + (scale-1) * i/(n-1)));
+}
+function pathFrom(pts, w, h, pad){
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max-min) || 1;
+  const X = i => pad + i*(w-2*pad)/(pts.length-1);
+  const Y = v => h - pad - (v-min)*(h-2*pad)/span;
+  return { d: pts.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(""), X, Y };
+}
+
+// ---------- tape ----------
+{
+  const one = T.map(t => `<span><span class="sym">${t.s}</span> ${fmtC(t.f)} <span class="${t.d>=0?"u":"d"}">${fmtD(t.d)}</span></span>`).join("");
+  $("#tape").innerHTML = one + one;
+}
+
+// ---------- KPIs ----------
+{
+  const reach = T.reduce((a,t)=>a+t.f,0);
+  $("#kpi-reach").textContent = fmtC(reach);
+  const idxD = T.reduce((a,t)=>a + t.d * t.f, 0) / T.reduce((a,t)=>a+t.f,0);
+  $("#kpi-idx").textContent = fmtD(idxD);
+  $("#idx-headline").textContent = fmtD(idxD) + " · 7d";
+  // count-up tiles
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const target = +el.dataset.count, fmt = el.dataset.fmt === "compact" ? (n=>fmtC(n).replace(".00","")) : (n=>Math.round(n).toLocaleString());
+    if (reduced){ el.textContent = fmt(target) + (el.dataset.fmt==="compact"?"+":""); return; }
+    const t0 = performance.now();
+    (function tick(t){ const p = Math.min(1,(t-t0)/900), e = 1-Math.pow(1-p,3);
+      el.textContent = fmt(target*e) + (p===1 && el.dataset.fmt==="compact" ? "+" : "");
+      if (p<1) requestAnimationFrame(tick); })(t0);
+  });
+}
+
+// ---------- index chart: real once collected samples exist, synthetic before ----------
+function renderIndex(){
+  const svg = $("#idx");
+  if (!svg) return;
+  const W = 1000, H = 220, PL = 14, PR = 14, PT = 14, PB = 26;
+  const real = SERIES && SERIES.times.length >= 3;
+  let pts, times, dayIdx = [], revealIdx = -1;
+  if (real){
+    // follower-weighted class index over a stable basket: everyone present at sample one
+    const keys = Object.keys(SERIES.series).filter(k => SERIES.series[k].f && SERIES.series[k].f[0] != null);
+    const N0 = SERIES.times.length, lastVal = {}, sums = [];
+    for (let i = 0; i < N0; i++){
+      let s = 0;
+      for (const k of keys){
+        const v = SERIES.series[k].f[i];
+        if (v != null) lastVal[k] = v;
+        s += lastVal[k] || 0;
+      }
+      sums.push(s);
+    }
+    pts = sums.map(v => v / sums[0] * 100);
+    const MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    times = SERIES.times.map(t => MN[+t.slice(5, 7) - 1] + " " + +t.slice(8, 10) + " · " + t.slice(11, 16));
+    for (let i = 1; i < N0; i++)
+      if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10)) dayIdx.push(i);
+  } else {
+    const idxD = T.reduce((a, t) => a + t.d * t.f, 0) / T.reduce((a, t) => a + t.f, 0);
+    pts = series("SU26INDEX", idxD).map(v => v * 100);
+    times = pts.map((_, i) => new Date(2026, 5, 13 + i)
+      .toLocaleDateString("en-US", { month: "short", day: "numeric" }));
+    revealIdx = 23;
+  }
+  const N = pts.length;
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+  const X = i => PL + i * (W - PL - PR) / (N - 1);
+  const Y = v => PT + (max - v) * (H - PT - PB) / span;
+  const d = pts.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
+  const delta = pts[N - 1] - 100;
+  $("#idx-headline").textContent = fmtD(delta) + (real ? " · since " + times[0].split(" · ")[0] : " · 7d");
+  $("#idx-headline").className = "chart-delta" + (delta >= 0 ? " up" : "");
+  if (real){
+    const k = $("#kpi-idx");
+    k.textContent = fmtD(delta);
+    k.className = "v " + (delta >= 0 ? "up" : "dn");
+    $("#kpi-idx-sub").textContent = "real, follower-weighted";
+    $("#idx-note").textContent = "follower-weighted · 100 = first collected sample · real data";
+  }
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const y100 = (100 >= min - span * .02 && 100 <= max + span * .02)
+    ? `<line x1="${PL}" y1="${Y(100)}" x2="${W - PR}" y2="${Y(100)}" stroke="var(--line)"/>
+       <text x="${PL + 2}" y="${Y(100) - 5}" font-size="10" fill="var(--faint)" font-family="var(--sans)">100</text>` : "";
+  svg.innerHTML = `
+    <defs><linearGradient id="idxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--${delta >= 0 ? "up" : "down"})" stop-opacity=".18"/><stop offset="1" stop-color="var(--${delta >= 0 ? "up" : "down"})" stop-opacity="0"/></linearGradient></defs>
+    ${y100}
+    ${dayIdx.map(i => `<line x1="${X(i)}" y1="${PT}" x2="${X(i)}" y2="${H - PB}" stroke="var(--hair)"/>
+      <text x="${X(i) + 5}" y="${PT + 11}" font-size="10" fill="var(--faint)" font-family="var(--sans)">${times[i].split(" · ")[0]}</text>`).join("")}
+    ${revealIdx >= 0 ? `<line x1="${X(revealIdx)}" y1="${PT}" x2="${X(revealIdx)}" y2="${H - PB}" stroke="var(--hair)"/>
+      <text x="${X(revealIdx) - 6}" y="${PT + 10}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="var(--sans)">JUL 6 · ROSTER REVEAL</text>` : ""}
+    <path class="areain" d="${d}L${W - PR} ${H - PB}L${PL} ${H - PB}Z" fill="url(#idxg)"/>
+    <path id="idxline" d="${d}" fill="none" stroke="var(--${delta >= 0 ? "up" : "down"})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${X(N - 1)}" cy="${Y(pts[N - 1])}" r="4" fill="var(--${delta >= 0 ? "up" : "down"})" class="sdot" style="animation-delay:1.3s"/>
+    <text x="${PL}" y="${H - 8}" font-size="10" fill="var(--faint)" font-family="var(--sans)">${times[0]}</text>
+    <text x="${W - PR}" y="${H - 8}" text-anchor="end" font-size="10" fill="var(--faint)" font-family="var(--sans)">${times[N - 1]}</text>
+    <line id="xh" x1="0" y1="${PT}" x2="0" y2="${H - PB}" stroke="var(--faint)" stroke-width="1" visibility="hidden"/>
+    <circle id="xhdot" r="3.5" fill="currentColor" visibility="hidden"/>`;
+  const line = $("#idxline");
+  if (!reduced && !renderIndex._drawn){
+    const len = line.getTotalLength();
+    line.style.strokeDasharray = len;
+    line.style.strokeDashoffset = len;
+    line.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1) .15s";
+    requestAnimationFrame(() => requestAnimationFrame(() => { line.style.strokeDashoffset = "0"; }));
+    renderIndex._drawn = true;
+  }
+  const tip = $("#idxtip"), xh = $("#xh"), dot = $("#xhdot");
+  svg.onpointermove = e => {
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(N - 1, Math.round((px - PL) / (W - PL - PR) * (N - 1))));
+    xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i)); xh.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(pts[i])); dot.setAttribute("visibility", "visible");
+    tip.style.display = "block";
+    tip.style.left = (X(i) / W * 100) + "%";
+    tip.style.top = (Y(pts[i]) / H * 100) + "%";
+    tip.textContent = `${times[i]} · ${pts[i].toFixed(2)}`;
+  };
+  svg.onpointerleave = () => {
+    tip.style.display = "none";
+    xh.setAttribute("visibility", "hidden");
+    dot.setAttribute("visibility", "hidden");
+  };
+  // per-day closes in the data table
+  let cols;
+  if (real){
+    cols = [];
+    for (let i = 0; i < N; i++){
+      const day = times[i].split(" · ")[0];
+      if (!cols.length || cols[cols.length - 1][0] !== day) cols.push([day, pts[i]]);
+      else cols[cols.length - 1][1] = pts[i];
+    }
+  } else {
+    cols = [0, 7, 14, 21, 23, 29].map(i => [times[i], pts[i]]);
+  }
+  $("#idxtable").innerHTML = "<table><tr>" + cols.map(c => `<th>${c[0]}</th>`).join("") +
+    "</tr><tr>" + cols.map(c => `<td>${c[1].toFixed(2)}</td>`).join("") + "</tr></table>";
+}
+renderIndex();
+
+// ---------- big board ----------
+const usedTicks = new Set(T.map(t => t.s));
+function tick(n){
+  const base = n.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6) || "SU";
+  let s = base, i = 2;
+  while (usedTicks.has(s)) s = base.slice(0,5) + i++;
+  usedTicks.add(s); return s;
+}
+// the baked-in growth figures were 30-day rates; the dashboard reports weekly,
+// so convert (÷30×7). Estimates either way (marked ≈) until real history takes over.
+T.forEach(t => { if (t.d != null) t.d = t.d * 7 / 30; });
+
+const TICKS = { "RizpyYT": "RIZPY" };
+const ALL = T.concat(ROSTER.map(([n,p,gt]) => {
+  const s = TICKS[n] || tick(n); usedTicks.add(s);
+  return { s, n, p: p === "TW" ? "Twitch" : "Kick", f: null, d: null, gt, u: 1,
+    bio: "Class of '26. No public tracker data yet" };
+}));
+// RIZPY's other socials: YouTube subs tracked via the YouTube API key.
+// TikTok (@rizpyytt, ~112K) and X have no free API, so they stay out of the data.
+ALL.push({ s: "RIZPYT", n: "Rizpy (YouTube)", p: "YouTube", f: null, d: null, u: 1,
+  bio: "RIZPY's YouTube channel (@RizpyYT), subscribers tracked per run" });
+
+const SPOT = "RizpyYT";
+// clipping campaign window: baseline is RIZPY's count when SU campus opens
+const CAMP_START = "2026-07-15";
+// the "before" anchor, one month pre-campus. Set f here once read off twitchtracker.com/rizpyyt
+// (baking it in makes OBS see it too); the SET BASELINE box on the spotlight also works.
+const PRE_BASE = { date: "2026-06-14", label: "Jun 14", f: null };
+function preBaseVal(){
+  if (PRE_BASE.f) return PRE_BASE.f;
+  const v = +localStorage.getItem("su26_prebase");
+  return v > 0 ? v : null;
+}
+function setPreBase(){
+  const v = +document.getElementById("pbin").value;
+  if (v > 0){
+    localStorage.setItem("su26_prebase", v);
+    renderSpot();
+    if (!focusEl.hidden) renderFocus();
+  }
+}
+let SPOTSAMPLES = null; // intraday [datetime, followers, viewers] from collector.mjs
+// Jul 13 2026 baseline for "Total Δ": the follower counts baked into this page
+const BASE = {};
+ALL.forEach(t => {
+  if (t.f != null) BASE[t.s] = t.f;
+  if (PEAKS[t.s] != null) t.peak = PEAKS[t.s];
+});
+let sortKey = "f", sortDir = -1, plat = "all", query = "", LASTROWS = [];
+let TAGS = new Set(), CRONLY = false;
+function spark(t){
+  const w = 110, h = 30, pad = 3;
+  const hp = histPts(t.s);
+  const pts = hp || (t.d == null ? null : series(t.s, t.d));
+  if (!pts) return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <line x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="2 4"/></svg>`;
+  const { d, X, Y } = pathFrom(pts, w, h, pad);
+  const up = hp ? pts[pts.length-1] >= pts[0] : t.d >= 0;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <title>${t.n}: ${t.d==null?"trend":fmtD(t.d)+" weekly"}${hp?" (recorded history)":""}</title>
+    <path d="${d}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity=".55" pathLength="1" class="sline"/>
+    <circle cx="${X(pts.length-1)}" cy="${Y(pts[pts.length-1])}" r="3" fill="var(--${up?"up":"down"})" class="sdot" style="animation-delay:.6s"/></svg>`;
+}
+function renderMovers(){
+  const top = ALL.filter(t => t.d != null).sort((a,b) => b.d - a.d).slice(0, 4);
+  $("#movers").innerHTML = top.map((t, i) => {
+    const hp = histPts(t.s), pts = hp || series(t.s, t.d);
+    const w = 200, h = 34, pad = 2;
+    const { d } = pathFrom(pts, w, h, pad);
+    const up = t.d >= 0;
+    const area = d + `L${(w-pad).toFixed(1)} ${h} L${pad} ${h} Z`;
+    return `<div class="mover" style="animation-delay:${i*70}ms">
+      <span class="sym">${t.s}</span> <span class="nm2">${t.n}</span>
+      <div class="big ${up?"u":"d"}">${up?"▲":"▼"} ${fmtD(t.d)}${t.dReal?"":" ≈"}</div>
+      <div class="nm2">${t.f!=null ? fmtC(t.f)+" followers" : ""}</div>
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${area}" fill="var(--${up?"up":"down"}-bg)"/>
+        <path d="${d}" fill="none" stroke="var(--${up?"up":"down"})" stroke-width="1.5" pathLength="1" class="sline"/>
+      </svg></div>`;
+  }).join("");
+}
+function updateGeneral(){
+  const withTd = ALL.filter(t => t.td != null);
+  if (!withTd.length) return;
+  const wsum = withTd.reduce((a,t) => a + (BASE[t.s] ?? t.f), 0);
+  const g = withTd.reduce((a,t) => a + t.td * (BASE[t.s] ?? t.f), 0) / wsum;
+  const el = $("#kpi-gen");
+  el.textContent = fmtD(g);
+  el.className = "v " + (g >= 0 ? "up" : "dn");
+  $("#kpi-gen-sub").textContent = "weighted, since Jul 13 · " + withTd.length + " names";
+}
+// campaign math for RIZPY: baseline = last value before CAMP_START (or first ever seen)
+function campaignStats(t){
+  let series = (SPOTSAMPLES && SPOTSAMPLES.length)
+    ? SPOTSAMPLES.filter(s => s[1] != null).map(s => [s[0], s[1]])
+    : null;
+  if (!series || !series.length){
+    const dates = Object.keys(HIST).sort();
+    series = dates.filter(d => HIST[d][t.s] != null).map(d => [d, HIST[d][t.s]]);
+  }
+  if (!series.length) return null;
+  let bi = 0;
+  for (let i = 0; i < series.length; i++){ if (series[i][0] < CAMP_START) bi = i; else break; }
+  const base = series[bi][1], cur = series[series.length - 1][1];
+  const startMs = Math.max(new Date(CAMP_START).getTime(), new Date(series[bi][0].slice(0, 10)).getTime());
+  const days = Math.max(1, Math.round((Date.now() - startMs) / 864e5));
+  const pre = new Date().toISOString().slice(0, 10) < CAMP_START;
+  return { series, base, cur, gained: cur - base, pct: base ? (cur - base) / base * 100 : 0, days, pre };
+}
+function spotChart(series, w, h, pad){
+  const PB = Math.round(h * .12);
+  const pts = series.map(s => s[1]);
+  const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
+  const X = i => pad + i * (w - 2 * pad) / (pts.length - 1);
+  const Y = v => pad + (max - v) * (h - 2 * pad - PB) / span;
+  const d = pts.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
+  const up = pts[pts.length - 1] >= pts[0];
+  const fs = Math.max(10, Math.round(h * .07));
+  const ci = series.findIndex(s => s[0] >= CAMP_START);
+  const shade = ci >= 0 ? `<rect x="${X(ci)}" y="0" width="${Math.max(0, X(pts.length - 1) - X(ci))}" height="${h - PB}" fill="var(--up-bg)"/>` : "";
+  // campaign log entries as markers (hover for the note)
+  const marks = NOTES.map(n => {
+    let idx = -1;
+    for (let i = 0; i < series.length; i++){ if (series[i][0] <= n.t) idx = i; else break; }
+    return idx >= 0 ? `<g><line x1="${X(idx)}" y1="12" x2="${X(idx)}" y2="${h - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"/>
+      <circle cx="${X(idx)}" cy="8" r="3.5" fill="var(--ink)"><title>${esc(n.t.replace("T", " ") + " · " + n.text)}</title></circle></g>` : "";
+  }).join("");
+  const MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const fmtTm = s => MN[+s.slice(5, 7) - 1] + " " + +s.slice(8, 10) + (s.length > 10 ? " · " + s.slice(11, 16) : "");
+  const endY = Y(pts[pts.length - 1]);
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="RIZPY follower chart"><defs><linearGradient id="spg${h}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--${up ? "up" : "down"})" stop-opacity=".18"/><stop offset="1" stop-color="var(--${up ? "up" : "down"})" stop-opacity="0"/></linearGradient></defs>${shade}${marks}
+    <path d="${d}L${(w - pad).toFixed(1)} ${h - PB}L${pad} ${h - PB}Z" fill="url(#spg${h})"/>
+    <path d="${d}" fill="none" stroke="var(--${up ? "up" : "down"})" stroke-width="2" stroke-linejoin="round" pathLength="1" class="sline"/>
+    <circle cx="${X(pts.length - 1)}" cy="${endY}" r="4" fill="var(--${up ? "up" : "down"})" class="sdot" style="animation-delay:.7s"/>
+    <text x="${X(pts.length - 1) - 10}" y="${Math.max(fs + 2, endY - 12)}" text-anchor="end" font-size="${fs}" font-weight="700" fill="var(--${up ? "up" : "down"})" font-family="var(--sans)">${pts[pts.length - 1].toLocaleString()}</text>
+    <text x="${pad + 2}" y="${Math.min(h - PB - 6, Y(pts[0]) + fs + 8)}" font-size="${fs * .85}" fill="var(--faint)" font-family="var(--sans)">${pts[0].toLocaleString()}</text>
+    <text x="${pad}" y="${h - 4}" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--sans)">${fmtTm(series[0][0])}</text>
+    <text x="${w - pad}" y="${h - 4}" text-anchor="end" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--sans)">${fmtTm(series[series.length - 1][0])}</text></svg>`;
+}
+// net follower change today from the 5-minute samples
+function todayDelta(){
+  if (!SPOTSAMPLES || !SPOTSAMPLES.length) return null;
+  const day = SPOTSAMPLES[SPOTSAMPLES.length - 1][0].slice(0, 10);
+  const todays = SPOTSAMPLES.filter(s => s[0].startsWith(day) && s[1] != null);
+  return todays.length >= 2 ? todays[todays.length - 1][1] - todays[0][1] : null;
+}
+// ---------- market wall: the class as a stock-exchange heatmap ----------
+// today's move per ticker: first vs latest sample of the current day
+function dayChange(tick){
+  if (!SERIES || !SERIES.times.length) return null;
+  const s = SERIES.series[tick];
+  if (!s || !s.f) return null;
+  const today = SERIES.times[SERIES.times.length - 1].slice(0, 10);
+  let first = null, last = null;
+  for (let i = 0; i < SERIES.times.length; i++){
+    if (SERIES.times[i].slice(0, 10) !== today) continue;
+    const v = s.f[i];
+    if (v == null) continue;
+    if (first == null) first = v;
+    last = v;
+  }
+  if (first == null || last == null || !first) return null;
+  return (last - first) / first * 100;
+}
+function renderWall(){
+  const el = $("#wall");
+  if (!el) return;
+  const people = ALL.filter(t => t.f != null).sort((a, b) => b.f - a.f);
+  if (!people.length){
+    el.innerHTML = '<div class="notesempty">Fills in once follower data lands.</div>';
+    return;
+  }
+  el.innerHTML = people.map(t => {
+    let ch = dayChange(t.s), src = "today";
+    if (ch == null){
+      ch = t.td ?? t.d ?? null;
+      src = t.td != null ? "since Jul 13" : "weekly est.";
+    }
+    const a = ch == null ? 0 : Math.abs(ch);
+    const lvl = a >= 1.5 ? 4 : a >= .5 ? 3 : a >= .15 ? 2 : a >= .02 ? 1 : 0;
+    const cls = (ch != null && lvl) ? ` ${ch > 0 ? "up wu" : "dn wd"}${lvl}` : "";
+    const size = t.f >= 1e6 ? " s3" : t.f >= 1e5 ? " s2" : "";
+    return `<div class="wtile${size}${cls}${TAGS.has(t.s) ? " cr" : ""}" onclick="cmpToggle('${t.s}')"
+      title="${esc(t.n)} · ${t.f.toLocaleString()} followers${ch != null ? " · " + fmtD(ch) + " " + src : ""} · click to compare">
+      <div class="wt">${t.s}</div><div class="wf">${fmtC(t.f)}</div>
+      <div class="wd">${ch != null ? (ch >= 0 ? "▲ " : "▼ ") + fmtD(ch) : "-"}</div></div>`;
+  }).join("");
+}
+
+// ---------- Content Rewards campaign tags ----------
+async function loadTags(){
+  const r = await fetch("/api/tags").then(r => r.ok ? r.json() : null).catch(() => null);
+  if (r){ TAGS = new Set(r); render(); renderCmp(); renderWall(); updateCrKpi(); }
+}
+async function toggleTag(k){
+  const r = await fetch("/api/tags", { method: "POST", body: JSON.stringify({ toggle: k }) })
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  if (r && r.tags){ TAGS = new Set(r.tags); render(); renderCmp(); renderWall(); updateCrKpi(); }
+}
+function updateCrKpi(){
+  const el = $("#kpi-cr");
+  if (!el) return;
+  const withD = ALL.filter(t => t.d != null && t.dReal);
+  const cr = withD.filter(t => TAGS.has(t.s));
+  const field = withD.filter(t => !TAGS.has(t.s));
+  if (!cr.length){
+    el.textContent = "-";
+    el.className = "v";
+    $("#kpi-cr-sub").textContent = TAGS.size ? "waiting for real history" : "tag people on the board";
+    return;
+  }
+  const avg = a => a.reduce((s, t) => s + t.d, 0) / a.length;
+  const c = avg(cr);
+  el.textContent = fmtD(c);
+  el.className = "v " + (c >= 0 ? "up" : "dn");
+  $("#kpi-cr-sub").textContent = "avg of " + cr.length + (field.length ? " · field " + fmtD(avg(field)) : "");
+}
+
+// ---------- compare: everyone as a line, any metric ----------
+const CMPSPECIAL = { CRAVG: "CR campaigns · avg", FIELD: "The field · avg" };
+const cohortCount = k => !SERIES ? 0 :
+  Object.keys(SERIES.series).filter(x => k === "CRAVG" ? TAGS.has(x) : !TAGS.has(x)).length;
+const CMP = { sel: ["RIZPY"], metric: "g", fit: "zoom" };
+const CMPFMT = {
+  g: fmtD, f: fmtC, lv: fmtC, cv: fmtC,
+  gain: v => (v >= 0 ? "+" : "") + Math.round(v).toLocaleString(),
+  hl: v => v.toFixed(1) + "h"
+};
+async function loadSeries(){
+  SERIES = await fetch("/api/series").then(r => r.ok ? r.json() : null).catch(() => null);
+  // masthead freshness: when the collector last saved, red when overdue
+  const md = $("#mast-data");
+  if (md && SERIES && SERIES.times.length){
+    const last = SERIES.times[SERIES.times.length - 1];
+    const ageH = (Date.now() - new Date(last).getTime()) / 36e5;
+    md.textContent = last.slice(5, 16).replace("T", " ").replace("-", "/") +
+      (ageH > 2.5 ? " · STALE" : "");
+    md.classList.toggle("stale", ageH > 2.5);
+    md.parentElement.title = ageH > 2.5
+      ? "No sample in " + ageH.toFixed(1) + "h. Was the Mac asleep? Hit COLLECT NOW."
+      : "When the collector last saved a sample";
+  }
+  renderCmp();
+  renderIndex();
+  renderWall();
+}
+function cmpValues(tick, m = CMP.metric){
+  // cohort pseudo-lines: the average of every member's own curve
+  if (CMPSPECIAL[tick]){
+    const members = Object.keys(SERIES.series).filter(k => tick === "CRAVG" ? TAGS.has(k) : !TAGS.has(k));
+    const rows = members.map(k => cmpValuesRaw(k, m)).filter(Boolean);
+    if (!rows.length) return null;
+    return SERIES.times.map((_, i) => {
+      let s = 0, n = 0;
+      for (const r of rows){ if (r[i] != null){ s += r[i]; n++; } }
+      return n ? s / n : null;
+    });
+  }
+  return cmpValuesRaw(tick, m);
+}
+function cmpValuesRaw(tick, m = CMP.metric){
+  const s = SERIES.series[tick];
+  if (!s) return null;
+  const raw = (m === "g" || m === "gain") ? s.f : s[m];
+  if (!raw) return null;
+  const vals = []; let last = null;
+  for (let i = 0; i < SERIES.times.length; i++){
+    let v = raw[i];
+    if (v == null) v = (m === "lv") ? 0 : last;
+    vals.push(v);
+    if (v != null) last = v;
+  }
+  if (m === "g" || m === "gain"){
+    const base = vals.find(v => v != null);
+    if (base == null) return null;
+    return vals.map(v => v == null ? null : m === "g" ? (base ? (v / base - 1) * 100 : 0) : v - base);
+  }
+  return vals;
+}
+function cmpToggle(k, addOnly){
+  const i = CMP.sel.indexOf(k);
+  if (i >= 0){ if (!addOnly) CMP.sel.splice(i, 1); }
+  else {
+    if (CMP.sel.length >= 6) CMP.sel.pop();
+    CMP.sel.push(k);
+  }
+  renderCmp();
+  saveUI();
+}
+// one color per pinned person, shared by the chart lines and the panel list
+function cmpColors(){
+  const PAL = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "var(--c5)"];
+  const map = {};
+  let pi = 0;
+  for (const k of CMP.sel) map[k] = k === "RIZPY" ? "var(--up)" : PAL[pi++ % PAL.length];
+  return map;
+}
+let CMPQ = "";
+function renderCmpList(){
+  const el = $("#cmplist");
+  if (!el) return;
+  const cmap = cmpColors();
+  const q = CMPQ.toLowerCase();
+  const hasData = k => !!(SERIES && SERIES.series[k]);
+  const dataOk = k => CMPSPECIAL[k] ? cohortCount(k) > 0 : hasData(k);
+  const pinned = CMP.sel.map(k => {
+    const t = ALL.find(x => x.s === k);
+    const label = t ? t.n : (CMPSPECIAL[k] || k);
+    const val = CMPSPECIAL[k] ? cohortCount(k) + " ppl" : (t && t.f != null ? fmtC(t.f) : "-");
+    return `<div class="cmprow pin" onclick="cmpToggle('${k}')" title="Unpin">
+      <span class="cdot" style="background:${cmap[k]}"></span>
+      <span class="cnm">${esc(label)}${dataOk(k) ? "" : " · no data yet"}</span>
+      ${!CMPSPECIAL[k] && TAGS.has(k) ? '<span class="crmini">CR</span>' : ""}
+      <span class="cval">${val}</span><span class="cx">×</span></div>`;
+  }).join("");
+  const cohorts = [["CRAVG", "CR campaigns avg"], ["FIELD", "The field avg"]]
+    .filter(([k]) => !CMP.sel.includes(k))
+    .map(([k, label]) => `<div class="cmprow${cohortCount(k) ? "" : " nod"}" onclick="cmpToggle('${k}')" title="Pin the cohort average">
+      <span class="cdot ghost"></span><span class="cnm">${label}</span>
+      <span class="cval">${cohortCount(k)} ppl</span></div>`).join("");
+  const rest = ALL.filter(t => !CMP.sel.includes(t.s))
+    .filter(t => !q || (t.n + " " + t.s).toLowerCase().includes(q))
+    .sort((a, b) => (b.f || 0) - (a.f || 0))
+    .map(t => `<div class="cmprow${hasData(t.s) ? "" : " nod"}" onclick="cmpToggle('${t.s}')" title="Pin to chart">
+      <span class="cdot ghost"></span><span class="cnm">${esc(t.n)}</span>
+      ${TAGS.has(t.s) ? '<span class="crmini">CR</span>' : ""}
+      <span class="cval">${t.f != null ? fmtC(t.f) : "-"}</span></div>`).join("");
+  el.innerHTML = pinned +
+    (cohorts ? `<div class="cmphr">cohorts · tagged vs everyone else</div>` + cohorts : "") +
+    `<div class="cmphr">${q ? "matches" : "the class"} · click to pin</div>` + rest;
+}
+function renderCmp(){
+  const box = $("#cmpchart");
+  if (!box) return;
+  renderCmpList();
+  document.querySelectorAll("#cmpmetrics .chip").forEach(c =>
+    c.setAttribute("aria-pressed", c.dataset.m === CMP.metric ? "true" : "false"));
+  if (!SERIES || !SERIES.times.length){
+    box.innerHTML = '<div class="cmpempty">The compare chart builds itself from collected runs. Hit COLLECT NOW in the live data box, or wait for the next hourly run.</div>';
+    return;
+  }
+  const N = SERIES.times.length;
+  const sel = CMP.sel
+    .map(k => ({ k, vals: cmpValues(k), t: ALL.find(x => x.s === k) }))
+    .filter(l => l.vals && l.vals.some(v => v != null));
+  // the rest of the class as faint background lines (click one to promote it)
+  const ghosts = Object.keys(SERIES.series)
+    .filter(k => !CMP.sel.includes(k))
+    .map(k => ({ k, vals: cmpValues(k) }))
+    .filter(l => l.vals && l.vals.some(v => v != null));
+  // FULL view fits the entire class (log scale for count metrics so 14K and 4.7M share a frame);
+  // ZOOM view fits the highlighted people
+  const isLog = CMP.fit === "all" && (CMP.metric === "f" || CMP.metric === "lv" || CMP.metric === "cv");
+  const TR = isLog ? (v => Math.log10(Math.max(v, 1))) : (v => v);
+  const scaleSrc = CMP.fit === "all" ? sel.concat(ghosts) : (sel.length ? sel : ghosts);
+  if (!scaleSrc.length){
+    box.innerHTML = '<div class="cmpempty">No collected data yet for the selected people.</div>';
+    return;
+  }
+  const tv = scaleSrc.flatMap(l => l.vals.filter(v => v != null).map(TR));
+  let tmin = Math.min(...tv), tmax = Math.max(...tv);
+  const flat = tmin === tmax;
+  if (flat){ tmin -= 1; tmax += 1; }
+  const padd = (tmax - tmin) * .04;
+  const target = { min: tmin - padd, max: tmax + padd };
+
+  const W = 1000, H = 340, P = 16, RP = 135, BB = 26, TP = 14, PH = H - BB - TP - 4;
+  const X = i => P + i * (W - P - RP) / Math.max(1, N - 1);
+  const yOf = (v, dom) => TP + (dom.max - TR(v)) * PH / (dom.max - dom.min);
+  const pathOf = (vals, dom) => {
+    let d = "", started = false;
+    vals.forEach((v, i) => {
+      if (v == null) return;
+      d += (started ? "L" : "M") + X(i).toFixed(1) + " " + yOf(v, dom).toFixed(1);
+      started = true;
+    });
+    return d;
+  };
+  const cmap = cmpColors();
+  const drawn = sel.map(l => {
+    const col = cmap[l.k];
+    const lastI = l.vals.reduce((a, v, i) => v != null ? i : a, 0);
+    const dn = l.k === "CRAVG" ? "CR AVG" : l.k === "FIELD" ? "FIELD" : l.k;
+    return { ...l, col, lastI, dn, endV: l.vals[l.vals.reduce((a, v, i) => v != null ? i : a, 0)],
+      w: (l.k === "RIZPY" || CMPSPECIAL[l.k]) ? 2.5 : 2 };
+  });
+  const fmtV = CMPFMT[CMP.metric];
+  const MN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const fmtT = s => MN[+s.slice(5, 7) - 1] + " " + +s.slice(8, 10) + (s.length > 10 ? " · " + s.slice(11, 16) : "");
+  // smooth zoom: if only the view changed, morph existing lines from the old domain to the new
+  const sig = CMP.metric + "|" + CMP.sel.join(",") + "|" + N;
+  // cancel any in-flight zoom and continue from wherever the view visually is,
+  // so rapid toggling can never leave the chart mid-scale
+  if (CMP._raf){ cancelAnimationFrame(CMP._raf); CMP._raf = null; }
+  const cur = CMP._vis || CMP._dom;
+  const tween = !reduced && cur && CMP._sig === sig && CMP._log === isLog &&
+    (Math.abs(cur.min - target.min) > 1e-9 || Math.abs(cur.max - target.max) > 1e-9);
+  const dom0 = tween ? { ...cur } : target;
+  const drawIn = !reduced && !tween && CMP._sig !== sig;
+  // y grid rows are fixed on screen; their value labels follow the domain
+  const gY = [0, 1, 2, 3].map(j => TP + j * PH / 3);
+  const gLabel = (dom, j) => {
+    const t = dom.max - (dom.max - dom.min) * j / 3;
+    return fmtV(isLog ? Math.pow(10, t) : t);
+  };
+  const step = Math.max(1, Math.round((N - 1) / 5));
+  const xTicks = [];
+  for (let i = 0; i < N; i += step) xTicks.push(i);
+  if (xTicks[xTicks.length - 1] !== N - 1) xTicks.push(N - 1);
+  const xAxis = xTicks.map(i =>
+    `<text x="${X(i)}" y="${H - 8}" text-anchor="${i === 0 ? "start" : i === N - 1 ? "end" : "middle"}" font-size="10" fill="var(--faint)" font-family="var(--sans)">${fmtT(SERIES.times[i])}</text>`).join("");
+  let dayLines = "";
+  for (let i = 1; i < N; i++)
+    if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
+      dayLines += `<line x1="${X(i)}" y1="${TP}" x2="${X(i)}" y2="${H - BB}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Comparison chart, ${ghosts.length + drawn.length} people">
+    <defs><clipPath id="cmpclip"><rect x="${P}" y="0" width="${W - P - RP}" height="${H - BB}"/></clipPath>
+    ${drawn.map((l, i) => `<linearGradient id="cmpg${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${l.col}" stop-opacity=".16"/><stop offset="1" stop-color="${l.col}" stop-opacity="0"/></linearGradient>`).join("")}</defs>
+    ${gY.map((y, j) => `<text class="cmpgl" x="${P + 2}" y="${y - 4}" font-size="10" fill="var(--faint)" font-family="var(--sans)">${gLabel(dom0, j)}</text>`).join("")}
+    ${isLog ? `<text x="${W - RP - 6}" y="${TP + 10}" text-anchor="end" font-size="10" fill="var(--faint)" font-family="var(--sans)">log scale</text>` : ""}
+    <line id="cmpzero" x1="${P}" x2="${W - RP}" y1="0" y2="0" stroke="var(--ink)" stroke-opacity=".14" stroke-dasharray="3 5" visibility="hidden"/>
+    <g clip-path="url(#cmpclip)">
+      ${drawn.map((l, i) => `<path data-ai="${i}" d="${pathOf(l.vals, dom0)}L${W - RP} ${H - BB}L${P} ${H - BB}Z" fill="url(#cmpg${i})" ${drawIn ? 'class="areain"' : ""}/>`).join("")}
+      ${ghosts.map((l, i) => `<path data-gi="${i}" d="${pathOf(l.vals, dom0)}" fill="none" stroke="var(--ghost)" stroke-width=".8" stroke-linejoin="round" class="gline" onclick="cmpToggle('${l.k}')"><title>${esc((SERIES.series[l.k].n || l.k) + " · click to highlight")}</title></path>`).join("")}
+      ${drawn.map((l, i) => `<path data-si="${i}" d="${pathOf(l.vals, dom0)}" fill="none" stroke="${l.col}" stroke-width="${l.w}" stroke-linejoin="round" stroke-linecap="round" ${CMPSPECIAL[l.k] ? 'stroke-dasharray="8 5"' : ""} ${drawIn ? 'pathLength="1" class="sline"' : ""}><title>${esc(l.t ? l.t.n : (CMPSPECIAL[l.k] || l.k))}: ${fmtV(l.endV)}</title></path>`).join("")}
+    </g>
+    ${drawn.map((l, i) => `<circle data-di="${i}" cx="${W - RP + 4}" cy="0" r="3" fill="${l.col}" ${drawIn ? 'class="sdot" style="animation-delay:.8s"' : ""}/>
+      <text data-ti="${i}" x="${W - RP + 11}" y="0" font-size="11" font-weight="500" font-family="var(--sans)" fill="${l.col}">${l.dn} ${fmtV(l.endV)}</text>`).join("")}
+    ${flat ? `<text x="${(P + W - RP) / 2}" y="${TP + PH / 2 - 8}" text-anchor="middle" font-size="11" fill="var(--faint)" font-family="var(--sans)">flat so far · this metric hasn't moved yet in the collected window</text>` : ""}
+    <line id="cmpxh" x1="0" x2="0" y1="${TP}" y2="${H - BB}" stroke="var(--ink)" stroke-opacity=".18" visibility="hidden"/>
+    ${xAxis}
+  </svg><div class="tip2" id="cmptip"></div>`;
+  const svg = box.querySelector("svg");
+  const gEls = [...svg.querySelectorAll("[data-gi]")];
+  const sEls = [...svg.querySelectorAll("[data-si]")];
+  const aEls = [...svg.querySelectorAll("[data-ai]")];
+  const dEls = [...svg.querySelectorAll("[data-di]")];
+  const tEls = [...svg.querySelectorAll("[data-ti]")];
+  const glEls = [...svg.querySelectorAll(".cmpgl")];
+  const zeroEl = svg.querySelector("#cmpzero");
+  function applyDomain(dom){
+    gEls.forEach((el, i) => el.setAttribute("d", pathOf(ghosts[i].vals, dom)));
+    sEls.forEach((el, i) => el.setAttribute("d", pathOf(drawn[i].vals, dom)));
+    aEls.forEach((el, i) => el.setAttribute("d", pathOf(drawn[i].vals, dom) + "L" + (W - RP) + " " + (H - BB) + "L" + P + " " + (H - BB) + "Z"));
+    const ends = drawn.map((l, i) => ({ i, y: yOf(l.vals[l.lastI], dom) })).sort((a, b) => a.y - b.y);
+    for (let j = 1; j < ends.length; j++)
+      if (ends[j].y - ends[j-1].y < 13) ends[j].y = ends[j-1].y + 13;
+    ends.forEach(e => {
+      dEls[e.i].setAttribute("cy", e.y.toFixed(1));
+      tEls[e.i].setAttribute("y", (e.y + 3.5).toFixed(1));
+    });
+    glEls.forEach((el, j) => el.textContent = gLabel(dom, j));
+    const wantZero = !isLog && (CMP.metric === "g" || CMP.metric === "gain");
+    const zy = TP + dom.max * PH / (dom.max - dom.min);
+    if (wantZero && zy > TP && zy < H - BB){
+      zeroEl.setAttribute("y1", zy.toFixed(1));
+      zeroEl.setAttribute("y2", zy.toFixed(1));
+      zeroEl.setAttribute("visibility", "visible");
+    } else zeroEl.setAttribute("visibility", "hidden");
+  }
+  applyDomain(dom0);
+  CMP._vis = { ...dom0 };
+  if (tween){
+    const t0 = performance.now(), from = { ...dom0 }, DUR = 750;
+    const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    (function frame(ts){
+      const p = Math.min(1, (ts - t0) / DUR), e = ease(p);
+      const dom = { min: from.min + (target.min - from.min) * e,
+                    max: from.max + (target.max - from.max) * e };
+      applyDomain(dom);
+      CMP._vis = dom;
+      CMP._raf = p < 1 ? requestAnimationFrame(frame) : null;
+    })(t0);
+  } else CMP._vis = { ...target };
+  CMP._dom = target; CMP._sig = sig; CMP._log = isLog;
+  // crosshair: values for every highlighted line at the hovered moment
+  const tip = $("#cmptip"), xh = $("#cmpxh");
+  svg.addEventListener("pointermove", e => {
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(N - 1, Math.round((px - P) / (W - P - RP) * (N - 1))));
+    xh.setAttribute("x1", X(i)); xh.setAttribute("x2", X(i));
+    xh.setAttribute("visibility", "visible");
+    tip.style.display = "block";
+    tip.style.left = Math.max(12, Math.min(88, X(i) / W * 100)) + "%";
+    tip.style.top = "6px";
+    tip.innerHTML = `<div class="ttd">${fmtT(SERIES.times[i])}</div>` + drawn.map(l =>
+      `<div class="ttr"><span class="sw" style="background:${l.col}"></span><span class="ttl">${l.dn}</span><span class="ttv">${l.vals[i] != null ? fmtV(l.vals[i]) : "-"}</span></div>`).join("");
+  });
+  svg.addEventListener("pointerleave", () => {
+    tip.style.display = "none";
+    xh.setAttribute("visibility", "hidden");
+  });
+}
+document.querySelectorAll("#cmpmetrics .chip").forEach(c =>
+  c.addEventListener("click", () => { CMP.metric = c.dataset.m; renderCmp(); saveUI(); }));
+$("#cmpfit").addEventListener("click", () => {
+  CMP.fit = CMP.fit === "all" ? "zoom" : "all";
+  const b = $("#cmpfit");
+  b.textContent = CMP.fit === "all" ? "VIEW: FULL" : "VIEW: ZOOM";
+  b.setAttribute("aria-pressed", CMP.fit === "all" ? "true" : "false");
+  renderCmp();
+  saveUI();
+});
+$("#cmpq2").addEventListener("input", e => { CMPQ = e.target.value.trim(); renderCmpList(); });
+$("#crchip").addEventListener("click", () => {
+  CRONLY = !CRONLY;
+  $("#crchip").setAttribute("aria-pressed", CRONLY ? "true" : "false");
+  render();
+  saveUI();
+});
+$("#cmpreset").addEventListener("click", () => {
+  CMP.sel = ["RIZPY"]; CMP.metric = "g"; CMP.fit = "zoom";
+  $("#cmpfit").textContent = "VIEW: ZOOM";
+  $("#cmpfit").setAttribute("aria-pressed", "false");
+  renderCmp();
+  saveUI();
+});
+$("#cmppng").addEventListener("click", () => {
+  const svg = document.querySelector("#cmpchart svg");
+  if (!svg) return;
+  const clone = svg.cloneNode(true);
+  // bake CSS-variable colors into concrete values so the standalone image matches the screen
+  const src = [svg, ...svg.querySelectorAll("*")], dst = [clone, ...clone.querySelectorAll("*")];
+  const props = [["stroke", "stroke"], ["fill", "fill"], ["font-family", "fontFamily"]];
+  src.forEach((el, i) => {
+    const cs = getComputedStyle(el);
+    props.forEach(([attr, js]) => {
+      const a = el.getAttribute(attr);
+      if (a && a.includes("var(")) dst[i].setAttribute(attr, cs[js]);
+    });
+  });
+  clone.setAttribute("width", 2000); clone.setAttribute("height", 680);
+  const bg = getComputedStyle(document.body).backgroundColor;
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement("canvas");
+    c.width = 2000; c.height = 680;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    const a = document.createElement("a");
+    a.href = c.toDataURL("image/png");
+    a.download = "su26-compare.png";
+    a.click();
+  };
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+});
+
+// ---------- cinema: animated data renders, exportable as video ----------
+const CIN = { raf: null, playing: false, rec: null, pos: null };
+const cinC = () => document.getElementById("cin-canvas");
+function cinColors(){
+  const cs = getComputedStyle(document.documentElement);
+  const v = n => cs.getPropertyValue(n).trim();
+  return { bg: v("--bg"), ink: v("--ink"), muted: v("--muted"), faint: v("--faint"),
+    line: v("--line"), up: v("--up"), ghost: v("--ghost"),
+    pal: [v("--c1"), v("--c2"), v("--c3"), v("--c4"), v("--c5")] };
+}
+// value at a fractional index, linearly interpolated between samples
+function cinAt(vals, u){
+  const i = Math.floor(u), f = u - i;
+  const a = vals[i], b = vals[Math.min(vals.length - 1, i + 1)];
+  if (a == null) return null;
+  if (b == null) return a;
+  return a + (b - a) * f;
+}
+function cinFmtT(s){ return s ? s.slice(5, 16).replace("T", " ").replace("-", "/") : ""; }
+const CINLBL = { g: "GROWTH %", gain: "FOLLOWERS GAINED", f: "FOLLOWERS",
+  lv: "LIVE VIEWERS", cv: "CLIP VIEWS", hl: "HOURS LIVE" };
+
+function cinPrep(){
+  const scene = $("#cin-scene").value, m = $("#cin-metric").value;
+  const col = cinColors(), fmtV = CMPFMT[m];
+  const title = $("#cin-title").value.trim();
+  if (scene === "end"){
+    const t = ALL.find(x => x.n === SPOT) || {};
+    const cs = campaignStats(t);
+    return { scene, m, col, fmtV, title: title || "SU26 · CAMPAIGN RECAP",
+      card: { f: t.f, gained: cs && !cs.pre ? cs.gained : null, pct: cs && !cs.pre ? cs.pct : null,
+        days: cs && !cs.pre ? cs.days : null, cv: t.cv, hl: t.hl,
+        yt: (ALL.find(x => x.s === "RIZPYT") || {}).f } };
+  }
+  if (!SERIES || SERIES.times.length < 2) return null;
+  const N = SERIES.times.length;
+  const prep = { scene, m, col, N, fmtV, times: SERIES.times,
+    title: title || "SU26 CLASS EXCHANGE" };
+  if (scene === "race"){
+    let pi = 0;
+    prep.lines = CMP.sel.map(k => {
+      const vals = cmpValues(k, m);
+      if (!vals || !vals.some(v => v != null)) return null;
+      return { k, dn: k === "CRAVG" ? "CR AVG" : k === "FIELD" ? "FIELD" : k,
+        vals, c: k === "RIZPY" ? col.up : col.pal[pi++ % col.pal.length],
+        w: k === "RIZPY" || CMPSPECIAL[k] ? 4 : 3, dash: !!CMPSPECIAL[k] };
+    }).filter(Boolean);
+    prep.ghosts = Object.keys(SERIES.series).filter(k => !CMP.sel.includes(k))
+      .map(k => cmpValues(k, m)).filter(v => v && v.some(x => x != null));
+    const all = prep.lines.flatMap(l => l.vals.filter(v => v != null));
+    if (!all.length) return null;
+    prep.min = Math.min(...all); prep.max = Math.max(...all);
+    if (prep.min === prep.max){ prep.min -= 1; prep.max += 1; }
+    const p4 = (prep.max - prep.min) * .06; prep.min -= p4; prep.max += p4;
+  } else if (scene === "bars"){
+    prep.people = Object.keys(SERIES.series)
+      .map(k => ({ k, n: SERIES.series[k].n || k, vals: cmpValuesRaw(k, m) }))
+      .filter(p => p.vals && p.vals.some(v => v != null));
+    if (!prep.people.length) return null;
+    CIN.pos = null;
+  } else {
+    const sp = (SPOTSAMPLES || []).filter(s => s[1] != null);
+    prep.spot = sp.length >= 2 ? sp.map(s => s[1]) : cmpValuesRaw("RIZPY", "f");
+    prep.spotTimes = sp.length >= 2 ? sp.map(s => s[0]) : SERIES.times;
+    if (!prep.spot || prep.spot.filter(v => v != null).length < 2) return null;
+    prep.N = prep.spot.length;
+    prep.times = prep.spotTimes;
+  }
+  return prep;
+}
+
+function cinDrawRace(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .055, mR = W * .16, mT = H * .14, mB = H * .11;
+  const u = p * (pr.N - 1);
+  const X = i => mL + i * (W - mL - mR) / (pr.N - 1);
+  const Y = v => mT + (pr.max - v) * (H - mT - mB) / (pr.max - pr.min);
+  ctx.strokeStyle = pr.col.line; ctx.lineWidth = 1 * s;
+  ctx.fillStyle = pr.col.faint; ctx.font = `${20 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  for (let j = 0; j < 4; j++){
+    const v = pr.min + (pr.max - pr.min) * j / 3, y = Y(v);
+    ctx.setLineDash(j ? [3 * s, 7 * s] : []);
+    ctx.beginPath(); ctx.moveTo(mL, y); ctx.lineTo(W - mR, y); ctx.stroke();
+    ctx.fillText(pr.fmtV(v), mL, y - 8 * s);
+  }
+  ctx.setLineDash([]);
+  for (let i = 1; i <= Math.floor(u); i++)
+    if (pr.times[i].slice(0, 10) !== pr.times[i-1].slice(0, 10)){
+      ctx.strokeStyle = pr.col.line; ctx.setLineDash([6 * s, 6 * s]);
+      ctx.beginPath(); ctx.moveTo(X(i), mT); ctx.lineTo(X(i), H - mB); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  const trace = (vals, upto) => {
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i <= Math.floor(upto); i++){
+      if (vals[i] == null) continue;
+      ctx[started ? "lineTo" : "moveTo"](X(i), Y(vals[i]));
+      started = true;
+    }
+    const tip = cinAt(vals, upto);
+    if (started && tip != null && upto > Math.floor(upto))
+      ctx.lineTo(mL + upto * (W - mL - mR) / (pr.N - 1), Y(tip));
+    return { started, tip };
+  };
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.strokeStyle = pr.col.ghost; ctx.lineWidth = 1.5 * s;
+  pr.ghosts.forEach(g => { trace(g, u); ctx.stroke(); });
+  const labels = [];
+  pr.lines.forEach(l => {
+    ctx.strokeStyle = l.c; ctx.lineWidth = l.w * s;
+    ctx.setLineDash(l.dash ? [14 * s, 9 * s] : []);
+    const { started, tip } = trace(l.vals, u);
+    ctx.stroke(); ctx.setLineDash([]);
+    if (started && tip != null){
+      const tx = mL + u * (W - mL - mR) / (pr.N - 1), ty = Y(tip);
+      ctx.fillStyle = l.c;
+      ctx.beginPath(); ctx.arc(tx, ty, 7 * s, 0, 7); ctx.fill();
+      labels.push({ y: ty, c: l.c, txt: `${l.dn} ${pr.fmtV(tip)}` });
+    }
+  });
+  labels.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++)
+    if (labels[i].y - labels[i-1].y < 30 * s) labels[i].y = labels[i-1].y + 30 * s;
+  ctx.font = `700 ${24 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  labels.forEach(l => { ctx.fillStyle = l.c; ctx.fillText(l.txt, W - mR + 16 * s, l.y + 8 * s); });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${22 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(CINLBL[pr.m], mL, 92 * s);
+  const ts = cinFmtT(pr.times[Math.round(u)]);
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${30 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(ts, W - mL, 58 * s);
+  ctx.textAlign = "left";
+}
+
+function cinDrawBars(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .055, mR = W * .07, mT = H * .17, rows = 10;
+  const u = p * (pr.N - 1);
+  const now = pr.people.map(pp => ({ ...pp, v: cinAt(pp.vals, u) })).filter(pp => pp.v != null);
+  now.sort((a, b) => b.v - a.v);
+  const top = now.slice(0, rows);
+  const rz = now.find(pp => pp.k === "RIZPY");
+  if (rz && !top.includes(rz)) top[rows - 1] = rz;
+  if (!CIN.pos) CIN.pos = {};
+  const rowH = (H - mT - H * .06) / rows;
+  top.forEach((pp, r) => {
+    if (CIN.pos[pp.k] == null) CIN.pos[pp.k] = r;
+    CIN.pos[pp.k] += (r - CIN.pos[pp.k]) * .12;
+  });
+  const maxV = Math.max(...top.map(pp => pp.v), 1e-9);
+  top.forEach((pp, r) => {
+    const y = mT + CIN.pos[pp.k] * rowH;
+    const bw = Math.max(4 * s, (pp.v / maxV) * (W - mL - mR - 320 * s));
+    const rank = now.indexOf(pp) + 1;
+    ctx.fillStyle = pp.k === "RIZPY" ? pr.col.up : (TAGS.has(pp.k) ? pr.col.ink : pr.col.muted);
+    ctx.fillRect(mL + 300 * s, y + rowH * .18, bw, rowH * .62);
+    ctx.fillStyle = pr.col.ink; ctx.font = `700 ${24 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+    ctx.textAlign = "right";
+    ctx.fillText(String(rank).padStart(2, "0"), mL + 50 * s, y + rowH * .62);
+    ctx.textAlign = "left";
+    ctx.fillText(pp.n.slice(0, 16), mL + 70 * s, y + rowH * .62);
+    ctx.fillStyle = pp.k === "RIZPY" ? pr.col.up : pr.col.ink;
+    ctx.fillText(pr.fmtV(pp.v), mL + 310 * s + bw, y + rowH * .62);
+    if (TAGS.has(pp.k)){
+      ctx.fillStyle = pr.col.faint; ctx.font = `${16 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+      ctx.fillText("CR", mL + 70 * s + ctx.measureText(pp.n.slice(0, 16)).width + 90 * s, y + rowH * .62);
+    }
+  });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(pr.title + " · " + CINLBL[pr.m], mL, 58 * s);
+  ctx.textAlign = "right";
+  ctx.fillText(cinFmtT(pr.times[Math.round(u)]), W - mL, 58 * s);
+  ctx.textAlign = "left";
+}
+
+function cinDrawEnd(ctx, W, H, p, pr){
+  const s = H / 1080, c = pr.card, x = W * .08;
+  ctx.fillStyle = pr.col.muted; ctx.font = `${26 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(pr.title, x, H * .16);
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${56 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText("RIZPY", x, H * .25);
+  if (c.f != null){
+    const start = c.f - (c.gained || 0);
+    ctx.font = `700 ${170 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+    ctx.fillText(Math.round(start + (c.gained || 0) * p).toLocaleString(), x, H * .45);
+  }
+  if (c.gained != null){
+    ctx.fillStyle = c.gained >= 0 ? pr.col.up : pr.col.faint;
+    ctx.font = `700 ${48 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+    ctx.fillText(`${c.gained >= 0 ? "+" : ""}${Math.round(c.gained * p).toLocaleString()} followers · ${fmtD(c.pct * p)}`, x, H * .55);
+  }
+  ctx.fillStyle = pr.col.muted; ctx.font = `${28 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.globalAlpha = Math.min(1, p * 1.6);
+  ctx.fillText([
+    c.yt != null ? fmtC(c.yt) + " YouTube subs" : "",
+    c.cv != null ? fmtC(Math.round(c.cv * p)) + " clip views" : "",
+    c.hl != null ? c.hl + "h streamed" : "",
+    c.days != null ? "day " + c.days + " of the campaign" : ""
+  ].filter(Boolean).join(" · "), x, H * .63);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = pr.col.up;
+  ctx.fillRect(x, H * .68, p * W * .4, 6 * s);
+  ctx.fillStyle = pr.col.faint; ctx.font = `${24 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText("twitch.tv/rizpyyt", x, H * .88);
+}
+
+function cinDrawCounter(ctx, W, H, p, pr){
+  const s = H / 1080;
+  const u = p * (pr.N - 1);
+  const cur = cinAt(pr.spot, u), base = pr.spot.find(v => v != null);
+  if (cur == null) return;
+  const min = Math.min(...pr.spot.filter(v => v != null)), max = Math.max(...pr.spot.filter(v => v != null));
+  const span = (max - min) || 1;
+  const cy = H * .62, ch = H * .30;
+  ctx.strokeStyle = pr.col.up; ctx.lineWidth = 4 * s; ctx.lineJoin = "round";
+  ctx.beginPath();
+  let started = false;
+  const steps = Math.max(2, Math.floor(u) + 1);
+  for (let i = 0; i < steps; i++){
+    if (pr.spot[i] == null) continue;
+    const x = W * .08 + (i / (pr.N - 1)) * W * .84;
+    const y = cy + ch - ((pr.spot[i] - min) / span) * ch;
+    ctx[started ? "lineTo" : "moveTo"](x, y);
+    started = true;
+  }
+  const tx = W * .08 + (u / (pr.N - 1)) * W * .84;
+  const ty = cy + ch - ((cur - min) / span) * ch;
+  if (started) ctx.lineTo(tx, ty);
+  ctx.stroke();
+  if (started){
+    ctx.lineTo(tx, cy + ch); ctx.lineTo(W * .08, cy + ch); ctx.closePath();
+    ctx.globalAlpha = .12; ctx.fillStyle = pr.col.up; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = pr.col.up;
+    ctx.beginPath(); ctx.arc(tx, ty, 9 * s, 0, 7); ctx.fill();
+  }
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${150 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText(Math.round(cur).toLocaleString(), W * .08, H * .34);
+  const gained = Math.round(cur - base);
+  ctx.fillStyle = gained >= 0 ? pr.col.up : pr.col.faint;
+  ctx.font = `700 ${44 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText((gained >= 0 ? "+" : "") + gained.toLocaleString() + " followers", W * .08, H * .43);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${26 * s}px Inter,ui-sans-serif,system-ui,sans-serif`;
+  ctx.fillText("RIZPY · twitch.tv/rizpyyt · " + cinFmtT(pr.times[Math.round(u)]), W * .08, H * .49);
+}
+
+function cinDraw(p, pr){
+  pr = pr || cinPrep();
+  const cv = cinC();
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const col = pr ? pr.col : cinColors();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = col.bg;
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!pr){
+    ctx.fillStyle = col.muted;
+    ctx.font = `${28 * cv.height / 1080}px system-ui,sans-serif`;
+    ctx.textAlign = "center";
+    ctx.fillText("Needs collected data for this scene. Run COLLECT NOW first.", cv.width / 2, cv.height / 2);
+    ctx.textAlign = "left";
+    return;
+  }
+  if (pr.scene === "race") cinDrawRace(ctx, cv.width, cv.height, p, pr);
+  else if (pr.scene === "bars") cinDrawBars(ctx, cv.width, cv.height, p, pr);
+  else if (pr.scene === "end") cinDrawEnd(ctx, cv.width, cv.height, p, pr);
+  else cinDrawCounter(ctx, cv.width, cv.height, p, pr);
+}
+
+function cinStop(){
+  CIN.playing = false;
+  if (CIN.raf){ cancelAnimationFrame(CIN.raf); CIN.raf = null; }
+  if (CIN.rec && CIN.rec.state !== "inactive") CIN.rec.stop();
+  $("#cin-rec").dataset.on = "";
+}
+function cinPlay(done){
+  cinStop();
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const cv = cinC();
+  cv.width = w; cv.height = h;
+  const pr = cinPrep();
+  if (!pr){ cinDraw(1, null); if (done) done(false); return; }
+  CIN.pos = null;
+  CIN.playing = true;
+  const dur = +$("#cin-dur").value * 1000, hold = 800;
+  const t0 = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 2.2);
+  (function loop(ts){
+    if (!CIN.playing) return;
+    const el = ts - t0;
+    cinDraw(ease(Math.min(1, el / dur)), pr);
+    if (el < dur + hold) CIN.raf = requestAnimationFrame(loop);
+    else { CIN.playing = false; CIN.raf = null; if (done) done(true); }
+  })(t0);
+}
+function cinRecord(){
+  if ($("#cin-fmt").value === "mp4") return cinRenderMp4();
+  return cinRecordWebm();
+}
+// MP4: offline frame-by-frame render through the hardware H.264 encoder,
+// muxed locally by mp4-muxer.js. Frame-perfect at any resolution and fps.
+async function cinRenderMp4(){
+  const status = $("#cin-status");
+  if (!window.Mp4Muxer || !("VideoEncoder" in window)){
+    status.textContent = "MP4 engine unavailable in this browser, recording WebM instead";
+    return cinRecordWebm();
+  }
+  cinStop();
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const fps = +$("#cin-fps").value, durS = +$("#cin-dur").value;
+  const cv = cinC();
+  cv.width = w; cv.height = h;
+  const pr = cinPrep();
+  if (!pr){ cinDraw(1, null); status.textContent = "no data for this scene yet"; return; }
+  const bitrate = Math.min(8e7, Math.round(w * h * fps * .15));
+  let cfg = null;
+  for (const codec of ["avc1.640034", "avc1.640033", "avc1.640032", "avc1.64002A", "avc1.640028"]){
+    try {
+      const c = { codec, width: w, height: h, bitrate, framerate: fps };
+      if ((await VideoEncoder.isConfigSupported(c)).supported){ cfg = c; break; }
+    } catch(e){}
+  }
+  if (!cfg){
+    status.textContent = "H.264 not supported at this size here, recording WebM instead";
+    return cinRecordWebm();
+  }
+  const muxer = new Mp4Muxer.Muxer({
+    target: new Mp4Muxer.ArrayBufferTarget(),
+    video: { codec: "avc", width: w, height: h },
+    fastStart: "in-memory"
+  });
+  const enc = new VideoEncoder({
+    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+    error: e => { status.textContent = "encoder error: " + e.message; }
+  });
+  enc.configure(cfg);
+  CIN.pos = null;
+  CIN.playing = true;
+  $("#cin-rec").dataset.on = "1";
+  const durF = fps * durS, total = durF + Math.round(fps * .8);
+  const ease = t => 1 - Math.pow(1 - t, 2.2);
+  const t0 = performance.now();
+  for (let i = 0; i < total; i++){
+    if (!CIN.playing) break;
+    cinDraw(ease(Math.min(1, i / durF)), pr);
+    const frame = new VideoFrame(cv, { timestamp: Math.round(i * 1e6 / fps), duration: Math.round(1e6 / fps) });
+    enc.encode(frame, { keyFrame: i % (fps * 2) === 0 });
+    frame.close();
+    while (enc.encodeQueueSize > 8) await new Promise(r => setTimeout(r, 2));
+    if (i % 5 === 0){
+      status.textContent = `rendering MP4 · frame ${i + 1}/${total}`;
+      await new Promise(r => requestAnimationFrame(r));
+    }
+  }
+  const cancelled = !CIN.playing;
+  CIN.playing = false;
+  $("#cin-rec").dataset.on = "";
+  if (cancelled){
+    try { enc.close(); } catch(e){}
+    status.textContent = "cancelled";
+    return;
+  }
+  status.textContent = "finishing MP4…";
+  await enc.flush();
+  enc.close();
+  muxer.finalize();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([muxer.target.buffer], { type: "video/mp4" }));
+  a.download = `su26-${pr.scene}-${h}p${fps}.mp4`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  status.textContent = `saved to Downloads · ${a.download} · rendered in ${((performance.now() - t0) / 1000).toFixed(1)}s`;
+}
+function cinRecordWebm(){
+  const cv = cinC(), fps = +$("#cin-fps").value;
+  const status = $("#cin-status");
+  if ($("#cin-scene").value !== "end" && (!SERIES || SERIES.times.length < 2)){ status.textContent = "no data to record yet"; return; }
+  const stream = cv.captureStream(fps);
+  const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9") ? "video/webm;codecs=vp9" : "video/webm";
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: Math.min(6e7, Math.round(w * h * fps * .12)) });
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(chunks, { type: "video/webm" }));
+    a.download = `su26-${$("#cin-scene").value}-${h}p${fps}.webm`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    status.textContent = "saved to Downloads · " + a.download;
+    $("#cin-rec").dataset.on = "";
+  };
+  CIN.rec = rec;
+  $("#cin-rec").dataset.on = "1";
+  status.textContent = "recording…";
+  rec.start();
+  cinPlay(ok => { if (rec.state !== "inactive") rec.stop(); if (!ok) status.textContent = "no data to record yet"; });
+}
+$("#cinemabtn").addEventListener("click", () => {
+  $("#cinema").hidden = false;
+  document.body.style.overflow = "hidden";
+  cinDraw(1);
+});
+$("#cin-close").addEventListener("click", () => {
+  cinStop();
+  $("#cinema").hidden = true;
+  document.body.style.overflow = "";
+});
+$("#cin-play").addEventListener("click", () => { $("#cin-status").textContent = ""; cinPlay(); });
+$("#cin-rec").addEventListener("click", cinRecord);
+["cin-scene", "cin-metric", "cin-res"].forEach(id =>
+  document.getElementById(id).addEventListener("change", () => {
+    const [w, h] = $("#cin-res").value.split("x").map(Number);
+    const cv = cinC(); cv.width = w; cv.height = h;
+    cinDraw(1);
+  }));
+
+// ---------- remember how the page was set up between visits ----------
+function saveUI(){
+  localStorage.setItem("cr26_ui", JSON.stringify({
+    sel: CMP.sel, metric: CMP.metric, fit: CMP.fit, plat, cr: CRONLY, sk: sortKey, sd: sortDir
+  }));
+}
+(function restoreUI(){
+  try {
+    const u = JSON.parse(localStorage.getItem("cr26_ui") || "null");
+    if (!u) return;
+    if (Array.isArray(u.sel) && u.sel.length) CMP.sel = u.sel.slice(0, 6);
+    if (CMPFMT[u.metric]) CMP.metric = u.metric;
+    if (u.fit === "all" || u.fit === "zoom") CMP.fit = u.fit;
+    if (typeof u.plat === "string") plat = u.plat;
+    CRONLY = !!u.cr;
+    if (typeof u.sk === "string") sortKey = u.sk;
+    if (u.sd === 1 || u.sd === -1) sortDir = u.sd;
+    document.querySelectorAll(".chip[data-plat]").forEach(x =>
+      x.setAttribute("aria-pressed", x.dataset.plat === plat ? "true" : "false"));
+    $("#crchip").setAttribute("aria-pressed", CRONLY ? "true" : "false");
+    $("#cmpfit").textContent = CMP.fit === "all" ? "VIEW: FULL" : "VIEW: ZOOM";
+    $("#cmpfit").setAttribute("aria-pressed", CMP.fit === "all" ? "true" : "false");
+    render();
+    renderCmp();
+  } catch(e){}
+})();
+
+// ---------- campaign log ----------
+let NOTES = [];
+function renderNotes(){
+  const el = $("#notelist");
+  if (!el) return;
+  el.innerHTML = NOTES.slice().reverse().map(n =>
+    `<div class="noteitem"><span class="nt">${n.t.replace("T", " ")}</span><span>${esc(n.text)}</span><button class="chip nx" title="Remove" onclick="delNote('${n.id}')">×</button></div>`
+  ).join("") || '<div class="notesempty">Nothing logged yet. Add moments as they happen: shoutouts, big clips going up, collabs, drama. Each becomes a hoverable marker on RIZPY\'s chart, so spikes always have an explanation.</div>';
+}
+async function loadNotes(){
+  NOTES = await fetch("/api/notes").then(r => r.ok ? r.json() : []).catch(() => []);
+  renderNotes(); renderSpot();
+  if (!focusEl.hidden) renderFocus();
+}
+async function addNote(){
+  const v = $("#notein").value.trim();
+  if (!v) return;
+  $("#notein").value = "";
+  await fetch("/api/notes", { method: "POST", body: JSON.stringify({ text: v }) }).catch(() => {});
+  loadNotes();
+}
+async function delNote(id){
+  await fetch("/api/notes", { method: "POST", body: JSON.stringify({ delete: id }) }).catch(() => {});
+  loadNotes();
+}
+function renderSpot(){
+  const t = ALL.find(x => x.n === SPOT);
+  if (!t) return;
+  const ranked = ALL.filter(x => x.f != null).sort((a,b) => b.f - a.f);
+  const rankF = t.f != null ? ranked.indexOf(t) + 1 : null;
+  const cs = campaignStats(t);
+  const chart = (cs && cs.series.length >= 3)
+    ? spotChart(cs.series, 560, 210, 10)
+    : `<div class="empty">RIZPY's real chart draws itself here after 3+ collected samples (one lands every 5 minutes). The shaded zone marks the campaign window.</div>`;
+  const campVal = !cs ? "-" : cs.pre ? "starts Jul 15" : fmtD(cs.pct);
+  const gainVal = !cs ? "-" : cs.pre ? "-" : (cs.gained >= 0 ? "+" : "") + cs.gained.toLocaleString();
+  const rateVal = !cs || cs.pre ? "-" : (cs.gained >= 0 ? "+" : "") + Math.round(cs.gained / cs.days).toLocaleString() + "/day";
+  const pb = preBaseVal();
+  const cur = cs ? cs.cur : t.f;
+  const sincePre = (pb && cur != null) ? (cur - pb) / pb * 100 : null;
+  if (t.f != null) document.title = "RIZPY " + t.f.toLocaleString() + " · SU26";
+  const td0 = todayDelta();
+  const tiles = [
+    ["Followers", t.f != null ? t.f.toLocaleString() : "-", "", ""],
+    ["Today", td0 != null ? (td0 >= 0 ? "+" : "") + td0.toLocaleString() : "-",
+      td0 == null ? "" : td0 >= 0 ? "uu" : "dd", "Net follower change today, from the 5-minute samples"],
+    ["Gained", gainVal, !cs || cs.pre ? "" : cs.gained >= 0 ? "uu" : "dd", "Followers gained since the campaign opened Jul 15"],
+    ["Campaign Δ", campVal, !cs || cs.pre ? "small" : cs.pct >= 0 ? "uu" : "dd", "Growth since the campaign baseline, Jul 15"],
+    ["Pace", rateVal, "", "Average followers per campaign day"],
+    ["7d Δ", t.d != null ? fmtD(t.d) : "-", t.d == null ? "" : t.d >= 0 ? "uu" : "dd", "Weekly growth"],
+    ["Clip views", t.cv != null ? fmtC(t.cv) : "-", "", "Views on Twitch clips of his channel created since Jul 15"],
+    ["Clips", t.clips != null ? String(t.clips) + (t.clips >= 100 ? "+" : "") : "-", "", "Twitch clips created since Jul 15"],
+    ["Hours live", t.hl != null ? t.hl + "h" : "-", "", "Hours streamed since Jul 15, from VODs"],
+    ["Class rank", rankF ? "#" + rankF + " of " + ranked.length : "-", "", "By followers, among tracked names"]
+  ];
+  if (pb){
+    tiles.push(["Before · " + PRE_BASE.label, fmtC(pb), "", "One month before campus"]);
+    tiles.push(["Since " + PRE_BASE.label, sincePre != null ? fmtD(sincePre) : "-",
+      sincePre == null ? "" : sincePre >= 0 ? "uu" : "dd", "Growth from the month-ago baseline"]);
+  }
+  $("#spot").innerHTML = `
+    <div>
+      <div class="head">${t.img ? `<img class="avatar" src="${t.img}" alt="">` : '<div class="avatar ph">R</div>'}
+        <div><div class="tick">${t.s}</div><div class="nm2">${t.n} · <a href="https://twitch.tv/${t.login || deriveLogin(t.n)}" target="_blank" rel="noopener">twitch.tv/${t.login || deriveLogin(t.n)}</a>${t.bt ? " · " + (t.bt==="partner"?"Partner":"Affiliate") : ""}${t.created ? " · since " + t.created : ""}</div></div>
+        ${t.lv != null ? `<span class="pill u lp" style="margin-left:auto" title="${esc(t.lvGame||"")}${t.lvTitle ? " · " + esc(t.lvTitle) : ""}">▶ LIVE · ${fmtC(t.lv)}</span>` : ""}
+        <button class="chip" onclick="toggleFocus(true)" title="Fullscreen display for OBS / screen share">FOCUS</button>
+      </div>
+      <div class="bio2">${t.desc ? esc(t.desc) : "Class of '26."}</div>
+      ${pb ? "" : `<div class="preset"><input id="pbin" type="number" min="1" placeholder="${PRE_BASE.label} follower count" aria-label="Pre-campaign follower baseline"><button class="chip" onclick="setPreBase()">SET BASELINE</button><span class="hint">his count a month ago, from twitchtracker.com/rizpyyt · unlocks before/after tiles</span></div>`}
+      <div class="stats">${tiles.map(([k, v, cls, tt]) =>
+        `<div class="stat"${tt ? ` title="${tt}"` : ""}><div class="k">${k}</div><div class="v2${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
+      </div>
+    </div>
+    <div class="spotright">${chart}</div>`;
+}
+function cmpRows(a, b){
+  const av = a[sortKey], bv = b[sortKey];
+  if (av==null && bv==null) return a.n.localeCompare(b.n);
+  if (av==null) return 1;
+  if (bv==null) return -1;
+  const c = typeof av === "string" ? av.localeCompare(bv, undefined, {sensitivity:"base"}) : av - bv;
+  return c * sortDir;
+}
+// best match floats to the top: exact name > name starts with > name contains > ticker > bio
+function matchScore(t){
+  if (!query) return 0;
+  const n = t.n.toLowerCase(), s = t.s.toLowerCase();
+  if (n === query || s === query) return 5;
+  if (n.startsWith(query) || s.startsWith(query)) return 4;
+  if (n.includes(query)) return 3;
+  if (s.includes(query)) return 2;
+  if ((t.bio||"").toLowerCase().includes(query) || (t.desc||"").toLowerCase().includes(query)) return 1;
+  return 0;
+}
+function render(){
+  const rows = ALL.filter(t => plat==="all" || t.p===plat).filter(t => !CRONLY || TAGS.has(t.s));
+  rows.forEach(t => { t._m = matchScore(t); });
+  rows.sort((a,b) => (b._m - a._m) || cmpRows(a,b));
+  $("#rows").innerHTML = rows.map((t, i) => {
+    const name = t.p === "Twitch"
+      ? `<a href="https://twitch.tv/${t.login || deriveLogin(t.n)}" target="_blank" rel="noopener"><span class="nm">${t.n}</span></a>`
+      : `<span class="nm">${t.n}</span>`;
+    return `<tr class="${[query && !t._m ? "dim" : "", t.n === SPOT ? "spotrow" : ""].join(" ").trim()}" style="animation-delay:${Math.min(i*10, 350)}ms">
+    <td class="rk2">${i + 1}</td>
+    <td class="sym" title="Click to add to Compare" onclick="cmpToggle('${t.s}')">${t.s}${t.gt?'<span class="gt">GT</span>':""}</td>
+    <td class="who"><div class="nmrow">${t.img?`<img src="${t.img}" alt="" loading="lazy">`:""}${name}${t.bt?`<span class="badge">${t.bt==="partner"?"Partner":"Affiliate"}</span>`:""}${t.created?`<span class="badge">since ${t.created}</span>`:""}${t.game?`<span class="badge">${esc(t.game.slice(0,20))}</span>`:""}<button class="crtag${TAGS.has(t.s)?" on":""}" onclick="toggleTag('${t.s}')" title="${TAGS.has(t.s)?"Content Rewards campaign · click to untag":"Tag as a Content Rewards campaign"}">CR</button></div><div class="bio">${(t.u && t.desc) ? esc(t.desc.slice(0,110)) : t.bio}</div></td>
+    <td class="plat">${t.p}</td>
+    <td class="num"${t.f==null?"":` title="${t.f.toLocaleString()}"`}>${t.f==null?'<span class="approx">-</span>':(t.v?"● ":'<span class="approx">≈ </span>')+fmtC(t.f)}</td>
+    <td class="delta">${t.d==null?'<span class="approx">-</span>':`<span class="pill ${t.d>=0?"u":"d"}">${t.d>=0?"▲":"▼"} ${fmtD(t.d)}${t.dReal?"":" ≈"}</span>`}</td>
+    <td class="delta">${t.td==null?'<span class="approx">-</span>':`<span class="pill ${t.td>=0?"u":"d"}">${t.td>=0?"▲":"▼"} ${fmtD(t.td)}</span>`}</td>
+    <td class="num">${t.gain==null?'<span class="approx">-</span>':`<span class="pill ${t.gain>=0?"u":"d"}">${(t.gain>=0?"+":"")+t.gain.toLocaleString()}</span>`}</td>
+    <td class="num">${t.cv==null?'<span class="approx">-</span>':fmtC(t.cv)}</td>
+    <td class="spark">${spark(t)}</td>
+    <td class="num">${t.peak!=null?fmtC(t.peak):'<span class="approx">-</span>'}</td>
+    <td class="delta">${t.lv!=null?`<span class="pill u lp" title="${esc(t.lvGame||"")}${t.lvTitle?" · "+esc(t.lvTitle):""}">▶ ${fmtC(t.lv)}</span>`:'<span class="approx">-</span>'}</td></tr>`;
+  }).join("")
+    || `<tr><td colspan="12" style="color:var(--muted);padding:20px">No matches.</td></tr>`;
+  LASTROWS = rows;
+  $("#count").textContent = query ? rows.filter(t => t._m).length + " matches, best first" : rows.length + " shown";
+  document.querySelectorAll(".hsort").forEach(b => {
+    b.querySelector(".arr").textContent = b.dataset.key === sortKey ? (sortDir < 0 ? "▼" : "▲") : "";
+  });
+}
+$("#q").addEventListener("input", e => {
+  query = e.target.value.trim().toLowerCase();
+  document.querySelector(".board").scrollTop = 0;
+  render();
+});
+document.querySelectorAll(".chip[data-plat]").forEach(c => c.addEventListener("click", () => {
+  plat = c.dataset.plat;
+  document.querySelectorAll(".chip[data-plat]").forEach(x => x.setAttribute("aria-pressed", x===c ? "true" : "false"));
+  render();
+  saveUI();
+}));
+document.querySelectorAll(".hsort").forEach(b => b.addEventListener("click", () => {
+  const k = b.dataset.key;
+  const numeric = k === "f" || k === "d" || k === "td" || k === "lv" || k === "gain" || k === "peak" || k === "cv";
+  sortDir = sortKey === k ? -sortDir : (numeric ? -1 : 1);
+  sortKey = k;
+  render();
+  saveUI();
+}));
+render();
+renderMovers();
+renderSpot();
+
+// ---------- focus mode: fullscreen RIZPY display for OBS / screen share ----------
+const focusEl = document.createElement("div");
+focusEl.id = "focus"; focusEl.hidden = true;
+document.body.appendChild(focusEl);
+function toggleFocus(on){
+  focusEl.hidden = !on;
+  document.body.style.overflow = on ? "hidden" : "";
+  if (on) renderFocus();
+}
+function renderFocus(){
+  const t = ALL.find(x => x.n === SPOT);
+  if (!t) return;
+  const cs = campaignStats(t);
+  const cur = cs ? cs.cur : t.f;
+  focusEl.innerHTML = `
+    <button class="chip f-exit" onclick="toggleFocus(false)">ESC</button>
+    <div class="f-tick">RIZPY <span class="f-sub">· ${t.n} · Streamer University class of '26</span></div>
+    <div class="f-row">
+      <div class="f-num" id="f-num">${cur != null ? cur.toLocaleString() : "-"}</div>
+      ${cs && !cs.pre ? `<div class="f-pct ${cs.pct >= 0 ? "u" : "d"}">${cs.pct >= 0 ? "▲" : "▼"} ${fmtD(cs.pct)}<span class="f-sub"> since Jul 15</span></div>` : ""}
+      ${t.lv != null ? `<span class="pill u lp" style="font-size:clamp(14px,1.8vw,24px);padding:6px 12px">▶ LIVE · ${fmtC(t.lv)} watching</span>` : ""}
+    </div>
+    <div class="f-sub">${cs
+      ? (cs.pre ? "campaign opens Jul 15 · baseline locked at " + cs.base.toLocaleString() + " followers"
+        : `${cs.gained >= 0 ? "+" : ""}${cs.gained.toLocaleString()} followers gained · day ${cs.days} of the campaign · ${(SPOTSAMPLES && SPOTSAMPLES.length) ? "sampled every 4 hours" : "daily samples"}`)
+      : "waiting for the first collected sample"}${(() => { const td = todayDelta();
+        return td != null ? ` · ${td >= 0 ? "+" : ""}${td.toLocaleString()} today` : ""; })()}${t.cv != null ? ` · ${fmtC(t.cv)} clip views` : ""}${t.hl != null ? ` · ${t.hl}h live` : ""}${(() => { const yt = ALL.find(x => x.s === "RIZPYT");
+        return yt && yt.f != null ? ` · YouTube ${fmtC(yt.f)} subs` : ""; })()}</div>
+    ${(() => { const pb = preBaseVal();
+      return (pb && cur != null)
+        ? `<div class="f-sub">before / after: ${pb.toLocaleString()} on ${PRE_BASE.label} → ${cur.toLocaleString()} now · <b class="${cur >= pb ? "u" : "d"}" style="color:var(--${cur >= pb ? "up" : "down"})">${fmtD((cur - pb) / pb * 100)}</b> in one month</div>`
+        : ""; })()}
+    ${cs && cs.series.length >= 3 ? spotChart(cs.series, 1200, 300, 12) : ""}`;
+  if (cur != null && !reduced){
+    const el = $("#f-num"), t0 = performance.now();
+    const from = Math.max(0, cur - Math.max(50, Math.round(cur * 0.02)));
+    (function tickUp(ts){
+      const p = Math.min(1, (ts - t0) / 1200), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(from + (cur - from) * e).toLocaleString();
+      if (p < 1) requestAnimationFrame(tickUp);
+    })(t0);
+  }
+}
+if (new URLSearchParams(location.search).has("focus")) toggleFocus(true);
+
+// ---------- sync data written by collector.mjs (history.json + spot-history.json) ----------
+async function syncServer(){
+  let got = false;
+  try {
+    const [hr, sr, er, pfr] = await Promise.all([
+      fetch("history.json", { cache: "no-store" }).catch(() => null),
+      fetch("spot-history.json", { cache: "no-store" }).catch(() => null),
+      fetch("extras.json", { cache: "no-store" }).catch(() => null),
+      fetch("profiles.json", { cache: "no-store" }).catch(() => null)
+    ]);
+    if (pfr && pfr.ok){
+      const pf = await pfr.json();
+      ALL.forEach(t => {
+        const p0 = pf[t.s];
+        if (!p0) return;
+        t.img = t.img || p0.img;
+        if (!t.desc && p0.desc) t.desc = p0.desc;
+        t.bt = t.bt || p0.bt;
+        t.created = t.created || p0.created;
+      });
+      got = true;
+    }
+    if (er && er.ok){
+      const ex = await er.json();
+      ALL.forEach(t => {
+        const e = ex[t.s];
+        if (!e) return;
+        if (e.clipViews != null) t.cv = e.clipViews;
+        if (e.clips != null) t.clips = e.clips;
+        if (e.hoursLive != null) t.hl = e.hoursLive;
+      });
+      got = true;
+    }
+    if (sr && sr.ok){
+      const sp = await sr.json();
+      if (sp && sp.samples && sp.samples.length){
+        SPOTSAMPLES = sp.samples;
+        got = true;
+        const spotT = ALL.find(x => x.n === SPOT);
+        const pk = Math.max(...sp.samples.map(s => s[2] || 0));
+        if (spotT && pk > (PEAKS[spotT.s] || 0)){ PEAKS[spotT.s] = pk; spotT.peak = pk; savePeaks(); }
+      }
+    }
+    if (hr && hr.ok){
+      const h = await hr.json();
+      got = true;
+      for (const [d, vals] of Object.entries(h)) HIST[d] = Object.assign({}, vals, HIST[d] || {});
+      const dates = Object.keys(HIST).sort();
+      const cutoff = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 10);
+      ALL.forEach(t => {
+        const pts = dates.map(d => [d, HIST[d][t.s]]).filter(x => x[1] != null);
+        if (!pts.length) return;
+        const latest = pts[pts.length - 1][1];
+        if (!t.liveF){ t.f = latest; t.v = t.v || 1; }
+        const win = pts.filter(x => x[0] >= cutoff);
+        if (win.length >= 2){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
+        const base = BASE[t.s] ?? pts[0][1];
+        if (base){ t.td = (latest - base) / base * 100; t.gain = latest - base; }
+      });
+      // RIZPY gets the finest truth available: straight from the 5-minute samples,
+      // baselined at his first-ever recorded value (daily buckets hide same-day moves)
+      const spotR = ALL.find(x => x.n === SPOT);
+      if (spotR && SPOTSAMPLES){
+        const vals = SPOTSAMPLES.filter(s => s[1] != null);
+        if (vals.length >= 2){
+          const first = vals[0], last = vals[vals.length - 1];
+          spotR.f = last[1]; spotR.v = spotR.v || 1;
+          spotR.gain = last[1] - first[1];
+          if (first[1]) spotR.td = spotR.gain / first[1] * 100;
+          const cut7 = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 16).replace(" ", "T");
+          const win = vals.filter(s => s[0] >= cut7);
+          if (win.length >= 2 && win[0][1]){
+            spotR.d = (last[1] - win[0][1]) / win[0][1] * 100;
+            spotR.dReal = 1;
+          }
+        }
+      }
+      const reach = ALL.filter(t => t.f != null);
+      $("#kpi-reach").textContent = fmtC(reach.reduce((a,t) => a + t.f, 0));
+      $("#kpi-reach-sub").textContent = "followers · " + reach.length + " tracked names";
+      updateGeneral();
+    }
+  } catch(e){}
+  if (got){
+    render(); renderMovers(); renderSpot(); renderWall();
+    if (!focusEl.hidden) renderFocus();
+  }
+}
+syncServer();
+loadNotes();
+loadSeries();
+loadTags();
+renderWall();
+$("#notein").addEventListener("keydown", e => { if (e.key === "Enter") addNote(); });
+setInterval(() => { syncServer(); loadNotes(); loadSeries(); loadTags(); }, 5 * 60 * 1000);
+
+// ---------- theme toggle ----------
+{
+  const modes = ["auto", "light", "dark"];
+  let mi = Math.max(0, modes.indexOf(localStorage.getItem("cr26_theme") || "light"));
+  const apply = () => {
+    const m = modes[mi];
+    if (m === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = m;
+    $("#themebtn").textContent = m.toUpperCase();
+    localStorage.setItem("cr26_theme", m);
+  };
+  $("#themebtn").addEventListener("click", () => { mi = (mi + 1) % 3; apply(); });
+  apply();
+}
+
+// ---------- keyboard: / focuses search, Esc clears ----------
+addEventListener("keydown", e => {
+  const q = $("#q");
+  if (e.key === "/" && document.activeElement !== q && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){
+    e.preventDefault(); q.focus();
+  } else if (e.key === "Escape" && document.activeElement === q){
+    q.value = ""; query = ""; render();
+  } else if (e.key === "Escape" && !document.getElementById("cinema").hidden){
+    cinStop();
+    document.getElementById("cinema").hidden = true;
+    document.body.style.overflow = "";
+  } else if (e.key === "Escape" && !focusEl.hidden){
+    toggleFocus(false);
+  }
+});
+
+// ---------- CSV export of the board as currently filtered/sorted ----------
+$("#csv").addEventListener("click", () => {
+  const head = "rank,ticker,name,platform,followers,change_7d_pct,total_change_pct,followers_gained,clip_views,clips,hours_live,peak_viewers,live_viewers\n";
+  const body = LASTROWS.map((t, i) =>
+    [i+1, t.s, `"${t.n.replace(/"/g,'""')}"`, t.p, t.f ?? "", t.d != null ? t.d.toFixed(2) : "", t.td != null ? t.td.toFixed(2) : "", t.gain ?? "", t.cv ?? "", t.clips ?? "", t.hl ?? "", t.peak ?? "", t.lv ?? ""].join(",")
+  ).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([head + body], { type: "text/csv" }));
+  a.download = "su26-board.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// ---------- scroll-in reveals ----------
+if (!reduced){
+  const obs = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ e.target.classList.add("in"); obs.unobserve(e.target); }
+  }), { threshold: .08 });
+  document.querySelectorAll("h2, .chart-card, .boards, .board, footer").forEach(el => {
+    el.classList.add("reveal"); obs.observe(el);
+  });
+}
+
+// ---------- live mode (official Twitch Helix API, free) ----------
+const LSK = { cid:"su26_cid", tok:"su26_tok", hist:"su26_hist" };
+const $s = $("#livestatus"), $cid = $("#cid"), $conn = $("#connect"), $ref = $("#refresh");
+$cid.value = localStorage.getItem(LSK.cid) || "";
+
+// catch the OAuth redirect back from Twitch (#access_token=...)
+if (location.hash.includes("access_token=")){
+  const tok = new URLSearchParams(location.hash.slice(1)).get("access_token");
+  if (tok) localStorage.setItem(LSK.tok, tok);
+  history.replaceState(null, "", location.pathname);
+}
+
+$conn.addEventListener("click", () => {
+  if (location.protocol === "file:"){
+    $s.textContent = "LIVE DATA: open the page via http://localhost:8026 to connect (Twitch can't redirect back to a file)";
+    return;
+  }
+  const cid = $cid.value.trim();
+  if (!cid){ $s.textContent = "LIVE DATA: paste your Client ID first"; return; }
+  localStorage.setItem(LSK.cid, cid);
+  const u = new URL("https://id.twitch.tv/oauth2/authorize");
+  u.searchParams.set("client_id", cid);
+  u.searchParams.set("redirect_uri", location.origin);
+  u.searchParams.set("response_type", "token");
+  location.href = u.toString();
+});
+$ref.addEventListener("click", goLive);
+
+// setup from the page itself: keys go to the local hub server, which writes config.json
+async function saveCfg(){
+  const body = {
+    client_id: $("#cid").value.trim(),
+    client_secret: $("#csec").value.trim(),
+    youtube_api_key: $("#cyt").value.trim()
+  };
+  if (!body.client_id && !body.client_secret && !body.youtube_api_key){
+    $s.textContent = "LIVE DATA: nothing to save, paste your keys first"; return;
+  }
+  const r = await fetch("/api/config", { method: "POST", body: JSON.stringify(body) })
+    .then(r => r.json()).catch(() => null);
+  $("#csec").value = ""; $("#cyt").value = "";
+  if (body.client_id) localStorage.setItem(LSK.cid, body.client_id);
+  $s.textContent = r && r.ok
+    ? "LIVE DATA: keys saved on this Mac. Hit COLLECT NOW to grab the first snapshot."
+    : "LIVE DATA: save failed. Is the page open via http://localhost:8026?";
+  loadCfg();
+}
+async function collectNow(){
+  const btn = $("#collectbtn");
+  btn.disabled = true; btn.textContent = "COLLECTING…";
+  $s.textContent = "LIVE DATA: collecting, takes about 30-60 seconds…";
+  const r = await fetch("/api/collect", { method: "POST" }).then(r => r.json()).catch(() => null);
+  btn.disabled = false; btn.textContent = "COLLECT NOW";
+  $s.textContent = r ? "COLLECTOR: " + (r.out || (r.ok ? "done" : "failed")) : "COLLECTOR: request failed";
+  if (r && r.ok){ syncServer(); loadSeries(); }
+}
+async function loadCfg(){
+  const c = await fetch("/api/config").then(r => r.ok ? r.json() : null).catch(() => null);
+  if (!c) return;
+  if (c.client_id && !$("#cid").value) $("#cid").value = c.client_id;
+  $("#csec").placeholder = c.has_secret ? "Client Secret: saved ✓ (paste again to replace)" : "Twitch Client Secret";
+  $("#cyt").placeholder = c.has_youtube ? "YouTube key: saved ✓" : "YouTube API key (optional)";
+}
+loadCfg();
+
+function deriveLogin(n){ return n.toLowerCase().replace(/[^a-z0-9_]/g,""); }
+async function tw(path, params){
+  const u = new URL("https://api.twitch.tv/helix/" + path);
+  for (const [k, vs] of Object.entries(params)) [].concat(vs).forEach(v => u.searchParams.append(k, v));
+  const r = await fetch(u, { headers: {
+    "Authorization": "Bearer " + localStorage.getItem(LSK.tok),
+    "Client-Id": localStorage.getItem(LSK.cid) }});
+  if (r.status === 401){ localStorage.removeItem(LSK.tok);
+    throw new Error("session expired. Hit CONNECT TWITCH again (one click)"); }
+  if (!r.ok) throw new Error("Twitch API error " + r.status);
+  return r.json();
+}
+async function goLive(){
+  const twitch = ALL.filter(t => t.p === "Twitch");
+  twitch.forEach(t => { t.login = t.login || deriveLogin(t.n); });
+  $s.textContent = "LIVE DATA: connecting…";
+  try {
+    // resolve usernames → channel ids (100 per request)
+    const byLogin = {};
+    for (let i = 0; i < twitch.length; i += 100){
+      const res = await tw("users", { login: twitch.slice(i, i+100).map(t => t.login) });
+      res.data.forEach(u => byLogin[u.login.toLowerCase()] = u);
+    }
+    const found = twitch.filter(t => byLogin[t.login]);
+    found.forEach(t => {
+      const u = byLogin[t.login];
+      t.id = u.id; t.img = u.profile_image_url; t.desc = u.description || "";
+      t.bt = u.broadcaster_type || ""; t.created = "'" + u.created_at.slice(2, 4);
+    });
+    // what each channel streams (category)
+    for (let i = 0; i < found.length; i += 100){
+      const res = await tw("channels", { broadcaster_id: found.slice(i, i+100).map(t => t.id) });
+      res.data.forEach(ch => {
+        const t = found.find(x => x.id === ch.broadcaster_id);
+        if (t && ch.game_name) t.game = ch.game_name;
+      });
+    }
+    // who is streaming right now + current viewers
+    const liveBy = {};
+    for (let i = 0; i < found.length; i += 100){
+      const res = await tw("streams", { user_id: found.slice(i, i+100).map(t => t.id), first: 100 });
+      res.data.forEach(st => liveBy[st.user_id] = st);
+    }
+    found.forEach(t => {
+      const st = liveBy[t.id];
+      t.lv = st ? st.viewer_count : null;
+      t.lvGame = st ? st.game_name : ""; t.lvTitle = st ? st.title : "";
+      if (t.lv != null && t.lv > (PEAKS[t.s] || 0)) PEAKS[t.s] = t.lv;
+      if (PEAKS[t.s] != null) t.peak = PEAKS[t.s];
+    });
+    savePeaks();
+    // follower totals, 8 requests at a time
+    let done = 0;
+    const queue = [...found];
+    await Promise.all(Array.from({ length: 8 }, async () => {
+      while (queue.length){
+        const t = queue.pop();
+        try {
+          const res = await tw("channels/followers", { broadcaster_id: t.id, first: 1 });
+          t.f = res.total; t.v = t.v || 1; t.liveF = 1;
+        } catch(e){ /* leave snapshot value */ }
+        done++;
+        if (done % 10 === 0) $s.textContent = `LIVE DATA: fetching followers ${done}/${found.length}`;
+      }
+    }));
+    // save today's snapshot locally; real Δ once you have 2+ days of history
+    const today = new Date().toISOString().slice(0, 10);
+    const hist = JSON.parse(localStorage.getItem(LSK.hist) || "{}");
+    hist[today] = {};
+    found.forEach(t => { if (t.liveF) hist[today][t.s] = t.f; });
+    const dates = Object.keys(hist).sort();
+    while (dates.length > 35) delete hist[dates.shift()];
+    localStorage.setItem(LSK.hist, JSON.stringify(hist));
+    HIST = hist;
+    const past = dates.filter(d => d < today);
+    if (past.length){
+      const base = hist[past[0]];
+      found.forEach(t => {
+        if (t.liveF && base[t.s]){ t.d = (t.f - base[t.s]) / base[t.s] * 100; t.dReal = 1; }
+      });
+    }
+    // Total Δ: growth since the Jul 13 baseline (or the first day this page ever saw them)
+    const allDates = Object.keys(hist).sort();
+    found.forEach(t => {
+      if (!t.liveF) return;
+      let base = BASE[t.s];
+      if (base == null){
+        for (const dd of allDates){ if (hist[dd][t.s] != null){ base = hist[dd][t.s]; break; } }
+      }
+      if (base){ t.td = (t.f - base) / base * 100; t.gain = t.f - base; }
+    });
+    updateGeneral();
+    // refresh KPIs + status line
+    const withF = ALL.filter(t => t.f != null);
+    $("#kpi-reach").textContent = fmtC(withF.reduce((a, t) => a + t.f, 0));
+    $("#kpi-reach-sub").textContent = "followers · " + withF.length + " tracked names";
+    const missed = twitch.length - found.length;
+    const liveList = Object.values(liveBy);
+    const watching = liveList.reduce((a, st) => a + st.viewer_count, 0);
+    $("#kpi-live").textContent = liveList.length + " live";
+    $("#kpi-live-sub").textContent = liveList.length ? fmtC(watching) + " watching right now" : "nobody streaming right now";
+    $s.innerHTML = `<span class="on">● LIVE</span> · ${found.length} Twitch channels · ${liveList.length} streaming now` +
+      (missed ? ` · ${missed} handles not found` : "") +
+      ` · updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` +
+      ` · auto-refreshes every 15 min` +
+      (past.length ? "" : " · Δ switches to your real history after day 2");
+    $ref.hidden = false;
+    render();
+    renderMovers();
+    renderSpot();
+    if (!window.__su26timer) window.__su26timer = setInterval(goLive, 15 * 60 * 1000);
+  } catch(e){ $s.textContent = "LIVE DATA: " + e.message; }
+}
+if (localStorage.getItem(LSK.tok) && localStorage.getItem(LSK.cid)) goLive();
+</script>
+<script>
+"use strict";
+// ---------- sidebar scrollspy + helpers (CR skin only) ----------
+(function(){
+  const links = [...document.querySelectorAll('.nav a[data-sec]')];
+  const secs = links.map(a => document.getElementById(a.dataset.sec)).filter(Boolean);
+  const title = document.getElementById("pagetitle");
+  let tick = false;
+  function spy(){
+    tick = false;
+    let cur = secs[0];
+    for (const s of secs){ if (s.getBoundingClientRect().top <= 150) cur = s; }
+    links.forEach(a => a.classList.toggle("active", a.dataset.sec === cur.id));
+    if (title && cur.dataset.nav) title.textContent = cur.dataset.nav;
+  }
+  addEventListener("scroll", () => { if (!tick){ tick = true; requestAnimationFrame(spy); } }, { passive: true });
+  addEventListener("resize", spy);
+  spy();
+})();
+function openLive(){
+  const lb = document.getElementById("livebox");
+  if (lb){ lb.open = true; lb.scrollIntoView({ behavior: "smooth", block: "center" }); }
+}
+</script>
+</html>
