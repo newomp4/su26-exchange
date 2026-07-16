@@ -106,5 +106,11 @@
   "t": "2026-07-16T22:59",
   "text": "chat spike: 142 msgs/min (baseline ~14)",
   "auto": 1
+ },
+ {
+  "id": "mro19347gxx",
+  "t": "2026-07-16T23:40",
+  "text": "stream ended: 0.8h · peak 2,131 watching · +132 followers",
+  "auto": 1
  }
 ]
