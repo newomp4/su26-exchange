@@ -920,36 +920,43 @@ function campaignStats(t){
   return { series, base, cur, gained: cur - base, pct: base ? (cur - base) / base * 100 : 0, days, pre };
 }
 function spotChart(series, w, h, pad){
-  const PB = Math.round(h * .12);
+  // layout lanes: marker strip on top (MT), plot in the middle, time labels below (PB)
+  const PB = Math.round(h * .12), MT = 20;
   const pts = series.map(s => s[1]);
   const min = Math.min(...pts), max = Math.max(...pts), span = (max - min) || 1;
   const X = i => pad + i * (w - 2 * pad) / (pts.length - 1);
-  const Y = v => pad + (max - v) * (h - 2 * pad - PB) / span;
+  const Y = v => MT + (max - v) * (h - MT - PB - 8) / span;
   const d = pts.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join("");
   const up = pts[pts.length - 1] >= pts[0];
-  const fs = Math.max(10, Math.round(h * .07));
+  const fs = Math.max(10, Math.round(h * .062));
+  // campaign start: one labeled boundary line instead of a shaded box
   const ci = series.findIndex(s => s[0] >= CAMP_START);
-  const shade = ci >= 0 ? `<rect x="${X(ci)}" y="0" width="${Math.max(0, X(pts.length - 1) - X(ci))}" height="${h - PB}" fill="var(--up-bg)"/>` : "";
-  // campaign log entries as markers, clustered when they'd overlap (hover for the notes)
+  const camp = ci > 0 ? `<line x1="${X(ci)}" y1="${MT - 4}" x2="${X(ci)}" y2="${h - PB}" stroke="var(--up)" stroke-width="1" stroke-dasharray="5 4" opacity=".5"/>
+    <text x="${X(ci) + 5}" y="${h - PB - 6}" font-size="${(fs * .75).toFixed(1)}" fill="var(--up)" opacity=".75" font-family="var(--mono)">campaign</text>` : "";
+  // campaign log markers: quiet clustered dots in the top lane, hover for the notes
   const markPts = NOTES.map(n => {
     let idx = -1;
     for (let i = 0; i < series.length; i++){ if (series[i][0] <= n.t) idx = i; else break; }
     return idx >= 0 ? { x: X(idx), title: n.t.replace("T", " ") + " · " + n.text } : null;
   }).filter(Boolean);
-  const marks = clusterMarks(markPts, 16).map(m =>
-    `<g><line x1="${m.x}" y1="12" x2="${m.x}" y2="${h - PB}" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"/>
-      <circle cx="${m.x}" cy="8" r="${m.n > 1 ? 4.5 : 3.5}" fill="var(--ink)"><title>${esc(m.titles.join("\n"))}</title></circle>
-      ${m.n > 1 ? `<text x="${m.x + 7}" y="11" font-size="9" fill="var(--muted)" font-family="var(--mono)">×${m.n}</text>` : ""}</g>`).join("");
+  const marks = clusterMarks(markPts, 22).map(m =>
+    `<g><circle cx="${m.x}" cy="7" r="${m.n > 1 ? 3.5 : 2.8}" fill="var(--muted)"><title>${esc(m.titles.join("\n"))}</title></circle>
+      <line x1="${m.x}" y1="11" x2="${m.x}" y2="${MT - 3}" stroke="var(--faint)" stroke-width="1"/>
+      ${m.n > 1 ? `<text x="${m.x + 6}" y="10.5" font-size="${(fs * .7).toFixed(1)}" fill="var(--faint)" font-family="var(--mono)">${m.n}</text>` : ""}</g>`).join("");
   const fmtTm = s => s.length > 10 ? s.slice(5, 16).replace("T", " ").replace("-", "/") : s.slice(5).replace("-", "/");
-  const endY = Y(pts[pts.length - 1]);
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="RIZPY follower chart">${shade}${marks}
+  const endX = X(pts.length - 1), endY = Y(pts[pts.length - 1]);
+  // end label flips below the endpoint when the line runs near the top
+  const below = endY < MT + (h - MT - PB) * .3;
+  return `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="RIZPY follower chart">
+    ${camp}
     <path d="${d}L${(w - pad).toFixed(1)} ${h - PB}L${pad} ${h - PB}Z" fill="var(--${up ? "up" : "down"}-bg)"/>
     <path d="${d}" fill="none" stroke="var(--${up ? "up" : "down"})" stroke-width="2" stroke-linejoin="round" pathLength="1" class="sline"/>
-    <circle cx="${X(pts.length - 1)}" cy="${endY}" r="4" fill="var(--${up ? "up" : "down"})" class="sdot" style="animation-delay:.7s"/>
-    <text x="${X(pts.length - 1) - 10}" y="${Math.max(fs + 2, endY - 12)}" text-anchor="end" font-size="${fs}" font-weight="700" fill="var(--${up ? "up" : "down"})" font-family="var(--mono)">${pts[pts.length - 1].toLocaleString()}</text>
-    <text x="${pad + 2}" y="${Math.min(h - PB - 6, Y(pts[0]) + fs + 8)}" font-size="${fs * .85}" fill="var(--faint)" font-family="var(--mono)">${pts[0].toLocaleString()}</text>
-    <text x="${pad}" y="${h - 4}" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[0][0])}</text>
-    <text x="${w - pad}" y="${h - 4}" text-anchor="end" font-size="${fs * .8}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[series.length - 1][0])}</text></svg>`;
+    ${marks}
+    <circle cx="${endX}" cy="${endY}" r="4" fill="var(--${up ? "up" : "down"})" class="sdot" style="animation-delay:.7s"/>
+    <text x="${endX - 10}" y="${below ? endY + fs + 10 : endY - 12}" text-anchor="end" font-size="${fs}" font-weight="700" fill="var(--${up ? "up" : "down"})" font-family="var(--mono)">${pts[pts.length - 1].toLocaleString()}</text>
+    <text x="${pad + 2}" y="${Math.max(MT + fs, Y(pts[0]) - 8)}" font-size="${(fs * .85).toFixed(1)}" fill="var(--faint)" font-family="var(--mono)">${pts[0].toLocaleString()}</text>
+    <text x="${pad}" y="${h - 4}" font-size="${(fs * .8).toFixed(1)}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[0][0])}</text>
+    <text x="${w - pad}" y="${h - 4}" text-anchor="end" font-size="${(fs * .8).toFixed(1)}" fill="var(--faint)" font-family="var(--mono)">${fmtTm(series[series.length - 1][0])}</text></svg>`;
 }
 // net follower change today from the 5-minute samples
 function todayDelta(){
