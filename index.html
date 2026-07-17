@@ -552,7 +552,9 @@
     from 30-day tracker rates (marked ≈). RIZPY's numbers come straight from his 5-minute samples. Sparklines
     without recorded history are illustrative; the endpoints are the data. With live mode connected, Twitch numbers come straight from the
     official Twitch API in your browser, and % change is computed from daily snapshots this page saves
-    locally. That part is real data, not estimates. Instagram/TikTok have no free API, so those stay
+    locally. That part is real data, not estimates. Percentage metrics require a baseline of at least 100
+    followers; below that only raw gains are shown, because +45 followers on a base of 2 would read as
+    +2,250% and bury everyone else. Instagram/TikTok have no free API, so those stay
     snapshots. Subscriber counts: Twitch keeps subs private to each broadcaster (public "sub counts" on
     tracker sites are estimates), so they are not shown here; YouTube subscriber and view counts are public
     and get tracked once a YouTube API key is added to the collector. TikTok, Instagram and X have no free
@@ -980,7 +982,7 @@ function dayChange(tick){
     if (first == null) first = v;
     last = v;
   }
-  if (first == null || last == null || !first) return null;
+  if (first == null || last == null || first < 100) return null;
   return (last - first) / first * 100;
 }
 function renderWall(){
@@ -1196,7 +1198,8 @@ function cmpValuesRaw(tick, m = CMP.metric){
   if (m === "g" || m === "gain"){
     const base = vals.find(v => v != null);
     if (base == null) return null;
-    return vals.map(v => v == null ? null : m === "g" ? (base ? (v / base - 1) * 100 : 0) : v - base);
+    if (m === "g" && base < 100) return null; // tiny baselines make % meaningless
+    return vals.map(v => v == null ? null : m === "g" ? (v / base - 1) * 100 : v - base);
   }
   return vals;
 }
@@ -2174,9 +2177,12 @@ async function syncServer(){
         const latest = pts[pts.length - 1][1];
         if (!t.liveF){ t.f = latest; t.v = t.v || 1; }
         const win = pts.filter(x => x[0] >= cutoff);
-        if (win.length >= 2){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
+        // % metrics need a real baseline: below 100 followers a handful of new
+        // follows reads as thousands of percent (see RUNIK, 2 -> 47)
+        if (win.length >= 2 && win[0][1] >= 100){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
         const base = BASE[t.s] ?? pts[0][1];
-        if (base){ t.td = (latest - base) / base * 100; t.gain = latest - base; }
+        if (base != null){ t.gain = latest - base; }
+        if (base >= 100){ t.td = (latest - base) / base * 100; }
       });
       // RIZPY gets the finest truth available: straight from the 5-minute samples,
       // baselined at his first-ever recorded value (daily buckets hide same-day moves)
@@ -2434,7 +2440,8 @@ async function goLive(){
       if (base == null){
         for (const dd of allDates){ if (hist[dd][t.s] != null){ base = hist[dd][t.s]; break; } }
       }
-      if (base){ t.td = (t.f - base) / base * 100; t.gain = t.f - base; }
+      if (base != null) t.gain = t.f - base;
+      if (base >= 100) t.td = (t.f - base) / base * 100;
     });
     updateGeneral();
     // refresh KPIs + status line
