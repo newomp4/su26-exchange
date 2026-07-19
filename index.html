@@ -885,10 +885,13 @@ function setPreBase(){
   }
 }
 let SPOTSAMPLES = null; // intraday [datetime, followers, viewers] from collector.mjs
-// Jul 13 2026 baseline for "Total Δ": the follower counts baked into this page
+// Jul 13 2026 baseline for "Total Δ". Only tracker-verified counts (v flag)
+// qualify as baselines: estimated ones made platform switches read as huge
+// fake losses (McQueen: 500K YouTube estimate vs 122K real Twitch = "-377K").
+// Unverified people baseline at their first real collected sample instead.
 const BASE = {};
 ALL.forEach(t => {
-  if (t.f != null) BASE[t.s] = t.f;
+  if (t.f != null && t.v) BASE[t.s] = t.f;
   if (PEAKS[t.s] != null) t.peak = PEAKS[t.s];
 });
 let sortKey = "f", sortDir = -1, plat = "all", query = "", LASTROWS = [];
