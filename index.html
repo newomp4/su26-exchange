@@ -288,6 +288,18 @@
   .wd4{background:color-mix(in srgb, var(--down) 32%, var(--card))}
 
   /* CR portfolio */
+  .cpverdict{border:1px solid var(--line);background:var(--card);padding:12px 14px;margin-top:1px}
+  .cpverdict .vh{font-size:13px;font-weight:700;margin-bottom:8px}
+  .cpverdict .vh b{color:var(--up)}
+  .vchips{display:flex;flex-wrap:wrap;gap:6px}
+  .vchip{font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--line);
+    cursor:pointer;font-variant-numeric:tabular-nums}
+  .vchip.win{color:var(--up);border-color:var(--up);background:var(--up-bg)}
+  .vchip.lose{color:var(--down);border-color:var(--line)}
+  .vchip.new{color:var(--faint)}
+  .cpswarm{border:1px solid var(--line);background:var(--card);margin-top:1px}
+  .cpswarm svg{width:100%;display:block}
+  .cpdot{cursor:pointer}
   .cpbars{border:1px solid var(--line);background:var(--card);padding:12px 14px;margin-top:1px}
   .cpbar{display:grid;grid-template-columns:190px 1fr 90px;gap:10px;align-items:center;
     padding:5px 0;font-size:11px}
@@ -1215,10 +1227,89 @@ function renderCrPortfolio(){
       <span class="c ${t.gain > 0 ? "u" : t.gain < 0 ? "dd" : ""}">${t.gain != null ? (t.gain >= 0 ? "+" : "") + t.gain.toLocaleString() : "-"}</span>
       <span class="c ${t.d > 0 ? "u" : t.d < 0 ? "dd" : ""}">${t.d != null ? fmtD(t.d) : "-"}</span>
       <span class="c">${t.lv != null ? "▶ " + fmtC(t.lv) : ""}</span></div>`).join("");
+
+  // campaign-window growth for everyone -> size brackets -> is each CR creator
+  // beating the median streamer of their own size?
+  let verdict = "", swarm = "";
+  if (SERIES && SERIES.times.length > 2){
+    const campG = {};
+    for (const [k, s] of Object.entries(SERIES.series)){
+      if (!s.f) continue;
+      let first = null, firstT = null, last = null;
+      for (let i = 0; i < SERIES.times.length; i++){
+        const v = s.f[i];
+        if (v == null) continue;
+        if (first == null && SERIES.times[i] >= CAMP_START){ first = v; firstT = SERIES.times[i]; }
+        last = v;
+      }
+      if (first != null && last != null && first >= 100)
+        campG[k] = { g: (last - first) / first * 100, base: first, since: firstT.slice(0, 10) };
+    }
+    const brackets = [["under 100K", [], b => b < 1e5], ["100K to 1M", [], b => b >= 1e5 && b < 1e6], ["1M plus", [], b => b >= 1e6]];
+    for (const [k, o] of Object.entries(campG)){
+      const br = brackets.find(b => b[2](o.base));
+      br[1].push({ k, ...o, cr: TAGS.has(k) });
+    }
+    const medOf = arr => med(arr.map(x => x.g));
+    // verdict chips: only members tracked early enough for a fair week
+    const chips = [], CUTOFF = "2026-07-17";
+    let beat = 0, eligible = 0;
+    for (const [, members] of brackets.map(b => [b[0], b[1]])){
+      const m0 = medOf(members);
+      for (const m of members.filter(x => x.cr)){
+        if (m.since > CUTOFF){
+          chips.push(`<span class="vchip new" onclick="cmpToggle('${m.k}')" title="Tracking since ${m.since}, too new for a fair verdict">${m.k} · new</span>`);
+          continue;
+        }
+        eligible++;
+        const diff = m.g - m0;
+        if (diff > 0) beat++;
+        chips.push(`<span class="vchip ${diff > 0 ? "win" : "lose"}" onclick="cmpToggle('${m.k}')" title="${m.g.toFixed(1)}% vs ${m0.toFixed(1)}% median for their size">${m.k} ${diff > 0 ? "▲" : "▼"} ${Math.abs(diff).toFixed(0)}pts</span>`);
+      }
+    }
+    if (eligible)
+      verdict = `<div class="cpverdict"><div class="vh"><b>${beat} of ${eligible}</b> CR creators are beating the median streamer their own size (campaign window, size-matched)</div><div class="vchips">${chips.join("")}</div></div>`;
+    // swarm: the whole class as dots, one lane per size bracket, CR in green
+    const W = Math.max(480, Math.round(el.clientWidth || 1000)), LH = 66, PL = 150, PR = 60;
+    const lanes = brackets.filter(b => b[1].length >= 2);
+    const H2 = lanes.length * LH + 14;
+    let sv = "";
+    lanes.forEach(([label, members], li) => {
+      const cy = 14 + li * LH + LH / 2;
+      const gmin = Math.min(...members.map(m => m.g)), gmax = Math.max(...members.map(m => m.g));
+      const span = (gmax - gmin) || 1;
+      const gx = g => PL + (g - gmin) / span * (W - PL - PR);
+      const m0 = medOf(members);
+      sv += `<line x1="${PL}" y1="${cy}" x2="${W - PR}" y2="${cy}" stroke="var(--line)"/>
+        <line x1="${gx(m0)}" y1="${cy - 16}" x2="${gx(m0)}" y2="${cy + 16}" stroke="var(--faint)" stroke-dasharray="3 3"/>
+        <text x="${12}" y="${cy - 4}" font-size="11" fill="var(--ink)" font-weight="700" font-family="var(--mono)">${label}</text>
+        <text x="${12}" y="${cy + 10}" font-size="9" fill="var(--faint)" font-family="var(--mono)">median ${fmtD(m0)} · n=${members.length}</text>
+        <text x="${PL}" y="${cy + 28}" font-size="8.5" fill="var(--faint)" font-family="var(--mono)">${fmtD(gmin)}</text>
+        <text x="${W - PR}" y="${cy + 28}" text-anchor="end" font-size="8.5" fill="var(--faint)" font-family="var(--mono)">${fmtD(gmax)}</text>`;
+      const sorted = members.slice().sort((a, b) => a.g - b.g);
+      let prevX = -1e9, lvl = 0, side = 1;
+      for (const m of sorted){
+        const x = gx(m.g);
+        lvl = (x - prevX < 8) ? (lvl + 1) % 3 : 0;
+        prevX = x;
+        const y = cy + (lvl ? (lvl === 1 ? -7 : 7) : 0);
+        if (m.cr){
+          side = -side;
+          sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="4.5" fill="var(--up)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}% (CR)</title></circle>
+            <text x="${x.toFixed(1)}" y="${(y + (side > 0 ? 20 : -13)).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--up)" font-family="var(--mono)">${m.k}</text>`;
+        } else {
+          sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="3" fill="var(--ghost)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}%</title></circle>`;
+        }
+      }
+    });
+    swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" height="${H2}">${sv}</svg></div>`;
+  }
   el.innerHTML = `
     <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt]) =>
       `<div class="kpi" title="${tt}"><div class="k">${k}</div><div class="v${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
     </div>
+    ${verdict}
+    ${swarm}
     <div class="cpbars">
       ${bar("median weekly growth · CR vs field", crD, fdD, fmtD)}
       ${bar("avg gained per creator · CR vs field", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v))))}
@@ -1254,6 +1345,7 @@ async function loadSeries(){
   renderCmp();
   renderIndex();
   renderWall();
+  renderCrPortfolio();
 }
 function cmpValues(tick, m = CMP.metric){
   // cohort pseudo-lines: the average of every member's own curve
