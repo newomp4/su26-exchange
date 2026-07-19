@@ -240,6 +240,12 @@
   "auto": 1
  },
  {
+  "id": "mrr2hzg5l70",
+  "t": "2026-07-18T20:38",
+  "text": "crossed 30,500 followers",
+  "auto": 1
+ },
+ {
   "id": "mrqqttylvf0",
   "t": "2026-07-18T21:11",
   "text": "chat spike: 106 msgs/min (baseline ~7)",
@@ -249,6 +255,12 @@
   "id": "mrr0rcd2ljx",
   "t": "2026-07-19T01:49",
   "text": "chat spike: 31 msgs/min (baseline ~3)",
+  "auto": 1
+ },
+ {
+  "id": "mrr2inpi5vr",
+  "t": "2026-07-19T02:39",
+  "text": "chat spike: 242 msgs/min (baseline ~11)",
   "auto": 1
  }
 ]
