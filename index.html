@@ -287,6 +287,28 @@
   .wd3{background:color-mix(in srgb, var(--down) 22%, var(--card))}
   .wd4{background:color-mix(in srgb, var(--down) 32%, var(--card))}
 
+  /* CR portfolio */
+  .cpbars{border:1px solid var(--line);background:var(--card);padding:12px 14px;margin-top:1px}
+  .cpbar{display:grid;grid-template-columns:190px 1fr 90px;gap:10px;align-items:center;
+    padding:5px 0;font-size:11px}
+  .cpbar .lbl{color:var(--muted);font-family:var(--sans)}
+  .cpbar .track{height:12px;position:relative;background:none}
+  .cpbar .track i{position:absolute;left:0;height:5px;display:block}
+  .cpbar .track .b1{top:0;background:var(--up)}
+  .cpbar .track .b2{bottom:0;background:var(--ghost)}
+  .cpbar .val{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cpbar .val b{color:var(--up)}
+  .cpmem{border:1px solid var(--line);background:var(--card);margin-top:1px;overflow-x:auto}
+  .cprow{display:flex;gap:12px;align-items:baseline;padding:7px 12px;border-top:1px solid var(--line);
+    font-size:12px;cursor:pointer;white-space:nowrap}
+  .cprow:first-child{border-top:none}
+  .cprow:hover{background:var(--bg)}
+  .cprow .nm3{font-weight:600;min-width:130px}
+  .cprow .c{color:var(--muted);font-variant-numeric:tabular-nums;min-width:80px;text-align:right}
+  .cprow .c.u{color:var(--up)}
+  .cprow .c.dd{color:var(--down)}
+  @media (max-width:700px){.cpbar{grid-template-columns:110px 1fr 80px}}
+
   /* CR campaign tags */
   .crtag{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;border:1px solid var(--line);
     background:none;color:var(--faint);padding:1px 5px;cursor:pointer;opacity:0;transition:opacity .15s}
@@ -419,6 +441,9 @@
     </div>
     <div id="telem"></div>
   </div>
+
+  <h2>CR portfolio <span class="rule"></span><span class="note">creators running Content Rewards campaigns vs the rest of the class</span></h2>
+  <div id="crport"></div>
 
   <h2>Campaign log <span class="rule"></span><span class="note">what happened when · each entry becomes a marker on RIZPY's charts</span></h2>
   <div class="notesbox">
@@ -594,7 +619,7 @@ const T = [
   {s:"JAIDA",  n:"Jaidabunni",    p:"YouTube",   f:900000,  d:2.2, v:0, bio:"Lifestyle & reaction YouTuber"},
   {s:"YUSUF",  n:"Yusuf7n",       p:"Twitch",    login:"yusuf7n", f:800000, d:1.3, v:0, bio:"Fortnite creator"},
   {s:"SMOKE",  n:"Smokecertified",p:"YouTube",   f:800000,  d:3.5, v:0, gt:1, bio:"Golden-ticket admit; gaming YouTuber"},
-  {s:"MCQN",   n:"McQueen",       p:"YouTube",   f:500000,  d:8.0, v:0, gt:1, bio:"Golden-ticket admit"},
+  {s:"MCQN",   n:"McQueen",       p:"Twitch",    login:"mcqueennlive", f:500000, d:8.0, v:0, gt:1, bio:"Golden-ticket admit; won his seat live on Mafiathon"},
   {s:"PINK",   n:"s0pink",        p:"Twitch",    login:"s0pink", f:420000, d:5.0, v:0, bio:"Rising variety streamer"},
   {s:"MOOK",   n:"Mookie",        p:"Twitch",    login:"mookie", f:350000, d:4.2, v:0, bio:"Rising comedy streamer"},
   {s:"BONNIE", n:"Bonnie Rabbit", p:"Twitch",    login:"bonnierabbit", f:280000, d:6.1, v:0, bio:"Rising IRL / variety streamer"},
@@ -833,6 +858,12 @@ const ALL = T.concat(ROSTER.map(([n,p,gt]) => {
 // TikTok (@rizpyytt, ~112K) and X have no free API, so they stay out of the data.
 ALL.push({ s: "RIZPYT", n: "Rizpy (YouTube)", p: "YouTube", f: null, d: null, u: 1,
   bio: "RIZPY's YouTube channel (@RizpyYT), subscribers tracked per run" });
+// CR clients whose handles were confirmed later
+ALL.push(
+  { s: "ARKY", n: "Arky", p: "Twitch", login: "arky", f: null, d: null, u: 1, bio: "Class of '26" },
+  { s: "RYNENZ", n: "rynenzo", p: "Twitch", login: "rynenzo", f: null, d: null, u: 1, bio: "Class of '26" },
+  { s: "CHICKL", n: "Chicklet", p: "Twitch", login: "chicklethf", f: null, d: null, u: 1, bio: "SU campus" }
+);
 
 const SPOT = "RizpyYT";
 // clipping campaign window: baseline is RIZPY's count when SU campus opens
@@ -1113,13 +1144,13 @@ document.querySelectorAll("[data-tw]").forEach(c => c.addEventListener("click", 
 async function loadTags(){
   const r = await fetch(PUBLIC ? "cr-tags.json" : "/api/tags", { cache: "no-store" })
     .then(r => r.ok ? r.json() : null).catch(() => null);
-  if (r){ TAGS = new Set(r); render(); renderCmp(); renderWall(); updateCrKpi(); }
+  if (r){ TAGS = new Set(r); render(); renderCmp(); renderWall(); updateCrKpi(); renderCrPortfolio(); }
 }
 async function toggleTag(k){
   if (PUBLIC) return;
   const r = await fetch("/api/tags", { method: "POST", body: JSON.stringify({ toggle: k }) })
     .then(r => r.ok ? r.json() : null).catch(() => null);
-  if (r && r.tags){ TAGS = new Set(r.tags); render(); renderCmp(); renderWall(); updateCrKpi(); }
+  if (r && r.tags){ TAGS = new Set(r.tags); render(); renderCmp(); renderWall(); updateCrKpi(); renderCrPortfolio(); }
 }
 function updateCrKpi(){
   const el = $("#kpi-cr");
@@ -1138,6 +1169,58 @@ function updateCrKpi(){
   el.textContent = fmtD(c);
   el.className = "v " + (c >= 0 ? "up" : "dn");
   $("#kpi-cr-sub").textContent = "avg of " + cr.length + (field.length ? " · field " + fmtD(avg(field)) : "");
+}
+
+// ---------- CR portfolio: the client cohort vs the rest of the class ----------
+function renderCrPortfolio(){
+  const el = $("#crport");
+  if (!el) return;
+  const tracked = ALL.filter(t => t.f != null);
+  const cr = tracked.filter(t => TAGS.has(t.s));
+  const fd = tracked.filter(t => !TAGS.has(t.s));
+  if (!cr.length){
+    el.innerHTML = '<div class="notesempty">Tag creators with the CR button on the board and their combined story builds here.</div>';
+    return;
+  }
+  const sum = (a, k) => a.reduce((s, t) => s + (t[k] || 0), 0);
+  const med = a => { const s = a.filter(v => v != null).sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  const crGainers = cr.filter(t => t.gain != null), fdGainers = fd.filter(t => t.gain != null);
+  const crGain = sum(crGainers, "gain"), fdGain = sum(fdGainers, "gain");
+  const crAvg = crGainers.length ? crGain / crGainers.length : null;
+  const fdAvg = fdGainers.length ? fdGain / fdGainers.length : null;
+  const crD = med(cr.map(t => t.dReal ? t.d : null)), fdD = med(fd.map(t => t.dReal ? t.d : null));
+  const live = cr.filter(t => t.lv != null);
+  const share = (crGain + fdGain) > 0 ? crGain / (crGain + fdGain) * 100 : null;
+  const tiles = [
+    ["Creators", String(cr.length), "", "Tagged as running Content Rewards campaigns"],
+    ["Combined reach", fmtC(sum(cr, "f")), "", "Their followers added together"],
+    ["Gained together", (crGain >= 0 ? "+" : "") + crGain.toLocaleString(), crGain >= 0 ? "up" : "dn", "Followers gained since the Jul 13 baseline, all CR creators combined"],
+    ["Share of class gains", share != null ? share.toFixed(1) + "%" : "-", "", cr.length + " of " + tracked.length + " tracked people (" + (cr.length / tracked.length * 100).toFixed(0) + "% of the class) took this share of all follower gains"],
+    ["Live right now", live.length ? live.length + " · " + fmtC(sum(live, "lv")) + " watching" : "0", live.length ? "up" : "", "CR creators streaming at this moment"],
+    ["Clip views", fmtC(sum(cr, "cv")), "", "Views on their Twitch clips made since Jul 15, combined"]
+  ];
+  const bar = (label, a, b, fmt) => {
+    const mx = Math.max(Math.abs(a || 0), Math.abs(b || 0)) || 1;
+    return `<div class="cpbar"><span class="lbl">${label}</span>
+      <span class="track"><i class="b1" style="width:${Math.max(2, Math.abs(a || 0) / mx * 100)}%"></i><i class="b2" style="width:${Math.max(2, Math.abs(b || 0) / mx * 100)}%"></i></span>
+      <span class="val"><b>${a != null ? fmt(a) : "-"}</b> · ${b != null ? fmt(b) : "-"}</span></div>`;
+  };
+  const rows = cr.slice().sort((a, b) => (b.gain || 0) - (a.gain || 0)).map(t =>
+    `<div class="cprow" onclick="cmpToggle('${t.s}')" title="Add to compare">
+      <span class="nm3">${esc(t.n)}</span>
+      <span class="c">${fmtC(t.f)}</span>
+      <span class="c ${t.gain > 0 ? "u" : t.gain < 0 ? "dd" : ""}">${t.gain != null ? (t.gain >= 0 ? "+" : "") + t.gain.toLocaleString() : "-"}</span>
+      <span class="c ${t.d > 0 ? "u" : t.d < 0 ? "dd" : ""}">${t.d != null ? fmtD(t.d) : "-"}</span>
+      <span class="c">${t.lv != null ? "▶ " + fmtC(t.lv) : ""}</span></div>`).join("");
+  el.innerHTML = `
+    <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt]) =>
+      `<div class="kpi" title="${tt}"><div class="k">${k}</div><div class="v${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
+    </div>
+    <div class="cpbars">
+      ${bar("median weekly growth · CR vs field", crD, fdD, fmtD)}
+      ${bar("avg gained per creator · CR vs field", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v))))}
+    </div>
+    <div class="cpmem">${rows}</div>`;
 }
 
 // ---------- compare: everyone as a line, any metric ----------
@@ -2209,7 +2292,7 @@ async function syncServer(){
     }
   } catch(e){}
   if (got){
-    render(); renderMovers(); renderSpot(); renderWall(); renderWire(); renderTelem();
+    render(); renderMovers(); renderSpot(); renderWall(); renderWire(); renderTelem(); renderCrPortfolio();
     if (!focusEl.hidden) renderFocus();
   }
 }
