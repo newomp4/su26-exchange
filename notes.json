@@ -292,5 +292,11 @@
   "t": "2026-07-19T19:21",
   "text": "chat spike: 45 msgs/min (baseline ~2)",
   "auto": 1
+ },
+ {
+  "id": "mrs5qatgib0",
+  "t": "2026-07-19T20:56",
+  "text": "chat spike: 117 msgs/min (baseline ~21)",
+  "auto": 1
  }
 ]
