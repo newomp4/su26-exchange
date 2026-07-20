@@ -1200,9 +1200,6 @@ function renderCrPortfolio(){
   const med = a => { const s = a.filter(v => v != null).sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : null; };
   const crGainers = cr.filter(t => t.gain != null), fdGainers = fd.filter(t => t.gain != null);
   const crGain = sum(crGainers, "gain"), fdGain = sum(fdGainers, "gain");
-  const crAvg = crGainers.length ? crGain / crGainers.length : null;
-  const fdAvg = fdGainers.length ? fdGain / fdGainers.length : null;
-  const crD = med(cr.map(t => t.dReal ? t.d : null)), fdD = med(fd.map(t => t.dReal ? t.d : null));
   const live = cr.filter(t => t.lv != null);
   const share = (crGain + fdGain) > 0 ? crGain / (crGain + fdGain) * 100 : null;
   const tiles = [
@@ -1230,9 +1227,10 @@ function renderCrPortfolio(){
   // campaign-window growth for everyone -> size brackets -> is each CR creator
   // beating the median streamer of their own size?
   const W = Math.max(480, Math.round(el.clientWidth || 1000));
+  const CUTOFF = "2026-07-17";
   let verdict = "", swarm = "", curve = "";
+  let campG = {};
   if (SERIES && SERIES.times.length > 2){
-    const campG = {};
     for (const [k, s] of Object.entries(SERIES.series)){
       if (!s.f) continue;
       let first = null, firstT = null, last = null;
@@ -1251,7 +1249,7 @@ function renderCrPortfolio(){
       br[1].push({ k, ...o, cr: TAGS.has(k) });
     }
     const medOf = arr => med(arr.map(x => x.g));
-    const chips = [], CUTOFF = "2026-07-17";
+    const chips = [];
     let beat = 0, eligible = 0;
     for (const [, members] of brackets.map(b => [b[0], b[1]])){
       const m0 = medOf(members);
@@ -1304,8 +1302,21 @@ function renderCrPortfolio(){
     });
     swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" style="height:${H2}px">${sv}</svg></div>`;
 
-    // cohort curve: average growth of CR members vs the field, over time
-    const gCr = cmpValues("CRAVG", "g"), gFd = cmpValues("FIELD", "g");
+    // cohort curve: average growth over time, veterans only, so one-day-old
+    // members cannot drag the cohort line down
+    const vetKeys = Object.keys(campG).filter(k => TAGS.has(k) && campG[k].since <= CUTOFF);
+    const fdKeys = Object.keys(SERIES.series).filter(k => !TAGS.has(k));
+    const avgSeries = keys => {
+      const rowsA = keys.map(k => cmpValuesRaw(k, "g")).filter(Boolean);
+      if (!rowsA.length) return null;
+      return SERIES.times.map((_, i) => {
+        let s = 0, n = 0;
+        for (const r of rowsA){ if (r[i] != null){ s += r[i]; n++; } }
+        return n ? s / n : null;
+      });
+    };
+    const gCr = vetKeys.length ? avgSeries(vetKeys) : null;
+    const gFd = avgSeries(fdKeys);
     if (gCr && gFd){
       const H3 = 170, P = 16, TP2 = 14, PB2 = 24, RP2 = 96;
       const N = SERIES.times.length;
@@ -1329,7 +1340,7 @@ function renderCrPortfolio(){
       if (Math.abs(yCr - yFd) < 14){ if (yCr < yFd){ yCr -= 7; yFd += 7; } else { yCr += 7; yFd -= 7; } }
       curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
         ${dl}
-        <text x="${P}" y="${TP2 - 2}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth of each cohort member since their first campaign sample</text>
+        <text x="${P}" y="${TP2 - 2}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth · the ${vetKeys.length} CR creators tracked all week vs the field · newcomers join once they have history</text>
         <path d="${path2(gFd)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linejoin="round"/>
         <path d="${path2(gCr)}" fill="none" stroke="var(--up)" stroke-width="2.4" stroke-linejoin="round"/>
         <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--up)" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
@@ -1340,8 +1351,17 @@ function renderCrPortfolio(){
     }
   }
 
-  // head to head: every metric we track, CR column vs field column
+  // head to head: every metric we track, CR column vs field column.
+  // Growth/viewer rows use only the veterans tracked all week; clip and hour
+  // rows are full-campaign API counts, fair for everyone.
+  const isVet = t => campG[t.s] && campG[t.s].since <= CUTOFF;
+  const crVet = Object.keys(campG).length ? cr.filter(isVet) : cr;
+  const newcomers = cr.length - crVet.length;
   const avg = (a, k) => { const v = a.map(t => t[k]).filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const crVetGainers = crVet.filter(t => t.gain != null);
+  const crAvg = crVetGainers.length ? sum(crVetGainers, "gain") / crVetGainers.length : null;
+  const fdAvg = fdGainers.length ? fdGain / fdGainers.length : null;
+  const crD = med(crVet.map(t => t.dReal ? t.d : null)), fdD = med(fd.map(t => t.dReal ? t.d : null));
   const peakOf = k => {
     const s = SERIES && SERIES.series[k];
     if (!s || !s.lv) return null;
@@ -1351,23 +1371,24 @@ function renderCrPortfolio(){
   const avgPeak = a => { const v = a.map(t => peakOf(t.s)).filter(x => x != null && x > 0); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
   const pctLive = a => a.length ? a.filter(t => t.lv != null).length / a.length * 100 : null;
   const h2h = [
-    ["Median weekly growth", crD, fdD, fmtD],
-    ["Avg followers gained", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v)))],
-    ["Avg peak viewers", avgPeak(cr), avgPeak(fd), v => fmtC(Math.round(v))],
-    ["Avg hours streamed", avg(cr, "hl"), avg(fd, "hl"), v => v.toFixed(1) + "h"],
-    ["Avg clips made", avg(cr, "clips"), avg(fd, "clips"), v => String(Math.round(v))],
-    ["Avg Twitch clip views", avg(cr, "cv"), avg(fd, "cv"), v => fmtC(Math.round(v))],
-    ["Streaming right now", pctLive(cr), pctLive(fd), v => v.toFixed(0) + "%"]
+    ["Median weekly growth", crD, fdD, fmtD, 1],
+    ["Avg followers gained", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v))), 1],
+    ["Avg peak viewers", avgPeak(crVet), avgPeak(fd), v => fmtC(Math.round(v)), 1],
+    ["Avg hours streamed", avg(cr, "hl"), avg(fd, "hl"), v => v.toFixed(1) + "h", 0],
+    ["Avg clips made", avg(cr, "clips"), avg(fd, "clips"), v => String(Math.round(v)), 0],
+    ["Avg Twitch clip views", avg(cr, "cv"), avg(fd, "cv"), v => fmtC(Math.round(v)), 0],
+    ["Streaming right now", pctLive(cr), pctLive(fd), v => v.toFixed(0) + "%", 0]
   ];
   const table = `<div class="cptab">
     <div class="cptr cphead"><span>head to head</span><span>CR creators</span><span>the field</span><span>edge</span></div>
-    ${h2h.map(([label, a, b, fmt]) => {
+    ${h2h.map(([label, a, b, fmt, vetOnly]) => {
       const edge = (a == null || b == null) ? "" : a > b ? "cr" : a < b ? "fd" : "";
-      return `<div class="cptr"><span class="lbl">${label}</span>
+      return `<div class="cptr"><span class="lbl">${label}${vetOnly && newcomers ? ` <span title="Only the ${crVet.length} creators tracked all week; ${newcomers} newcomers excluded until they have history">*</span>` : ""}</span>
         <span class="c ${edge === "cr" ? "u" : ""}">${a != null ? fmt(a) : "-"}</span>
         <span class="c">${b != null ? fmt(b) : "-"}</span>
         <span class="c ${edge === "cr" ? "u" : ""}">${edge === "cr" ? "▲ CR" : edge === "fd" ? "field" : "-"}</span></div>`;
     }).join("")}
+    ${newcomers ? `<div class="cptr"><span class="lbl" style="font-size:10.5px;color:var(--faint)">* growth and viewer rows compare the ${crVet.length} creators tracked all week; ${newcomers} signed this weekend and join once they have real history</span><span></span><span></span><span></span></div>` : ""}
   </div>`;
   el.innerHTML = `
     <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt]) =>
