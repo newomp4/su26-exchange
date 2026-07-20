@@ -300,16 +300,15 @@
   .cpswarm{border:1px solid var(--line);background:var(--card);margin-top:1px}
   .cpswarm svg{width:100%;display:block}
   .cpdot{cursor:pointer}
-  .cpbars{border:1px solid var(--line);background:var(--card);padding:12px 14px;margin-top:1px}
-  .cpbar{display:grid;grid-template-columns:190px 1fr 90px;gap:10px;align-items:center;
-    padding:5px 0;font-size:11px}
-  .cpbar .lbl{color:var(--muted);font-family:var(--sans)}
-  .cpbar .track{height:12px;position:relative;background:none}
-  .cpbar .track i{position:absolute;left:0;height:5px;display:block}
-  .cpbar .track .b1{top:0;background:var(--up)}
-  .cpbar .track .b2{bottom:0;background:var(--ghost)}
-  .cpbar .val{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .cpbar .val b{color:var(--up)}
+  .cptab{border:1px solid var(--line);background:var(--card);margin-top:1px;overflow-x:auto}
+  .cptr{display:grid;grid-template-columns:1fr 120px 120px 80px;gap:10px;align-items:baseline;
+    padding:7px 12px;border-top:1px solid var(--line);font-size:12px;min-width:460px}
+  .cptr:first-child{border-top:none}
+  .cptr .lbl{color:var(--muted);font-family:var(--sans)}
+  .cptr .c{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cptr .c.u{color:var(--up);font-weight:700}
+  .cptr.cphead span{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .cptr.cphead span:not(:first-child){text-align:right}
   .cpmem{border:1px solid var(--line);background:var(--card);margin-top:1px;overflow-x:auto}
   .cprow{display:flex;gap:12px;align-items:baseline;padding:7px 12px;border-top:1px solid var(--line);
     font-size:12px;cursor:pointer;white-space:nowrap}
@@ -1230,7 +1229,8 @@ function renderCrPortfolio(){
 
   // campaign-window growth for everyone -> size brackets -> is each CR creator
   // beating the median streamer of their own size?
-  let verdict = "", swarm = "";
+  const W = Math.max(480, Math.round(el.clientWidth || 1000));
+  let verdict = "", swarm = "", curve = "";
   if (SERIES && SERIES.times.length > 2){
     const campG = {};
     for (const [k, s] of Object.entries(SERIES.series)){
@@ -1251,7 +1251,6 @@ function renderCrPortfolio(){
       br[1].push({ k, ...o, cr: TAGS.has(k) });
     }
     const medOf = arr => med(arr.map(x => x.g));
-    // verdict chips: only members tracked early enough for a fair week
     const chips = [], CUTOFF = "2026-07-17";
     let beat = 0, eligible = 0;
     for (const [, members] of brackets.map(b => [b[0], b[1]])){
@@ -1269,51 +1268,115 @@ function renderCrPortfolio(){
     }
     if (eligible)
       verdict = `<div class="cpverdict"><div class="vh"><b>${beat} of ${eligible}</b> CR creators are beating the median streamer their own size (campaign window, size-matched)</div><div class="vchips">${chips.join("")}</div></div>`;
+
     // swarm: the whole class as dots, one lane per size bracket, CR in green
-    const W = Math.max(480, Math.round(el.clientWidth || 1000)), LH = 66, PL = 150, PR = 60;
+    const LH = 92, PL = 170, PR = 40;
     const lanes = brackets.filter(b => b[1].length >= 2);
-    const H2 = lanes.length * LH + 14;
+    const H2 = lanes.length * LH + 10;
     let sv = "";
     lanes.forEach(([label, members], li) => {
-      const cy = 14 + li * LH + LH / 2;
+      const cy = 10 + li * LH + LH / 2 + 6;
       const gmin = Math.min(...members.map(m => m.g)), gmax = Math.max(...members.map(m => m.g));
       const span = (gmax - gmin) || 1;
       const gx = g => PL + (g - gmin) / span * (W - PL - PR);
       const m0 = medOf(members);
       sv += `<line x1="${PL}" y1="${cy}" x2="${W - PR}" y2="${cy}" stroke="var(--line)"/>
-        <line x1="${gx(m0)}" y1="${cy - 16}" x2="${gx(m0)}" y2="${cy + 16}" stroke="var(--faint)" stroke-dasharray="3 3"/>
-        <text x="${12}" y="${cy - 4}" font-size="11" fill="var(--ink)" font-weight="700" font-family="var(--mono)">${label}</text>
-        <text x="${12}" y="${cy + 10}" font-size="9" fill="var(--faint)" font-family="var(--mono)">median ${fmtD(m0)} · n=${members.length}</text>
-        <text x="${PL}" y="${cy + 28}" font-size="8.5" fill="var(--faint)" font-family="var(--mono)">${fmtD(gmin)}</text>
-        <text x="${W - PR}" y="${cy + 28}" text-anchor="end" font-size="8.5" fill="var(--faint)" font-family="var(--mono)">${fmtD(gmax)}</text>`;
+        <line x1="${gx(m0).toFixed(1)}" y1="${cy - 14}" x2="${gx(m0).toFixed(1)}" y2="${cy + 14}" stroke="var(--faint)" stroke-dasharray="3 3"><title>bracket median ${fmtD(m0)}</title></line>
+        <text x="12" y="${cy - 6}" font-size="11" fill="var(--ink)" font-weight="700" font-family="var(--mono)">${label}</text>
+        <text x="12" y="${cy + 8}" font-size="9" fill="var(--faint)" font-family="var(--mono)">median ${fmtD(m0)} · n=${members.length}</text>`;
       const sorted = members.slice().sort((a, b) => a.g - b.g);
-      let prevX = -1e9, lvl = 0, side = 1;
+      let prevX = -1e9, lvl = 0, li2 = 0;
       for (const m of sorted){
         const x = gx(m.g);
-        lvl = (x - prevX < 8) ? (lvl + 1) % 3 : 0;
+        lvl = (x - prevX < 9) ? (lvl + 1) % 3 : 0;
         prevX = x;
         const y = cy + (lvl ? (lvl === 1 ? -7 : 7) : 0);
         if (m.cr){
-          side = -side;
-          sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="4.5" fill="var(--up)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}% (CR)</title></circle>
-            <text x="${x.toFixed(1)}" y="${(y + (side > 0 ? 20 : -13)).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--up)" font-family="var(--mono)">${m.k}</text>`;
+          const ly = cy - 22 - (li2++ % 2) * 13; // label rows above the lane, alternating
+          const lx = Math.max(PL + 24, Math.min(W - PR - 24, x));
+          sv += `<line x1="${x.toFixed(1)}" y1="${y - 5}" x2="${lx.toFixed(1)}" y2="${ly + 3}" stroke="var(--up)" stroke-width="1" opacity=".45"/>
+            <circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="4.5" fill="var(--up)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}% (CR)</title></circle>
+            <text x="${lx.toFixed(1)}" y="${ly}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--up)" font-family="var(--mono)">${m.k}</text>`;
         } else {
           sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="3" fill="var(--ghost)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}%</title></circle>`;
         }
       }
     });
-    swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" height="${H2}">${sv}</svg></div>`;
+    swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" style="height:${H2}px">${sv}</svg></div>`;
+
+    // cohort curve: average growth of CR members vs the field, over time
+    const gCr = cmpValues("CRAVG", "g"), gFd = cmpValues("FIELD", "g");
+    if (gCr && gFd){
+      const H3 = 170, P = 16, TP2 = 14, PB2 = 24, RP2 = 96;
+      const N = SERIES.times.length;
+      const all2 = [...gCr, ...gFd].filter(v => v != null);
+      let mn = Math.min(...all2), mx = Math.max(...all2);
+      if (mn === mx){ mn -= 1; mx += 1; }
+      const X2 = i => P + i * (W - P - RP2) / (N - 1);
+      const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
+      const path2 = vals => {
+        let d = "", st = false;
+        vals.forEach((v, i) => { if (v == null) return; d += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
+        return d;
+      };
+      let dl = "";
+      for (let i = 1; i < N; i++)
+        if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
+          dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+      const lastOf = a => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
+      const eCr = lastOf(gCr), eFd = lastOf(gFd);
+      let yCr = Y2(eCr), yFd = Y2(eFd);
+      if (Math.abs(yCr - yFd) < 14){ if (yCr < yFd){ yCr -= 7; yFd += 7; } else { yCr += 7; yFd -= 7; } }
+      curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
+        ${dl}
+        <text x="${P}" y="${TP2 - 2}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth of each cohort member since their first campaign sample</text>
+        <path d="${path2(gFd)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="${path2(gCr)}" fill="none" stroke="var(--up)" stroke-width="2.4" stroke-linejoin="round"/>
+        <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--up)" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
+        <text x="${W - RP2 + 8}" y="${(yFd + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">field ${fmtD(eFd)}</text>
+        <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
+        <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
+      </svg></div>`;
+    }
   }
+
+  // head to head: every metric we track, CR column vs field column
+  const avg = (a, k) => { const v = a.map(t => t[k]).filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const peakOf = k => {
+    const s = SERIES && SERIES.series[k];
+    if (!s || !s.lv) return null;
+    const v = s.lv.filter(x => x != null);
+    return v.length ? Math.max(...v) : null;
+  };
+  const avgPeak = a => { const v = a.map(t => peakOf(t.s)).filter(x => x != null && x > 0); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const pctLive = a => a.length ? a.filter(t => t.lv != null).length / a.length * 100 : null;
+  const h2h = [
+    ["Median weekly growth", crD, fdD, fmtD],
+    ["Avg followers gained", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v)))],
+    ["Avg peak viewers", avgPeak(cr), avgPeak(fd), v => fmtC(Math.round(v))],
+    ["Avg hours streamed", avg(cr, "hl"), avg(fd, "hl"), v => v.toFixed(1) + "h"],
+    ["Avg clips made", avg(cr, "clips"), avg(fd, "clips"), v => String(Math.round(v))],
+    ["Avg Twitch clip views", avg(cr, "cv"), avg(fd, "cv"), v => fmtC(Math.round(v))],
+    ["Streaming right now", pctLive(cr), pctLive(fd), v => v.toFixed(0) + "%"]
+  ];
+  const table = `<div class="cptab">
+    <div class="cptr cphead"><span>head to head</span><span>CR creators</span><span>the field</span><span>edge</span></div>
+    ${h2h.map(([label, a, b, fmt]) => {
+      const edge = (a == null || b == null) ? "" : a > b ? "cr" : a < b ? "fd" : "";
+      return `<div class="cptr"><span class="lbl">${label}</span>
+        <span class="c ${edge === "cr" ? "u" : ""}">${a != null ? fmt(a) : "-"}</span>
+        <span class="c">${b != null ? fmt(b) : "-"}</span>
+        <span class="c ${edge === "cr" ? "u" : ""}">${edge === "cr" ? "▲ CR" : edge === "fd" ? "field" : "-"}</span></div>`;
+    }).join("")}
+  </div>`;
   el.innerHTML = `
     <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt]) =>
       `<div class="kpi" title="${tt}"><div class="k">${k}</div><div class="v${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
     </div>
     ${verdict}
     ${swarm}
-    <div class="cpbars">
-      ${bar("median weekly growth · CR vs field", crD, fdD, fmtD)}
-      ${bar("avg gained per creator · CR vs field", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v))))}
-    </div>
+    ${curve}
+    ${table}
     <div class="cpmem">${rows}</div>`;
 }
 
@@ -2403,7 +2466,7 @@ renderWire();
 let rszT;
 addEventListener("resize", () => {
   clearTimeout(rszT);
-  rszT = setTimeout(() => { renderIndex(); renderCmp(); renderTelem(); renderSpot(); }, 200);
+  rszT = setTimeout(() => { renderIndex(); renderCmp(); renderTelem(); renderSpot(); renderCrPortfolio(); }, 200);
 });
 $("#notein").addEventListener("keydown", e => { if (e.key === "Enter") addNote(); });
 setInterval(() => { syncServer(); loadNotes(); loadSeries(); loadTags(); loadChat(); }, 5 * 60 * 1000);
