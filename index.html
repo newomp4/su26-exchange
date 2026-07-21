@@ -1313,7 +1313,10 @@ function renderCrPortfolio(){
       for (const k of Object.keys(campG)) gAll[k] = cmpValuesRaw(k, "g");
       const brIdx = k => campG[k].base < 1e5 ? 0 : campG[k].base < 1e6 ? 1 : 2;
       const N = SERIES.times.length;
-      const exc = [];
+      // green: the CR veterans' average growth. gray: a "twin cohort" — what the
+      // median streamer of each veteran's size did over the same window. Both
+      // lines move; the gap between them is the size-matched CR effect.
+      const crLine = [], twinLine = [];
       for (let i = 0; i < N; i++){
         const buckets = [[], [], []];
         for (const k of Object.keys(gAll)){
@@ -1321,52 +1324,47 @@ function renderCrPortfolio(){
           if (v != null) buckets[brIdx(k)].push(v);
         }
         const meds = buckets.map(a => a.length ? med(a) : null);
-        let s = 0, n = 0;
+        let sC = 0, sT = 0, n = 0;
         for (const k of vetKeys){
           const v = gAll[k] && gAll[k][i], m = meds[brIdx(k)];
-          if (v != null && m != null){ s += v - m; n++; }
+          if (v != null && m != null){ sC += v; sT += m; n++; }
         }
-        exc.push(n ? s / n : null);
+        crLine.push(n ? sC / n : null);
+        twinLine.push(n ? sT / n : null);
       }
-      const vals2 = exc.filter(v => v != null);
+      const vals2 = crLine.filter(v => v != null);
       if (vals2.length > 2){
         const H3 = 190, P = 16, TP2 = 18, PB2 = 24, RP2 = 130;
-        let mn = Math.min(...vals2, 0), mx = Math.max(...vals2, 0);
+        const both = [...vals2, ...twinLine.filter(v => v != null)];
+        let mn = Math.min(...both, 0), mx = Math.max(...both);
         const pad2 = (mx - mn) * .1 || 1; mn -= pad2; mx += pad2;
         const X2 = i => P + i * (W - P - RP2) / (N - 1);
         const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
-        const y0 = Y2(0);
-        let d2 = "", st = false, i0 = -1, i1 = -1;
-        exc.forEach((v, i) => {
-          if (v == null) return;
-          d2 += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1);
-          if (!st) i0 = i;
-          i1 = i;
-          st = true;
-        });
-        // the gap between CR and the field, shaded: green where ahead, red where behind
-        const dA = d2 + `L${X2(i1).toFixed(1)} ${y0.toFixed(1)}L${X2(i0).toFixed(1)} ${y0.toFixed(1)}Z`;
+        const pathOf2 = arr => {
+          let d = "", st = false;
+          arr.forEach((v, i) => { if (v == null) return; d += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
+          return d;
+        };
+        // shaded polygon between the two curves
+        const idxs = crLine.map((v, i) => (v != null && twinLine[i] != null) ? i : null).filter(i => i != null);
+        const gapPoly = idxs.map((i, j) => (j ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(crLine[i]).toFixed(1)).join("") +
+          idxs.slice().reverse().map(i => "L" + X2(i).toFixed(1) + " " + Y2(twinLine[i]).toFixed(1)).join("") + "Z";
         let dl = "";
         for (let i = 1; i < N; i++)
           if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
             dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
-        const eLast = vals2[vals2.length - 1];
-        let yCr = Y2(eLast), yFd = y0;
-        if (Math.abs(yCr - yFd) < 14){ if (yCr <= yFd){ yCr -= 4; yFd += 10; } else { yCr += 10; yFd -= 4; } }
+        const lastOf2 = a => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
+        const eCr = lastOf2(crLine), eTw = lastOf2(twinLine), gap = eCr - eTw;
+        let yCr = Y2(eCr), yTw = Y2(eTw);
+        if (Math.abs(yCr - yTw) < 14){ if (yCr <= yTw){ yCr -= 4; yTw += 10; } else { yCr += 10; yTw -= 4; } }
         curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
-          <defs>
-            <clipPath id="cpcu"><rect x="0" y="0" width="${W}" height="${y0.toFixed(1)}"/></clipPath>
-            <clipPath id="cpcd"><rect x="0" y="${y0.toFixed(1)}" width="${W}" height="${(H3 - y0).toFixed(1)}"/></clipPath>
-          </defs>
           ${dl}
-          <text x="${P}" y="${TP2 - 6}" font-size="9" fill="var(--faint)" font-family="var(--mono)">the ${vetKeys.length} CR veterans vs the field, size-matched · green gap = CR ahead of streamers their own size</text>
-          <path d="${dA}" fill="var(--up-bg)" clip-path="url(#cpcu)"/>
-          <path d="${dA}" fill="var(--down-bg)" clip-path="url(#cpcd)"/>
-          <line x1="${P}" y1="${y0.toFixed(1)}" x2="${W - RP2}" y2="${y0.toFixed(1)}" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="7 4"/>
-          <path d="${d2}" fill="none" stroke="var(--${eLast >= 0 ? "up" : "down"})" stroke-width="2.4" stroke-linejoin="round"/>
-          <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${eLast >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${eLast >= 0 ? "+" : "-"}${Math.abs(eLast).toFixed(1)}pts</text>
-          <text x="${W - RP2 + 8}" y="${(yFd + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">THE FIELD</text>
-          <text x="${P + 4}" y="${(y0 + (y0 < H3 / 2 ? 14 : -7)).toFixed(1)}" font-size="9" fill="var(--muted)" font-family="var(--mono)">the field · median streamer of the same size</text>
+          <text x="${P}" y="${TP2 - 6}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth: the ${vetKeys.length} CR veterans (green) vs a same-size twin cohort of the field (gray) · gap now ${gap >= 0 ? "+" : "-"}${Math.abs(gap).toFixed(1)}pts</text>
+          <path d="${gapPoly}" fill="var(--${gap >= 0 ? "up" : "down"}-bg)"/>
+          <path d="${pathOf2(twinLine)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-dasharray="7 4" stroke-linejoin="round"/>
+          <path d="${pathOf2(crLine)}" fill="none" stroke="var(--${gap >= 0 ? "up" : "down"})" stroke-width="2.4" stroke-linejoin="round"/>
+          <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${gap >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
+          <text x="${W - RP2 + 8}" y="${(yTw + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">FIELD ${fmtD(eTw)}</text>
           <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
           <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
         </svg></div>`;
