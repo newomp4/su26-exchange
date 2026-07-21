@@ -588,7 +588,7 @@
     from 30-day tracker rates (marked ≈). RIZPY's numbers come straight from his 5-minute samples. Sparklines
     without recorded history are illustrative; the endpoints are the data. With live mode connected, Twitch numbers come straight from the
     official Twitch API in your browser, and % change is computed from daily snapshots this page saves
-    locally. That part is real data, not estimates. Percentage metrics require a baseline of at least 100
+    locally. That part is real data, not estimates. Percentage metrics require a baseline of at least 1,000
     followers; below that only raw gains are shown, because +45 followers on a base of 2 would read as
     +2,250% and bury everyone else. Instagram/TikTok have no free API, so those stay
     snapshots. Subscriber counts: Twitch keeps subs private to each broadcaster (public "sub counts" on
@@ -1027,7 +1027,7 @@ function dayChange(tick){
     if (first == null) first = v;
     last = v;
   }
-  if (first == null || last == null || first < 100) return null;
+  if (first == null || last == null || first < 1000) return null;
   return (last - first) / first * 100;
 }
 function renderWall(){
@@ -1240,7 +1240,7 @@ function renderCrPortfolio(){
         if (first == null && SERIES.times[i] >= CAMP_START){ first = v; firstT = SERIES.times[i]; }
         last = v;
       }
-      if (first != null && last != null && first >= 100)
+      if (first != null && last != null && first >= 1000)
         campG[k] = { g: (last - first) / first * 100, base: first, since: firstT.slice(0, 10) };
     }
     const brackets = [["under 100K", [], b => b < 1e5], ["100K to 1M", [], b => b >= 1e5 && b < 1e6], ["1M plus", [], b => b >= 1e6]];
@@ -1302,52 +1302,57 @@ function renderCrPortfolio(){
     });
     swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" style="height:${H2}px">${sv}</svg></div>`;
 
-    // cohort curve: average growth over time, veterans only, so one-day-old
-    // members cannot drag the cohort line down
+    // size-matched excess curve: each CR veteran measured against the median
+    // streamer of their own size at the same moment, averaged into one line.
+    // Above zero = the cohort is beating size-matched expectations. This avoids
+    // the composition trap where a field full of tiny event-boosted accounts
+    // makes any raw average comparison meaningless.
     const vetKeys = Object.keys(campG).filter(k => TAGS.has(k) && campG[k].since <= CUTOFF);
-    const fdKeys = Object.keys(SERIES.series).filter(k => !TAGS.has(k));
-    const avgSeries = keys => {
-      const rowsA = keys.map(k => cmpValuesRaw(k, "g")).filter(Boolean);
-      if (!rowsA.length) return null;
-      return SERIES.times.map((_, i) => {
-        let s = 0, n = 0;
-        for (const r of rowsA){ if (r[i] != null){ s += r[i]; n++; } }
-        return n ? s / n : null;
-      });
-    };
-    const gCr = vetKeys.length ? avgSeries(vetKeys) : null;
-    const gFd = avgSeries(fdKeys);
-    if (gCr && gFd){
-      const H3 = 170, P = 16, TP2 = 14, PB2 = 24, RP2 = 96;
+    if (vetKeys.length){
+      const gAll = {};
+      for (const k of Object.keys(campG)) gAll[k] = cmpValuesRaw(k, "g");
+      const brIdx = k => campG[k].base < 1e5 ? 0 : campG[k].base < 1e6 ? 1 : 2;
       const N = SERIES.times.length;
-      const all2 = [...gCr, ...gFd].filter(v => v != null);
-      let mn = Math.min(...all2), mx = Math.max(...all2);
-      if (mn === mx){ mn -= 1; mx += 1; }
-      const X2 = i => P + i * (W - P - RP2) / (N - 1);
-      const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
-      const path2 = vals => {
-        let d = "", st = false;
-        vals.forEach((v, i) => { if (v == null) return; d += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
-        return d;
-      };
-      let dl = "";
-      for (let i = 1; i < N; i++)
-        if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
-          dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
-      const lastOf = a => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
-      const eCr = lastOf(gCr), eFd = lastOf(gFd);
-      let yCr = Y2(eCr), yFd = Y2(eFd);
-      if (Math.abs(yCr - yFd) < 14){ if (yCr < yFd){ yCr -= 7; yFd += 7; } else { yCr += 7; yFd -= 7; } }
-      curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
-        ${dl}
-        <text x="${P}" y="${TP2 - 2}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth · the ${vetKeys.length} CR creators tracked all week vs the field · newcomers join once they have history</text>
-        <path d="${path2(gFd)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-linejoin="round"/>
-        <path d="${path2(gCr)}" fill="none" stroke="var(--up)" stroke-width="2.4" stroke-linejoin="round"/>
-        <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--up)" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
-        <text x="${W - RP2 + 8}" y="${(yFd + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">field ${fmtD(eFd)}</text>
-        <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
-        <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
-      </svg></div>`;
+      const exc = [];
+      for (let i = 0; i < N; i++){
+        const buckets = [[], [], []];
+        for (const k of Object.keys(gAll)){
+          const v = gAll[k] && gAll[k][i];
+          if (v != null) buckets[brIdx(k)].push(v);
+        }
+        const meds = buckets.map(a => a.length ? med(a) : null);
+        let s = 0, n = 0;
+        for (const k of vetKeys){
+          const v = gAll[k] && gAll[k][i], m = meds[brIdx(k)];
+          if (v != null && m != null){ s += v - m; n++; }
+        }
+        exc.push(n ? s / n : null);
+      }
+      const vals2 = exc.filter(v => v != null);
+      if (vals2.length > 2){
+        const H3 = 170, P = 16, TP2 = 16, PB2 = 24, RP2 = 120;
+        let mn = Math.min(...vals2, 0), mx = Math.max(...vals2, 0);
+        const pad2 = (mx - mn) * .08 || 1; mn -= pad2; mx += pad2;
+        const X2 = i => P + i * (W - P - RP2) / (N - 1);
+        const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
+        let d2 = "", st = false;
+        exc.forEach((v, i) => { if (v == null) return; d2 += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
+        let dl = "";
+        for (let i = 1; i < N; i++)
+          if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
+            dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+        const eLast = vals2[vals2.length - 1];
+        curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
+          ${dl}
+          <text x="${P}" y="${TP2 - 4}" font-size="9" fill="var(--faint)" font-family="var(--mono)">how far the ${vetKeys.length} CR veterans run ahead of the median streamer their own size · above the line = winning</text>
+          <line x1="${P}" y1="${Y2(0).toFixed(1)}" x2="${W - RP2}" y2="${Y2(0).toFixed(1)}" stroke="var(--faint)" stroke-dasharray="2 4"/>
+          <text x="${W - RP2 - 4}" y="${(Y2(0) + 12).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">median streamer of the same size</text>
+          <path d="${d2}" fill="none" stroke="var(--${eLast >= 0 ? "up" : "down"})" stroke-width="2.4" stroke-linejoin="round"/>
+          <text x="${W - RP2 + 8}" y="${(Y2(eLast) + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${eLast >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${eLast >= 0 ? "+" : "-"}${Math.abs(eLast).toFixed(1)}pts</text>
+          <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
+          <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
+        </svg></div>`;
+      }
     }
   }
 
@@ -1460,7 +1465,7 @@ function cmpValuesRaw(tick, m = CMP.metric){
   if (m === "g" || m === "gain"){
     const base = vals.find(v => v != null);
     if (base == null) return null;
-    if (m === "g" && base < 100) return null; // tiny baselines make % meaningless
+    if (m === "g" && base < 1000) return null; // tiny baselines make % meaningless
     return vals.map(v => v == null ? null : m === "g" ? (v / base - 1) * 100 : v - base);
   }
   return vals;
@@ -2441,10 +2446,10 @@ async function syncServer(){
         const win = pts.filter(x => x[0] >= cutoff);
         // % metrics need a real baseline: below 100 followers a handful of new
         // follows reads as thousands of percent (see RUNIK, 2 -> 47)
-        if (win.length >= 2 && win[0][1] >= 100){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
+        if (win.length >= 2 && win[0][1] >= 1000){ t.d = (latest - win[0][1]) / win[0][1] * 100; t.dReal = 1; }
         const base = BASE[t.s] ?? pts[0][1];
         if (base != null){ t.gain = latest - base; }
-        if (base >= 100){ t.td = (latest - base) / base * 100; }
+        if (base >= 1000){ t.td = (latest - base) / base * 100; }
       });
       // RIZPY gets the finest truth available: straight from the 5-minute samples,
       // baselined at his first-ever recorded value (daily buckets hide same-day moves)
@@ -2703,7 +2708,7 @@ async function goLive(){
         for (const dd of allDates){ if (hist[dd][t.s] != null){ base = hist[dd][t.s]; break; } }
       }
       if (base != null) t.gain = t.f - base;
-      if (base >= 100) t.td = (t.f - base) / base * 100;
+      if (base >= 1000) t.td = (t.f - base) / base * 100;
     });
     updateGeneral();
     // refresh KPIs + status line
