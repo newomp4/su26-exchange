@@ -1330,25 +1330,43 @@ function renderCrPortfolio(){
       }
       const vals2 = exc.filter(v => v != null);
       if (vals2.length > 2){
-        const H3 = 170, P = 16, TP2 = 16, PB2 = 24, RP2 = 120;
+        const H3 = 190, P = 16, TP2 = 18, PB2 = 24, RP2 = 130;
         let mn = Math.min(...vals2, 0), mx = Math.max(...vals2, 0);
-        const pad2 = (mx - mn) * .08 || 1; mn -= pad2; mx += pad2;
+        const pad2 = (mx - mn) * .1 || 1; mn -= pad2; mx += pad2;
         const X2 = i => P + i * (W - P - RP2) / (N - 1);
         const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
-        let d2 = "", st = false;
-        exc.forEach((v, i) => { if (v == null) return; d2 += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
+        const y0 = Y2(0);
+        let d2 = "", st = false, i0 = -1, i1 = -1;
+        exc.forEach((v, i) => {
+          if (v == null) return;
+          d2 += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1);
+          if (!st) i0 = i;
+          i1 = i;
+          st = true;
+        });
+        // the gap between CR and the field, shaded: green where ahead, red where behind
+        const dA = d2 + `L${X2(i1).toFixed(1)} ${y0.toFixed(1)}L${X2(i0).toFixed(1)} ${y0.toFixed(1)}Z`;
         let dl = "";
         for (let i = 1; i < N; i++)
           if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
             dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
         const eLast = vals2[vals2.length - 1];
+        let yCr = Y2(eLast), yFd = y0;
+        if (Math.abs(yCr - yFd) < 14){ if (yCr <= yFd){ yCr -= 4; yFd += 10; } else { yCr += 10; yFd -= 4; } }
         curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
+          <defs>
+            <clipPath id="cpcu"><rect x="0" y="0" width="${W}" height="${y0.toFixed(1)}"/></clipPath>
+            <clipPath id="cpcd"><rect x="0" y="${y0.toFixed(1)}" width="${W}" height="${(H3 - y0).toFixed(1)}"/></clipPath>
+          </defs>
           ${dl}
-          <text x="${P}" y="${TP2 - 4}" font-size="9" fill="var(--faint)" font-family="var(--mono)">how far the ${vetKeys.length} CR veterans run ahead of the median streamer their own size · above the line = winning</text>
-          <line x1="${P}" y1="${Y2(0).toFixed(1)}" x2="${W - RP2}" y2="${Y2(0).toFixed(1)}" stroke="var(--faint)" stroke-dasharray="2 4"/>
-          <text x="${W - RP2 - 4}" y="${(Y2(0) + 12).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">median streamer of the same size</text>
+          <text x="${P}" y="${TP2 - 6}" font-size="9" fill="var(--faint)" font-family="var(--mono)">the ${vetKeys.length} CR veterans vs the field, size-matched · green gap = CR ahead of streamers their own size</text>
+          <path d="${dA}" fill="var(--up-bg)" clip-path="url(#cpcu)"/>
+          <path d="${dA}" fill="var(--down-bg)" clip-path="url(#cpcd)"/>
+          <line x1="${P}" y1="${y0.toFixed(1)}" x2="${W - RP2}" y2="${y0.toFixed(1)}" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="7 4"/>
           <path d="${d2}" fill="none" stroke="var(--${eLast >= 0 ? "up" : "down"})" stroke-width="2.4" stroke-linejoin="round"/>
-          <text x="${W - RP2 + 8}" y="${(Y2(eLast) + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${eLast >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${eLast >= 0 ? "+" : "-"}${Math.abs(eLast).toFixed(1)}pts</text>
+          <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${eLast >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${eLast >= 0 ? "+" : "-"}${Math.abs(eLast).toFixed(1)}pts</text>
+          <text x="${W - RP2 + 8}" y="${(yFd + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">THE FIELD</text>
+          <text x="${P + 4}" y="${(y0 + (y0 < H3 / 2 ? 14 : -7)).toFixed(1)}" font-size="9" fill="var(--muted)" font-family="var(--mono)">the field · median streamer of the same size</text>
           <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
           <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
         </svg></div>`;
