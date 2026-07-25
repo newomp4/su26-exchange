@@ -300,6 +300,29 @@
   .cpswarm{border:1px solid var(--line);background:var(--card);margin-top:1px}
   .cpswarm svg{width:100%;display:block}
   .cpdot{cursor:pointer}
+  .cpminis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;
+    border:1px solid var(--line);background:var(--line);margin-top:1px}
+  .cpmini{background:var(--card);padding:8px 8px 6px;cursor:pointer}
+  .cpmini:hover{background:var(--bg)}
+  .cpmini svg{width:100%;height:52px;display:block}
+  .cpmini .mrow{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+  .cpmini .msym{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.04em}
+  .cpmini .mval{font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums}
+  .cpmini .mval.u{color:var(--up);font-weight:700}
+  .cpmini .mval.dd{color:var(--down)}
+  .cpkept{border:1px solid var(--line);background:var(--card);margin-top:1px;padding:10px 12px}
+  .cpkept .kh{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+  .cpkrow{display:grid;grid-template-columns:64px 1fr minmax(200px,auto);gap:10px;align-items:center;
+    padding:5px 0;cursor:pointer}
+  .cpkrow:hover{background:var(--bg)}
+  .cpkrow .nm3{font-family:var(--mono);font-size:11px;font-weight:700}
+  .cpkrow .ktrack{display:flex;height:12px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+  .cpkrow .ktrack i{display:block;height:100%}
+  .cpkrow .seg1{background:var(--up)}
+  .cpkrow .seg2{background:var(--up-bg);border-left:1px solid var(--up)}
+  .cpkrow .seg3{background:repeating-linear-gradient(45deg,var(--down-bg),var(--down-bg) 3px,transparent 3px,transparent 6px);border-left:1px solid var(--down)}
+  .cpkrow .kval{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  @media (max-width:700px){.cpkrow{grid-template-columns:56px 1fr}.cpkrow .kval{grid-column:1/-1;padding-left:66px}}
   .cptab{border:1px solid var(--line);background:var(--card);margin-top:1px;overflow-x:auto}
   .cptr{display:grid;grid-template-columns:1fr 120px 120px 80px;gap:10px;align-items:baseline;
     padding:7px 12px;border-top:1px solid var(--line);font-size:12px;min-width:460px}
@@ -709,6 +732,33 @@ function pathFrom(pts, w, h, pad){
   const X = i => pad + i*(w-2*pad)/(pts.length-1);
   const Y = v => h - pad - (v-min)*(h-2*pad)/span;
   return { d: pts.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(""), X, Y };
+}
+// Catmull-Rom style smoothing for an array of {x,y} points
+function smoothD(P){
+  if (!P.length) return "";
+  if (P.length < 3) return P.map((p, i) => (i ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1)).join("");
+  let d = "M" + P[0].x.toFixed(1) + " " + P[0].y.toFixed(1);
+  for (let i = 0; i < P.length - 1; i++){
+    const p0 = P[Math.max(0, i-1)], p1 = P[i], p2 = P[i+1], p3 = P[Math.min(P.length-1, i+2)];
+    d += "C" + (p1.x + (p2.x - p0.x) / 6).toFixed(1) + " " + (p1.y + (p2.y - p0.y) / 6).toFixed(1) +
+         " " + (p2.x - (p3.x - p1.x) / 6).toFixed(1) + " " + (p2.y - (p3.y - p1.y) / 6).toFixed(1) +
+         " " + p2.x.toFixed(1) + " " + p2.y.toFixed(1);
+  }
+  return d;
+}
+// count-up for elements carrying data-cnt (re-renderable sections)
+function animateCounts(scope){
+  scope.querySelectorAll("[data-cnt]").forEach(el => {
+    const target = +el.dataset.cnt, pre = el.dataset.pre || "";
+    const fmt = el.dataset.fmt === "c" ? fmtC : (n => Math.round(n).toLocaleString());
+    if (reduced || !isFinite(target)){ el.textContent = pre + fmt(target); return; }
+    const t0 = performance.now();
+    (function tick(t){
+      const p = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = pre + fmt(target * e);
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  });
 }
 
 // ---------- tape ----------
@@ -1186,6 +1236,7 @@ function updateCrKpi(){
 }
 
 // ---------- CR portfolio: the client cohort vs the rest of the class ----------
+let crPortAnimated = false;
 function renderCrPortfolio(){
   const el = $("#crport");
   if (!el) return;
@@ -1203,12 +1254,12 @@ function renderCrPortfolio(){
   const live = cr.filter(t => t.lv != null);
   const share = (crGain + fdGain) > 0 ? crGain / (crGain + fdGain) * 100 : null;
   const tiles = [
-    ["Creators", String(cr.length), "", "Tagged as running Content Rewards campaigns"],
-    ["Combined reach", fmtC(sum(cr, "f")), "", "Their followers added together"],
-    ["Gained together", (crGain >= 0 ? "+" : "") + crGain.toLocaleString(), crGain >= 0 ? "up" : "dn", "Followers gained since the Jul 13 baseline, all CR creators combined"],
-    ["Share of class gains", share != null ? share.toFixed(1) + "%" : "-", "", cr.length + " of " + tracked.length + " tracked people (" + (cr.length / tracked.length * 100).toFixed(0) + "% of the class) took this share of all follower gains"],
-    ["Live right now", live.length ? live.length + " · " + fmtC(sum(live, "lv")) + " watching" : "0", live.length ? "up" : "", "CR creators streaming at this moment"],
-    ["Clip views", fmtC(sum(cr, "cv")), "", "Views on their Twitch clips made since Jul 15, combined"]
+    ["Creators", String(cr.length), "", "Tagged as running Content Rewards campaigns", null, "", ""],
+    ["Combined reach", fmtC(sum(cr, "f")), "", "Their followers added together", sum(cr, "f"), "c", ""],
+    ["Gained together", (crGain >= 0 ? "+" : "") + crGain.toLocaleString(), crGain >= 0 ? "up" : "dn", "Followers gained since the Jul 13 baseline, all CR creators combined", Math.abs(crGain), "", crGain >= 0 ? "+" : "-"],
+    ["Share of class gains", share != null ? share.toFixed(1) + "%" : "-", "", cr.length + " of " + tracked.length + " tracked people (" + (cr.length / tracked.length * 100).toFixed(0) + "% of the class) took this share of all follower gains", null, "", ""],
+    ["Live right now", live.length ? live.length + " · " + fmtC(sum(live, "lv")) + " watching" : "0", live.length ? "up" : "", "CR creators streaming at this moment", null, "", ""],
+    ["Clip views", fmtC(sum(cr, "cv")), "", "Views on their Twitch clips made since Jul 15, combined", sum(cr, "cv"), "c", ""]
   ];
   const bar = (label, a, b, fmt) => {
     const mx = Math.max(Math.abs(a || 0), Math.abs(b || 0)) || 1;
@@ -1228,7 +1279,8 @@ function renderCrPortfolio(){
   // beating the median streamer of their own size?
   const W = Math.max(480, Math.round(el.clientWidth || 1000));
   const CUTOFF = "2026-07-17";
-  let verdict = "", swarm = "", curve = "";
+  const EVENT_END = "2026-07-21";
+  let verdict = "", swarm = "", curve = "", minis = "", kept = "", crState = null;
   let campG = {};
   if (SERIES && SERIES.times.length > 2){
     for (const [k, s] of Object.entries(SERIES.series)){
@@ -1334,41 +1386,131 @@ function renderCrPortfolio(){
       }
       const vals2 = crLine.filter(v => v != null);
       if (vals2.length > 2){
-        const H3 = 190, P = 16, TP2 = 18, PB2 = 24, RP2 = 130;
+        const H3 = 210, P = 16, TP2 = 22, PB2 = 24, RP2 = 130;
         const both = [...vals2, ...twinLine.filter(v => v != null)];
         let mn = Math.min(...both, 0), mx = Math.max(...both);
         const pad2 = (mx - mn) * .1 || 1; mn -= pad2; mx += pad2;
         const X2 = i => P + i * (W - P - RP2) / (N - 1);
         const Y2 = v => TP2 + (mx - v) * (H3 - TP2 - PB2) / (mx - mn);
-        const pathOf2 = arr => {
-          let d = "", st = false;
-          arr.forEach((v, i) => { if (v == null) return; d += (st ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(v).toFixed(1); st = true; });
-          return d;
-        };
-        // shaded polygon between the two curves
-        const idxs = crLine.map((v, i) => (v != null && twinLine[i] != null) ? i : null).filter(i => i != null);
-        const gapPoly = idxs.map((i, j) => (j ? "L" : "M") + X2(i).toFixed(1) + " " + Y2(crLine[i]).toFixed(1)).join("") +
-          idxs.slice().reverse().map(i => "L" + X2(i).toFixed(1) + " " + Y2(twinLine[i]).toFixed(1)).join("") + "Z";
-        let dl = "";
-        for (let i = 1; i < N; i++)
-          if (SERIES.times[i].slice(0, 10) !== SERIES.times[i-1].slice(0, 10))
-            dl += `<line x1="${X2(i).toFixed(1)}" y1="${TP2}" x2="${X2(i).toFixed(1)}" y2="${H3 - PB2}" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+        const ptsOf = arr => arr.map((v, i) => v != null ? { x: X2(i), y: Y2(v) } : null).filter(Boolean);
+        const Pcr = ptsOf(crLine), Ptw = ptsOf(twinLine);
+        // shaded region between the two smoothed curves
+        const gapPoly = smoothD(Pcr) +
+          "L" + Ptw[Ptw.length-1].x.toFixed(1) + " " + Ptw[Ptw.length-1].y.toFixed(1) +
+          smoothD(Ptw.slice().reverse()).replace(/^M/, "L") + "Z";
+        // campus-week band: from campaign start to event end
+        let b0 = -1, b1 = -1;
+        for (let i = 0; i < N; i++){
+          if (b0 < 0 && SERIES.times[i] >= CAMP_START) b0 = i;
+          if (SERIES.times[i] < EVENT_END) b1 = i;
+        }
+        const band = (b0 >= 0 && b1 > b0)
+          ? `<rect x="${X2(b0).toFixed(1)}" y="${TP2}" width="${(X2(b1) - X2(b0)).toFixed(1)}" height="${H3 - TP2 - PB2}" fill="var(--line)" opacity=".28"/>
+             <text x="${((X2(b0) + X2(b1)) / 2).toFixed(1)}" y="${H3 - PB2 - 6}" text-anchor="middle" font-size="8.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".12em">CAMPUS WEEK</text>` +
+            (X2(N-1) - X2(b1) > 60 ? `<text x="${((X2(b1) + X2(N-1)) / 2).toFixed(1)}" y="${H3 - PB2 - 6}" text-anchor="middle" font-size="8.5" fill="var(--faint)" font-family="var(--mono)" letter-spacing=".12em">AFTER</text>` : "")
+          : "";
         const lastOf2 = a => { for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i]; return null; };
         const eCr = lastOf2(crLine), eTw = lastOf2(twinLine), gap = eCr - eTw;
         let yCr = Y2(eCr), yTw = Y2(eTw);
         if (Math.abs(yCr - yTw) < 14){ if (yCr <= yTw){ yCr -= 4; yTw += 10; } else { yCr += 10; yTw -= 4; } }
-        curve = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
-          ${dl}
-          <text x="${P}" y="${TP2 - 6}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth: the ${vetKeys.length} CR veterans (green) vs a same-size twin cohort of the field (gray) · gap now ${gap >= 0 ? "+" : "-"}${Math.abs(gap).toFixed(1)}pts</text>
-          <path d="${gapPoly}" fill="var(--${gap >= 0 ? "up" : "down"}-bg)"/>
-          <path d="${pathOf2(twinLine)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-dasharray="7 4" stroke-linejoin="round"/>
-          <path d="${pathOf2(crLine)}" fill="none" stroke="var(--${gap >= 0 ? "up" : "down"})" stroke-width="2.4" stroke-linejoin="round"/>
-          <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${gap >= 0 ? "up" : "down"})" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
+        const up = gap >= 0 ? "up" : "down";
+        const crArea = smoothD(Pcr) + "L" + Pcr[Pcr.length-1].x.toFixed(1) + " " + (H3 - PB2) +
+          "L" + Pcr[0].x.toFixed(1) + " " + (H3 - PB2) + "Z";
+        curve = `<div class="cpswarm"><svg id="crcv" viewBox="0 0 ${W} ${H3}" style="height:${H3}px">
+          <defs><linearGradient id="crgrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color:var(--${up})" stop-opacity=".14"/>
+            <stop offset="1" style="stop-color:var(--${up})" stop-opacity="0"/>
+          </linearGradient></defs>
+          ${band}
+          <text x="${P}" y="${TP2 - 9}" font-size="9" fill="var(--faint)" font-family="var(--mono)">avg growth: the ${vetKeys.length} CR veterans (green) vs a same-size twin cohort of the field (gray) · gap now ${gap >= 0 ? "+" : "-"}${Math.abs(gap).toFixed(1)}pts · hover to inspect</text>
+          <path d="${crArea}" fill="url(#crgrad)"/>
+          <path d="${gapPoly}" fill="var(--${up}-bg)"/>
+          <path d="${smoothD(Ptw)}" fill="none" stroke="var(--muted)" stroke-width="1.8" stroke-dasharray="7 4" stroke-linejoin="round"/>
+          <path d="${smoothD(Pcr)}" fill="none" stroke="var(--${up})" stroke-width="2.4" stroke-linejoin="round"/>
+          <text x="${W - RP2 + 8}" y="${(yCr + 3).toFixed(1)}" font-size="11" font-weight="700" fill="var(--${up})" font-family="var(--mono)">CR ${fmtD(eCr)}</text>
           <text x="${W - RP2 + 8}" y="${(yTw + 3).toFixed(1)}" font-size="11" fill="var(--muted)" font-family="var(--mono)">FIELD ${fmtD(eTw)}</text>
           <text x="${P}" y="${H3 - 7}" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[0].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
           <text x="${W - RP2}" y="${H3 - 7}" text-anchor="end" font-size="9" fill="var(--faint)" font-family="var(--mono)">${SERIES.times[N - 1].slice(5, 16).replace("T", " ").replace("-", "/")}</text>
+          <g id="crcvhud"></g>
         </svg></div>`;
+        crState = { crLine, twinLine, X2, Y2, N, H3, TP2, PB2, RP2, W };
       }
+
+      // did it stick: growth earned during campus week vs what happened after
+      {
+        const rowsK = [];
+        for (const k of vetKeys){
+          const gv = gAll[k];
+          if (!gv) continue;
+          let endI = -1;
+          for (let i = 0; i < N; i++) if (SERIES.times[i] < EVENT_END && gv[i] != null) endI = i;
+          const eventG = endI >= 0 ? gv[endI] : null;
+          let nowG = null;
+          for (let i = N - 1; i >= 0; i--) if (gv[i] != null){ nowG = gv[i]; break; }
+          if (eventG == null || nowG == null || eventG <= 0) continue;
+          rowsK.push({ k, eventG, nowG, after: nowG - eventG });
+        }
+        rowsK.sort((a, b) => b.eventG - a.eventG);
+        if (rowsK.length){
+          kept = `<div class="cpkept">
+            <div class="kh">DID IT STICK · each bar is that creator's growth today: solid green earned during campus week, light green added since, hatched given back</div>
+            ${rowsK.map(r => {
+              const grew = r.after >= 0;
+              const evFrac = grew ? r.eventG / r.nowG * 100 : Math.max(0, r.nowG / r.eventG * 100);
+              const tailW = 100 - evFrac;
+              const label = grew
+                ? `+${r.eventG.toFixed(0)}% campus week · +${r.after.toFixed(1)}pts since · kept it all`
+                : `+${r.eventG.toFixed(0)}% campus week · gave back ${Math.abs(r.after).toFixed(1)}pts · holds ${evFrac.toFixed(0)}%`;
+              return `<div class="cpkrow" onclick="cmpToggle('${r.k}')" title="Add to compare">
+                <span class="nm3">${r.k}</span>
+                <span class="ktrack"><i class="seg1" style="width:${evFrac.toFixed(1)}%"></i><i class="${grew ? "seg2" : "seg3"}" style="width:${tailW.toFixed(1)}%"></i></span>
+                <span class="kval">${label}</span></div>`;
+            }).join("")}
+          </div>`;
+        }
+      }
+    }
+
+    // small multiples: every CR creator's own curve at a glance
+    {
+      const cards = [];
+      let bi0 = -1, bi1 = -1;
+      for (let i = 0; i < SERIES.times.length; i++){
+        if (bi0 < 0 && SERIES.times[i] >= CAMP_START) bi0 = i;
+        if (SERIES.times[i] < EVENT_END) bi1 = i;
+      }
+      const NT = SERIES.times.length;
+      for (const t of cr){
+        let gv = cmpValuesRaw(t.s, "g"), mode = "g";
+        if (!gv){ gv = cmpValuesRaw(t.s, "gain"); mode = "gain"; }
+        if (!gv) continue;
+        const idxs = gv.map((v, i) => v != null ? i : null).filter(v => v != null);
+        if (idxs.length < 3) continue;
+        const lastV = gv[idxs[idxs.length - 1]];
+        const step = Math.max(1, Math.floor(idxs.length / 70));
+        const pick = idxs.filter((_, j) => j % step === 0 || j === idxs.length - 1);
+        const MW = 160, MH = 56, mp = 5, base = MH - 13;
+        const vmin = Math.min(...pick.map(i => gv[i]), 0), vmax = Math.max(...pick.map(i => gv[i]));
+        const span = (vmax - vmin) || 1;
+        const mx = i => mp + i / (NT - 1) * (MW - 2 * mp);
+        const my = v => base - (v - vmin) * (base - mp) / span;
+        const Pm = pick.map(i => ({ x: mx(i), y: my(gv[i]) }));
+        const dLine = smoothD(Pm);
+        const dArea = dLine + `L${Pm[Pm.length-1].x.toFixed(1)} ${base}L${Pm[0].x.toFixed(1)} ${base}Z`;
+        const band = (bi0 >= 0 && bi1 > bi0)
+          ? `<rect x="${mx(bi0).toFixed(1)}" y="0" width="${(mx(bi1) - mx(bi0)).toFixed(1)}" height="${base}" fill="var(--line)" opacity=".35"/>` : "";
+        cards.push({ v: mode === "g" ? lastV : -1e9, html: `<div class="cpmini" onclick="cmpToggle('${t.s}')" title="${esc(t.n)} · add to compare">
+          <svg viewBox="0 0 ${MW} ${MH}" preserveAspectRatio="none">${band}
+            <path d="${dArea}" fill="var(--up-bg)"/>
+            <path d="${dLine}" fill="none" stroke="var(--up)" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+            <circle cx="${Pm[Pm.length-1].x.toFixed(1)}" cy="${Pm[Pm.length-1].y.toFixed(1)}" r="2.4" fill="var(--up)"/>
+          </svg>
+          <div class="mrow"><span class="msym">${t.s}</span><span class="mval ${lastV >= 0 ? "u" : "dd"}">${mode === "g" ? fmtD(lastV) : (lastV >= 0 ? "+" : "") + fmtC(Math.round(lastV))}</span></div>
+        </div>` });
+      }
+      cards.sort((a, b) => b.v - a.v);
+      if (cards.length)
+        minis = `<div class="cpminis">${cards.map(c => c.html).join("")}</div>`;
     }
   }
 
@@ -1412,14 +1554,49 @@ function renderCrPortfolio(){
     ${newcomers ? `<div class="cptr"><span class="lbl" style="font-size:10.5px;color:var(--faint)">* growth and viewer rows compare the ${crVet.length} creators tracked all week; ${newcomers} signed this weekend and join once they have real history</span><span></span><span></span><span></span></div>` : ""}
   </div>`;
   el.innerHTML = `
-    <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt]) =>
-      `<div class="kpi" title="${tt}"><div class="k">${k}</div><div class="v${cls ? " " + cls : ""}">${v}</div></div>`).join("")}
+    <div class="kpis" style="margin-top:0">${tiles.map(([k, v, cls, tt, cnt, cfmt, cpre]) =>
+      `<div class="kpi" title="${tt}"><div class="k">${k}</div><div class="v${cls ? " " + cls : ""}"${cnt != null ? ` data-cnt="${cnt}" data-fmt="${cfmt}" data-pre="${cpre}"` : ""}>${v}</div></div>`).join("")}
     </div>
     ${verdict}
-    ${swarm}
     ${curve}
+    ${minis}
+    ${kept}
+    ${swarm}
     ${table}
     <div class="cpmem">${rows}</div>`;
+  if (!crPortAnimated){ crPortAnimated = true; animateCounts(el); }
+  // crosshair on the twin-cohort chart
+  const cv = $("#crcv");
+  if (cv && crState){
+    const S = crState;
+    const hud = () => cv.querySelector("#crcvhud");
+    cv.onpointermove = e => {
+      const r = cv.getBoundingClientRect();
+      const fx = (e.clientX - r.left) * S.W / r.width;
+      let bi = -1, bd = 1e9;
+      for (let i = 0; i < S.N; i++){
+        if (S.crLine[i] == null && S.twinLine[i] == null) continue;
+        const d = Math.abs(S.X2(i) - fx);
+        if (d < bd){ bd = d; bi = i; }
+      }
+      const g = hud();
+      if (bi < 0 || !g) return;
+      const x = S.X2(bi), vc = S.crLine[bi], vt = S.twinLine[bi];
+      const parts = [SERIES.times[bi].slice(5, 16).replace("T", " ").replace("-", "/")];
+      if (vc != null) parts.push("CR " + fmtD(vc));
+      if (vt != null) parts.push("FIELD " + fmtD(vt));
+      if (vc != null && vt != null) parts.push("gap " + (vc - vt >= 0 ? "+" : "-") + Math.abs(vc - vt).toFixed(1) + "pts");
+      const txt = parts.join("  ·  ");
+      const tw = txt.length * 5.6 + 16;
+      const bx = Math.max(4, Math.min(S.W - tw - 4, x - tw / 2));
+      g.innerHTML = `<line x1="${x.toFixed(1)}" y1="${S.TP2}" x2="${x.toFixed(1)}" y2="${S.H3 - S.PB2}" stroke="var(--ink)" stroke-width="1" opacity=".35"/>
+        ${vc != null ? `<circle cx="${x.toFixed(1)}" cy="${S.Y2(vc).toFixed(1)}" r="3.5" fill="var(--up)" stroke="var(--bg)" stroke-width="1.5"/>` : ""}
+        ${vt != null ? `<circle cx="${x.toFixed(1)}" cy="${S.Y2(vt).toFixed(1)}" r="3" fill="var(--muted)" stroke="var(--bg)" stroke-width="1.5"/>` : ""}
+        <rect x="${bx.toFixed(1)}" y="${S.TP2 + 2}" width="${tw.toFixed(1)}" height="18" fill="var(--card)" stroke="var(--line)"/>
+        <text x="${(bx + 8).toFixed(1)}" y="${S.TP2 + 14.5}" font-size="9.5" fill="var(--ink)" font-family="var(--mono)">${txt}</text>`;
+    };
+    cv.onpointerleave = () => { const g = hud(); if (g) g.innerHTML = ""; };
+  }
 }
 
 // ---------- compare: everyone as a line, any metric ----------
