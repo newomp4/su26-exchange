@@ -1335,21 +1335,35 @@ function renderCrPortfolio(){
         <text x="12" y="${cy - 6}" font-size="11" fill="var(--ink)" font-weight="700" font-family="var(--mono)">${label}</text>
         <text x="12" y="${cy + 8}" font-size="9" fill="var(--faint)" font-family="var(--mono)">median ${fmtD(m0)} · n=${members.length}</text>`;
       const sorted = members.slice().sort((a, b) => a.g - b.g);
-      let prevX = -1e9, lvl = 0, li2 = 0;
+      let prevX = -1e9, lvl = 0;
+      const crLabels = [];
       for (const m of sorted){
         const x = gx(m.g);
         lvl = (x - prevX < 9) ? (lvl + 1) % 3 : 0;
         prevX = x;
         const y = cy + (lvl ? (lvl === 1 ? -7 : 7) : 0);
         if (m.cr){
-          const ly = cy - 22 - (li2++ % 2) * 13; // label rows above the lane, alternating
-          const lx = Math.max(PL + 24, Math.min(W - PR - 24, x));
-          sv += `<line x1="${x.toFixed(1)}" y1="${y - 5}" x2="${lx.toFixed(1)}" y2="${ly + 3}" stroke="var(--up)" stroke-width="1" opacity=".45"/>
-            <circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="4.5" fill="var(--up)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}% (CR)</title></circle>
-            <text x="${lx.toFixed(1)}" y="${ly}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--up)" font-family="var(--mono)">${m.k}</text>`;
+          crLabels.push({ m, x, y });
+          sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="4.5" fill="var(--up)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}% (CR)</title></circle>`;
         } else {
           sv += `<circle class="cpdot" cx="${x.toFixed(1)}" cy="${y}" r="3" fill="var(--ghost)" onclick="cmpToggle('${m.k}')"><title>${m.k}: ${m.g.toFixed(1)}%</title></circle>`;
         }
+      }
+      // labels on two alternating rows above the lane, pushed apart so they never collide
+      const GAP = 48;
+      crLabels.forEach((L, i) => { L.row = i % 2; L.lx = Math.max(PL + 24, Math.min(W - PR - 24, L.x)); });
+      for (const row of [0, 1]){
+        const rl = crLabels.filter(L => L.row === row);
+        for (let i = 1; i < rl.length; i++) if (rl[i].lx - rl[i-1].lx < GAP) rl[i].lx = rl[i-1].lx + GAP;
+        if (rl.length){
+          rl[rl.length-1].lx = Math.min(rl[rl.length-1].lx, W - PR - 24);
+          for (let i = rl.length - 2; i >= 0; i--) if (rl[i+1].lx - rl[i].lx < GAP) rl[i].lx = rl[i+1].lx - GAP;
+        }
+      }
+      for (const L of crLabels){
+        const ly = cy - 22 - L.row * 13;
+        sv += `<line x1="${L.x.toFixed(1)}" y1="${(L.y - 5).toFixed(1)}" x2="${L.lx.toFixed(1)}" y2="${ly + 3}" stroke="var(--up)" stroke-width="1" opacity=".45"/>
+          <text x="${L.lx.toFixed(1)}" y="${ly}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--up)" font-family="var(--mono)">${L.m.k}</text>`;
       }
     });
     swarm = `<div class="cpswarm"><svg viewBox="0 0 ${W} ${H2}" style="height:${H2}px">${sv}</svg></div>`;
