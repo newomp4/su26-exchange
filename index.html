@@ -1228,11 +1228,13 @@ function updateCrKpi(){
     $("#kpi-cr-sub").textContent = TAGS.size ? "waiting for real history" : "tag people on the board";
     return;
   }
-  const avg = a => a.reduce((s, t) => s + t.d, 0) / a.length;
-  const c = avg(cr);
+  // median, not mean: a couple of tiny accounts tripling would drag a mean
+  // hundreds of points and misread the typical creator on both sides
+  const mid = a => { const s = a.map(t => t.d).sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+  const c = mid(cr);
   el.textContent = fmtD(c);
   el.className = "v " + (c >= 0 ? "up" : "dn");
-  $("#kpi-cr-sub").textContent = "avg of " + cr.length + (field.length ? " · field " + fmtD(avg(field)) : "");
+  $("#kpi-cr-sub").textContent = "median of " + cr.length + (field.length ? " · field " + fmtD(mid(field)) : "");
 }
 
 // ---------- CR portfolio: the client cohort vs the rest of the class ----------
@@ -2642,7 +2644,9 @@ async function syncServer(){
     if (hr && hr.ok){
       const h = await hr.json();
       got = true;
-      for (const [d, vals] of Object.entries(h)) HIST[d] = Object.assign({}, vals, HIST[d] || {});
+      // collector data is canonical: same clock, end-of-day, every creator; a
+      // localStorage snapshot is whatever moment this tab happened to be open
+      for (const [d, vals] of Object.entries(h)) HIST[d] = Object.assign({}, HIST[d] || {}, vals);
       const dates = Object.keys(HIST).sort();
       const cutoff = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 10);
       ALL.forEach(t => {
@@ -2683,7 +2687,7 @@ async function syncServer(){
     }
   } catch(e){}
   if (got){
-    render(); renderMovers(); renderSpot(); renderWall(); renderWire(); renderTelem(); renderCrPortfolio();
+    render(); renderMovers(); renderSpot(); renderWall(); renderWire(); renderTelem(); updateCrKpi(); renderCrPortfolio();
     if (!focusEl.hidden) renderFocus();
   }
 }
@@ -2898,21 +2902,26 @@ async function goLive(){
     const dates = Object.keys(hist).sort();
     while (dates.length > 35) delete hist[dates.shift()];
     localStorage.setItem(LSK.hist, JSON.stringify(hist));
-    HIST = hist;
+    // fill gaps in the merged history, never overwrite collector data with
+    // tab-open-moment snapshots (and never drop days this tab wasn't open for)
+    for (const [d, vals] of Object.entries(hist)) HIST[d] = Object.assign({}, vals, HIST[d] || {});
     const past = dates.filter(d => d < today);
-    if (past.length){
-      const base = hist[past[0]];
+    // 7d Δ means 7 days: same window + >=1000 floor as the collector path
+    const allDates = Object.keys(HIST).sort();
+    const cut7 = new Date(Date.now() - 7 * 864e5).toLocaleString("sv-SE").slice(0, 10);
+    const winD = allDates.filter(d => d >= cut7 && d < today);
+    if (winD.length){
+      const base = HIST[winD[0]];
       found.forEach(t => {
-        if (t.liveF && base[t.s]){ t.d = (t.f - base[t.s]) / base[t.s] * 100; t.dReal = 1; }
+        if (t.liveF && base[t.s] >= 1000){ t.d = (t.f - base[t.s]) / base[t.s] * 100; t.dReal = 1; }
       });
     }
-    // Total Δ: growth since the Jul 13 baseline (or the first day this page ever saw them)
-    const allDates = Object.keys(hist).sort();
+    // Total Δ: growth since the Jul 13 baseline (or the first day ever recorded)
     found.forEach(t => {
       if (!t.liveF) return;
       let base = BASE[t.s];
       if (base == null){
-        for (const dd of allDates){ if (hist[dd][t.s] != null){ base = hist[dd][t.s]; break; } }
+        for (const dd of allDates){ if (HIST[dd][t.s] != null){ base = HIST[dd][t.s]; break; } }
       }
       if (base != null) t.gain = t.f - base;
       if (base >= 1000) t.td = (t.f - base) / base * 100;
@@ -2936,6 +2945,7 @@ async function goLive(){
     render();
     renderMovers();
     renderSpot();
+    updateCrKpi();
     if (!window.__su26timer) window.__su26timer = setInterval(goLive, 15 * 60 * 1000);
   } catch(e){ $s.textContent = "LIVE DATA: " + e.message; }
 }
