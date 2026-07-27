@@ -2487,6 +2487,430 @@ function cinDrawStick(ctx, W, H, p, pr){
   }
 }
 
+// polyline up to a fractional index, with the tip interpolated between samples
+function cinTrace(ctx, vals, X, Y, u){
+  ctx.beginPath();
+  let started = false;
+  for (let i = 0; i <= Math.floor(u); i++){
+    if (vals[i] == null) continue;
+    ctx[started ? "lineTo" : "moveTo"](X(i), Y(vals[i]));
+    started = true;
+  }
+  const tip = cinAt(vals, u);
+  if (started && tip != null && u > Math.floor(u)) ctx.lineTo(X(u), Y(tip));
+  return { started, tip };
+}
+
+// one panel per size bracket: every CR client races the median streamer of
+// their own bracket, so nobody is scored against an account ten times their size
+function cinDrawBrackets(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .05, mR = W * .175, mT = H * .155, mB = H * .06;
+  const u = p * (pr.N - 1);
+  const np = pr.panels.length, gapY = H * .03;
+  const panelH = (H - mT - mB - gapY * (np - 1)) / np;
+  const X = i => mL + i * (W - mL - mR) / (pr.N - 1);
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  pr.panels.forEach((pa, pi) => {
+    const top = mT + pi * (panelH + gapY), padT = 30 * s, base = top + panelH;
+    const span = (pa.max - pa.min) || 1;
+    const Y = v => base - (v - pa.min) * (panelH - padT) / span;
+    if (pr.b0 >= 0 && pr.b1 > pr.b0){
+      ctx.globalAlpha = .32; ctx.fillStyle = pr.col.line;
+      ctx.fillRect(X(pr.b0), top, X(pr.b1) - X(pr.b0), panelH);
+      ctx.globalAlpha = 1;
+    }
+    ctx.strokeStyle = pr.col.line; ctx.lineWidth = 1 * s; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(mL, base); ctx.lineTo(W - mR, base); ctx.stroke();
+    ctx.strokeStyle = pr.col.muted; ctx.lineWidth = 2.6 * s; ctx.setLineDash([13 * s, 8 * s]);
+    const mt = cinTrace(ctx, pa.med, X, Y, u); ctx.stroke(); ctx.setLineDash([]);
+    const tips = [];
+    if (mt.started && mt.tip != null) tips.push({ y: Y(mt.tip), c: pr.col.muted, txt: `FIELD MEDIAN ${fmtD(mt.tip)}`, b: 0 });
+    for (const line of pa.mine){
+      ctx.strokeStyle = pr.col.up; ctx.lineWidth = 4.4 * s;
+      const r = cinTrace(ctx, line.vals, X, Y, u); ctx.stroke();
+      if (r.started && r.tip != null){
+        ctx.fillStyle = pr.col.up;
+        ctx.beginPath(); ctx.arc(X(u), Y(r.tip), 6 * s, 0, 7); ctx.fill();
+        tips.push({ y: Y(r.tip), c: pr.col.up, txt: `${line.k} ${fmtD(r.tip)}`, b: 1 });
+      }
+    }
+    tips.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < tips.length; i++)
+      if (tips[i].y - tips[i-1].y < 26 * s) tips[i].y = tips[i-1].y + 26 * s;
+    tips.forEach(t => {
+      ctx.fillStyle = t.c;
+      ctx.font = `${t.b ? "700 " : ""}${21 * s}px ui-monospace,Menlo,monospace`;
+      ctx.fillText(t.txt, W - mR + 14 * s, t.y + 7 * s);
+    });
+    ctx.fillStyle = pr.col.ink; ctx.font = `700 ${23 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(pa.name, mL, top + 20 * s);
+    ctx.fillStyle = pr.col.faint; ctx.font = `${18 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(`${pa.n} creators this size · ${pa.mine.length} on CR`, mL + ctx.measureText(pa.name).width * 1.15 + 40 * s, top + 20 * s);
+  });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${22 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("CAMPAIGN GROWTH vs THE MEDIAN STREAMER OF THE SAME SIZE · GREEN IS CR", mL, 92 * s);
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.faint; ctx.font = `${22 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(cinFmtT(pr.times[Math.round(u)]), W - mL, 58 * s);
+  ctx.textAlign = "left";
+}
+
+// the whole class as bubbles: height is audience size, right is growth,
+// area is followers gained. CR clients trail green through the field.
+function cinDrawBubbles(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .085, mR = W * .05, mT = H * .17, mB = H * .11;
+  const u = p * (pr.N - 1);
+  const lg = Math.log10(1 + pr.gMax);
+  const X = g => mL + Math.log10(1 + Math.max(0, g)) / lg * (W - mL - mR);
+  const ly0 = Math.log10(Math.max(1, pr.fMin)), ly1 = Math.log10(pr.fMax);
+  const Y = f => H - mB - (Math.log10(Math.max(1, f)) - ly0) / ((ly1 - ly0) || 1) * (H - mT - mB);
+  const now = [];
+  let maxGain = 1;
+  for (const pt of pr.pts){
+    const g = cinAt(pt.g, u), f = cinAt(pt.f, u);
+    if (g == null || f == null) continue;
+    const gained = Math.max(0, f - pt.base);
+    if (gained > maxGain) maxGain = gained;
+    now.push({ pt, g, f, gained });
+  }
+  const R = gained => 5 * s + 52 * s * Math.sqrt(gained / maxGain);
+  ctx.strokeStyle = pr.col.line; ctx.lineWidth = 1 * s;
+  ctx.fillStyle = pr.col.faint; ctx.font = `${18 * s}px ui-monospace,Menlo,monospace`;
+  for (const g of [0, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000]){
+    if (g > pr.gMax) break;
+    const x = X(g);
+    ctx.setLineDash(g ? [3 * s, 8 * s] : []);
+    ctx.beginPath(); ctx.moveTo(x, mT); ctx.lineTo(x, H - mB); ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.fillText("+" + g + "%", x, H - mB + 26 * s);
+  }
+  ctx.setLineDash([]); ctx.textAlign = "right";
+  for (const f of [1e3, 1e4, 1e5, 1e6, 1e7]){
+    if (f < pr.fMin / 2 || f > pr.fMax * 2) continue;
+    const y = Y(f);
+    const edge = f === 1e5 || f === 1e6;
+    ctx.strokeStyle = pr.col.line;
+    ctx.setLineDash(edge ? [] : [3 * s, 8 * s]);
+    ctx.beginPath(); ctx.moveTo(mL, y); ctx.lineTo(W - mR, y); ctx.stroke();
+    ctx.fillStyle = edge ? pr.col.muted : pr.col.faint;
+    ctx.font = `${(edge ? 19 : 17) * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(fmtC(f), mL - 12 * s, y + 6 * s);
+  }
+  ctx.setLineDash([]); ctx.textAlign = "left";
+  // field first, CR on top so clients never hide behind the crowd
+  now.filter(o => !o.pt.cr).forEach(o => {
+    ctx.globalAlpha = .5; ctx.fillStyle = pr.col.ghost;
+    ctx.beginPath(); ctx.arc(X(o.g), Y(o.f), R(o.gained), 0, 7); ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  const crNow = now.filter(o => o.pt.cr);
+  const TRAIL = Math.max(6, Math.round(pr.N * .08));
+  crNow.forEach(o => {
+    ctx.strokeStyle = pr.col.up; ctx.lineWidth = 2 * s;
+    ctx.globalAlpha = .3;
+    ctx.beginPath();
+    let st = false;
+    for (let i = Math.max(0, Math.floor(u) - TRAIL); i <= Math.floor(u); i++){
+      const g = o.pt.g[i], f = o.pt.f[i];
+      if (g == null || f == null) continue;
+      ctx[st ? "lineTo" : "moveTo"](X(g), Y(f));
+      st = true;
+    }
+    if (st) ctx.lineTo(X(o.g), Y(o.f));
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+  crNow.forEach(o => {
+    const x = X(o.g), y = Y(o.f), r = R(o.gained);
+    ctx.globalAlpha = .85; ctx.fillStyle = pr.col.up;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = pr.col.up; ctx.lineWidth = 2.5 * s;
+    ctx.beginPath(); ctx.arc(x, y, r + 4 * s, 0, 7); ctx.stroke();
+  });
+  const labels = crNow.map(o => ({ o, x: X(o.g), y: Y(o.f) - R(o.gained) - 12 * s }));
+  labels.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < labels.length; i++)
+    if (Math.abs(labels[i].x - labels[i-1].x) < 150 * s && labels[i].y - labels[i-1].y < 24 * s)
+      labels[i].y = labels[i-1].y + 24 * s;
+  ctx.textAlign = "center";
+  labels.forEach(L => {
+    ctx.fillStyle = pr.col.up; ctx.font = `700 ${21 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(L.o.pt.k, L.x, L.y);
+  });
+  ctx.textAlign = "left";
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${21 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(`${now.length} CREATORS · UP IS A BIGGER AUDIENCE · RIGHT IS FASTER CAMPAIGN GROWTH · BUBBLE IS FOLLOWERS GAINED`, mL, 92 * s);
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${28 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(cinFmtT(pr.times[Math.round(u)]), W - mR, 58 * s);
+  ctx.fillStyle = pr.col.faint; ctx.font = `${18 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("growth axis is logarithmic · 100K and 1M lines are the size brackets", W - mR, H - 18 * s);
+  ctx.textAlign = "left";
+}
+
+// what the campaigns produced: clips, the views on them, the followers gained,
+// counted up stage by stage with every client's slice of each bar
+function cinDrawClips(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .07, mR = W * .07;
+  const bandH = H * .21, top0 = H * .21;
+  pr.stages.forEach((st, si) => {
+    const q = Math.max(0, Math.min(1, (p - si * .3) / .34));
+    if (q <= 0) return;
+    const top = top0 + si * bandH;
+    ctx.globalAlpha = Math.min(1, q * 3);
+    ctx.fillStyle = pr.col.faint; ctx.font = `${20 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(st.k, mL, top);
+    ctx.fillStyle = si === 2 ? pr.col.up : pr.col.ink;
+    ctx.font = `700 ${86 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(st.fmt(st.total * q), mL, top + 78 * s);
+    // measure the number in its own font, before switching, or the caption lands on top of it
+    const numW = ctx.measureText(st.fmt(st.total)).width;
+    ctx.fillStyle = pr.col.muted; ctx.font = `${19 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(st.sub, mL + numW + 34 * s, top + 78 * s);
+    ctx.globalAlpha = 1;
+    // stacked contribution bar: one segment per client, biggest first
+    const bw = W - mL - mR, by = top + 96 * s, bh = 26 * s;
+    ctx.fillStyle = pr.col.line; ctx.globalAlpha = .5;
+    ctx.fillRect(mL, by, bw, bh);
+    ctx.globalAlpha = 1;
+    let x = mL;
+    st.parts.forEach((part, i) => {
+      const w = part[st.key] / (st.total || 1) * bw * q;
+      ctx.globalAlpha = .45 + .55 * (1 - i / Math.max(1, st.parts.length));
+      ctx.fillStyle = pr.col.up;
+      ctx.fillRect(x, by, Math.max(0, w - 1.5 * s), bh);
+      ctx.globalAlpha = 1;
+      if (w > 78 * s){
+        ctx.fillStyle = pr.col.bg; ctx.font = `700 ${15 * s}px ui-monospace,Menlo,monospace`;
+        ctx.fillText(part.s, x + 9 * s, by + bh * .68);
+      }
+      x += w;
+    });
+  });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${22 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(`${pr.nCr} CONTENT REWARDS CLIENTS · SINCE JULY 15`, mL, 92 * s);
+  if (p > .9){
+    ctx.globalAlpha = Math.min(1, (p - .9) / .08);
+    ctx.fillStyle = pr.col.faint; ctx.font = `${19 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText("official Twitch counts over the same window · three outcomes of one campaign, not an attribution model", mL, H - 34 * s);
+    ctx.globalAlpha = 1;
+  }
+}
+
+// every campaign day as a cell, filling in left to right
+function cinDrawHeat(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .14, mR = W * .12, mT = H * .23, mB = H * .07;
+  const nd = pr.days.length, rows = pr.rows;
+  const cw = (W - mL - mR) / nd, rh = Math.min(52 * s, (H - mT - mB) / rows.length);
+  const u = p * nd;
+  ctx.textAlign = "center";
+  ctx.fillStyle = pr.col.faint; ctx.font = `${16 * s}px ui-monospace,Menlo,monospace`;
+  pr.days.forEach((d, c) => {
+    if (nd > 16 && c % 2) return;
+    ctx.fillText(d.slice(5).replace("-", "/"), mL + c * cw + cw / 2, mT - 14 * s);
+  });
+  if (pr.evEnd > 0){
+    ctx.strokeStyle = pr.col.faint; ctx.lineWidth = 1.5 * s;
+    ctx.beginPath();
+    ctx.moveTo(mL + 2 * s, mT - 34 * s); ctx.lineTo(mL + pr.evEnd * cw - 4 * s, mT - 34 * s);
+    ctx.stroke();
+    ctx.fillStyle = pr.col.faint; ctx.font = `${15 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText("CAMPUS WEEK", mL + pr.evEnd * cw / 2, mT - 42 * s);
+  }
+  ctx.textAlign = "left";
+  rows.forEach((r, ri) => {
+    const y = mT + ri * rh;
+    ctx.fillStyle = r.cr ? pr.col.ink : pr.col.muted;
+    ctx.font = `${r.cr ? "700 " : ""}${Math.min(21 * s, rh * .42)}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(r.k, mL - 14 * s - ctx.measureText(r.k).width, y + rh * .62);
+    let shown = 0;
+    r.gains.forEach((g, c) => {
+      const rev = Math.max(0, Math.min(1, u - c));
+      if (rev <= 0 || g == null) return;
+      const x = mL + c * cw;
+      const mag = Math.min(1, Math.abs(g) / r.best);
+      ctx.globalAlpha = (.08 + .92 * mag) * rev;
+      ctx.fillStyle = g >= 0 ? pr.col.up : pr.col.down;
+      ctx.fillRect(x + 1.5 * s, y + 2 * s, cw - 3 * s, rh - 4 * s);
+      ctx.globalAlpha = 1;
+      if (g > 0) shown += g;
+      if (mag > .55 && cw > 54 * s){
+        ctx.globalAlpha = rev;
+        ctx.fillStyle = pr.col.bg; ctx.font = `700 ${13 * s}px ui-monospace,Menlo,monospace`;
+        ctx.textAlign = "center";
+        ctx.fillText(fmtC(Math.round(g)), x + cw / 2, y + rh * .62);
+        ctx.textAlign = "left";
+        ctx.globalAlpha = 1;
+      }
+    });
+    ctx.fillStyle = r.cr ? pr.col.up : pr.col.muted;
+    ctx.font = `700 ${Math.min(20 * s, rh * .4)}px ui-monospace,Menlo,monospace`;
+    ctx.fillText("+" + fmtC(Math.round(shown)), W - mR + 14 * s, y + rh * .62);
+  });
+  // the day being revealed right now
+  const cc = Math.min(nd - 1, Math.floor(u));
+  if (p < 1){
+    ctx.strokeStyle = pr.col.ink; ctx.lineWidth = 2 * s;
+    ctx.strokeRect(mL + cc * cw, mT, cw, rows.length * rh);
+  }
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, W * .04, 58 * s);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${21 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("FOLLOWERS ADDED EACH DAY · SHADE IS SCALED TO EACH CREATOR'S OWN BEST DAY", W * .04, 92 * s);
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.faint; ctx.font = `${20 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.days[cc].slice(5).replace("-", "/"), W - W * .04, 58 * s);
+  ctx.textAlign = "left";
+}
+
+// RIZPY at two-minute resolution with every milestone timestamped as it lands
+function cinDrawMilestones(ctx, W, H, p, pr){
+  const s = H / 1080, mL = W * .06, mR = W * .06, mT = H * .34, mB = H * .12;
+  const u = p * (pr.N - 1);
+  const X = i => mL + i * (W - mL - mR) / (pr.N - 1);
+  const span = (pr.max - pr.min) || 1;
+  const Y = v => H - mB - (v - pr.min) / span * (H - mT - mB);
+  const cur = cinAt(pr.spot, u);
+  if (pr.best && u >= pr.best.i){
+    const x0 = X(pr.best.i), x1 = X(Math.min(u, pr.best.j));
+    ctx.globalAlpha = .3; ctx.fillStyle = pr.col.up;
+    ctx.fillRect(x0, mT, x1 - x0, H - mB - mT);
+    ctx.globalAlpha = 1;
+    if (u >= pr.best.j){
+      ctx.textAlign = "center";
+      ctx.fillStyle = pr.col.up; ctx.font = `700 ${20 * s}px ui-monospace,Menlo,monospace`;
+      ctx.fillText(`BEST HOUR +${pr.best.g.toLocaleString()}`, (x0 + x1) / 2, H - mB - 16 * s);
+      ctx.textAlign = "left";
+    }
+  }
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.strokeStyle = pr.col.up; ctx.lineWidth = 5 * s;
+  const t = cinTrace(ctx, pr.spot, X, Y, u);
+  ctx.stroke();
+  if (t.started){
+    ctx.lineTo(X(u), H - mB); ctx.lineTo(mL, H - mB); ctx.closePath();
+    ctx.globalAlpha = .12; ctx.fillStyle = pr.col.up; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = pr.col.up;
+    ctx.beginPath(); ctx.arc(X(u), Y(cur), 9 * s, 0, 7); ctx.fill();
+  }
+  // a busy hour lands several milestones almost on top of each other, so the
+  // labels get pushed apart along the top and keep a leader line to their dot
+  const hit = pr.marks.map((mk, i) => ({ mk, i, dx: X(mk.i) })).filter(L => u >= L.mk.i);
+  const GAP = 116 * s;
+  [0, 1].forEach(row => {
+    const rl = hit.filter(L => L.i % 2 === row);
+    rl.forEach(L => { L.lx = L.dx; L.row = row; });
+    for (let i = 1; i < rl.length; i++)
+      if (rl[i].lx - rl[i-1].lx < GAP) rl[i].lx = rl[i-1].lx + GAP;
+    if (rl.length){
+      const over = rl[rl.length-1].lx - (W - mR - 40 * s);
+      if (over > 0){
+        rl[rl.length-1].lx -= over;
+        for (let i = rl.length - 2; i >= 0; i--)
+          rl[i].lx = Math.min(rl[i].lx, rl[i+1].lx - GAP);
+      }
+    }
+  });
+  hit.forEach(L => {
+    const mk = L.mk;
+    const pop = Math.min(1, (u - mk.i) / Math.max(1, pr.N * .012));
+    const x = L.dx, y = Y(mk.m), lx = Math.max(mL + 40 * s, L.lx);
+    const ly = mT - 14 * s - L.row * 46 * s;
+    ctx.globalAlpha = pop;
+    ctx.strokeStyle = pr.col.faint; ctx.lineWidth = 1.2 * s;
+    ctx.setLineDash([4 * s, 5 * s]);
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(lx, ly + 12 * s); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = pr.col.ink;
+    ctx.beginPath(); ctx.arc(x, y, 5.5 * s * pop, 0, 7); ctx.fill();
+    ctx.textAlign = "center";
+    ctx.font = `700 ${21 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(fmtC(mk.m), lx, ly);
+    ctx.fillStyle = pr.col.faint; ctx.font = `${15 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(cinFmtT(mk.t), lx, ly - 19 * s);
+    ctx.textAlign = "left";
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${34 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, mL, 58 * s);
+  if (cur != null){
+    ctx.fillStyle = pr.col.ink; ctx.font = `700 ${132 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(Math.round(cur).toLocaleString(), mL, 190 * s);
+    const gained = Math.round(cur - pr.spot[0]);
+    ctx.fillStyle = gained >= 0 ? pr.col.up : pr.col.down;
+    ctx.font = `700 ${38 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(`${gained >= 0 ? "+" : ""}${gained.toLocaleString()} followers`, mL, 238 * s);
+  }
+  ctx.textAlign = "right";
+  ctx.fillStyle = pr.col.muted; ctx.font = `${24 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(cinFmtT(pr.times[Math.round(u)]), W - mR, 58 * s);
+  ctx.fillStyle = pr.col.faint; ctx.font = `${20 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("twitch.tv/rizpyyt", W - mR, H - 22 * s);
+  ctx.textAlign = "left";
+}
+
+// the class scrolling past like an exchange tape, built to loop
+function cinDrawTicker(ctx, W, H, p, pr){
+  const s = H / 1080;
+  const fs = 30 * s;
+  ctx.font = `700 ${fs}px ui-monospace,Menlo,monospace`;
+  const entries = pr.tape.map(t => {
+    const move = t.d != null ? fmtD(t.d) : (t.gain != null ? (t.gain >= 0 ? "+" : "") + fmtC(Math.abs(t.gain)) : "");
+    const txt = `${t.s} ${fmtC(t.f)} ${move}`;
+    return { txt, cr: t.cr, up: (t.d != null ? t.d : t.gain || 0) >= 0, w: ctx.measureText(txt).width + (t.cr ? 52 * s : 0) + 58 * s };
+  });
+  const total = entries.reduce((a, e) => a + e.w, 0) || 1;
+  const drawRow = (y, off, dir) => {
+    let x = dir > 0 ? -(off % total) : (off % total) - total;
+    for (let pass = 0; pass < 3; pass++){
+      for (const e of entries){
+        if (x > -e.w && x < W){
+          ctx.fillStyle = e.cr ? pr.col.up : (e.up ? pr.col.ink : pr.col.muted);
+          ctx.font = `700 ${fs}px ui-monospace,Menlo,monospace`;
+          ctx.fillText(e.txt, x, y);
+          if (e.cr){
+            const bw = 40 * s, bx = x + ctx.measureText(e.txt).width + 12 * s;
+            ctx.fillStyle = pr.col.up;
+            ctx.fillRect(bx, y - fs * .72, bw, fs * .9);
+            ctx.fillStyle = pr.col.bg; ctx.font = `700 ${17 * s}px ui-monospace,Menlo,monospace`;
+            ctx.fillText("CR", bx + 8 * s, y - fs * .12);
+          }
+        }
+        x += e.w;
+        if (x > W) break;
+      }
+      if (x > W) break;
+    }
+  };
+  ctx.strokeStyle = pr.col.line; ctx.lineWidth = 1 * s;
+  for (const y of [H * .16, H * .26, H * .74, H * .84]){
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+  drawRow(H * .225, p * total, 1);
+  drawRow(H * .805, p * total * .8, -1);
+  ctx.textAlign = "center";
+  ctx.fillStyle = pr.col.ink; ctx.font = `700 ${58 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(pr.title, W / 2, H * .45);
+  ctx.fillStyle = pr.col.up; ctx.font = `700 ${112 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText("+" + Math.round(pr.tot * p).toLocaleString(), W / 2, H * .58);
+  ctx.fillStyle = pr.col.muted; ctx.font = `${26 * s}px ui-monospace,Menlo,monospace`;
+  ctx.fillText(`FOLLOWERS ADDED BY ${pr.tape.length} TRACKED CREATORS SINCE JULY 13`, W / 2, H * .635);
+  if (p > .5){
+    ctx.globalAlpha = Math.min(1, (p - .5) * 3);
+    ctx.fillStyle = pr.col.up; ctx.font = `700 ${28 * s}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(`+${Math.round(pr.crTot).toLocaleString()} OF IT FROM CONTENT REWARDS CLIENTS`, W / 2, H * .685);
+    ctx.globalAlpha = 1;
+  }
+  ctx.textAlign = "left";
+}
+
 function cinDrawBars(ctx, W, H, p, pr){
   const s = H / 1080, mL = W * .055, mR = W * .07, mT = H * .17, rows = 10;
   const u = p * (pr.N - 1);
@@ -2614,12 +3038,56 @@ function cinDraw(p, pr){
     ctx.textAlign = "left";
     return;
   }
-  if (pr.scene === "race") cinDrawRace(ctx, cv.width, cv.height, p, pr);
-  else if (pr.scene === "versus") cinDrawVersus(ctx, cv.width, cv.height, p, pr);
-  else if (pr.scene === "stick") cinDrawStick(ctx, cv.width, cv.height, p, pr);
-  else if (pr.scene === "bars") cinDrawBars(ctx, cv.width, cv.height, p, pr);
-  else if (pr.scene === "end") cinDrawEnd(ctx, cv.width, cv.height, p, pr);
-  else cinDrawCounter(ctx, cv.width, cv.height, p, pr);
+  const D = { race: cinDrawRace, versus: cinDrawVersus, stick: cinDrawStick,
+    brackets: cinDrawBrackets, bubbles: cinDrawBubbles, clips: cinDrawClips,
+    heat: cinDrawHeat, milestones: cinDrawMilestones, ticker: cinDrawTicker,
+    bars: cinDrawBars, end: cinDrawEnd };
+  (D[pr.scene] || cinDrawCounter)(ctx, cv.width, cv.height, p, pr);
+}
+
+// ---------- cinema controls ----------
+// the bar only shows what the current scene actually reads, and every change
+// repaints the frame you are looking at instead of waiting for a preview
+function cinScenes(){
+  const box = $("#cin-scenes");
+  if (!box || box.childElementCount) return;
+  box.innerHTML = SCENES.map(sc =>
+    `<button class="cin-sc${sc.cr ? " cr" : ""}" data-k="${sc.k}" aria-pressed="false">${sc.cr ? '<span class="tag">CR</span>' : ""}${sc.t}</button>`).join("");
+  box.querySelectorAll(".cin-sc").forEach(b =>
+    b.addEventListener("click", () => { $("#cin-scene").value = b.dataset.k; cinSync(true); }));
+}
+function cinSync(reprep){
+  const k = $("#cin-scene").value, def = sceneDef(k);
+  $("#cin-scenes").querySelectorAll(".cin-sc").forEach(b =>
+    b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"));
+  document.querySelectorAll("#cinema .cin-grp[data-opt]").forEach(g =>
+    g.hidden = !def.opts.includes(g.dataset.opt));
+  $("#cin-desc").textContent = def.d;
+  const [w, h] = $("#cin-res").value.split("x").map(Number);
+  const cv = cinC();
+  if (cv.width !== w || cv.height !== h){ cv.width = w; cv.height = h; }
+  if (reprep) CIN.prep = null;
+  cinFrame();
+}
+// repaint the current scrub position without starting an animation
+function cinFrame(){
+  if (CIN.playing) return;
+  CIN.prep = cinPrep();
+  cinDraw(CIN.p, CIN.prep);
+  const pct = Math.round(CIN.p * 100);
+  $("#cin-pos").textContent = pct + "%";
+  $("#cin-scrub").value = String(Math.round(CIN.p * 1000));
+}
+function cinSavePng(){
+  const cv = cinC();
+  cv.toBlob(b => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = `su26-${$("#cin-scene").value}-${cv.height}p-${Math.round(CIN.p * 100)}pct.png`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    $("#cin-status").textContent = "saved to Downloads · " + a.download;
+  }, "image/png");
 }
 
 function cinStop(){
@@ -2627,6 +3095,7 @@ function cinStop(){
   if (CIN.raf){ cancelAnimationFrame(CIN.raf); CIN.raf = null; }
   if (CIN.rec && CIN.rec.state !== "inactive") CIN.rec.stop();
   $("#cin-rec").dataset.on = "";
+  $("#cin-play").textContent = "▶ PREVIEW";
 }
 function cinPlay(done){
   cinStop();
@@ -2634,18 +3103,27 @@ function cinPlay(done){
   const cv = cinC();
   cv.width = w; cv.height = h;
   const pr = cinPrep();
+  CIN.prep = pr;
   if (!pr){ cinDraw(1, null); if (done) done(false); return; }
   CIN.pos = null;
   CIN.playing = true;
+  $("#cin-play").textContent = "❚❚ STOP";
   const dur = +$("#cin-dur").value * 1000, hold = 800;
   const t0 = performance.now();
   const ease = t => 1 - Math.pow(1 - t, 2.2);
   (function loop(ts){
     if (!CIN.playing) return;
     const el = ts - t0;
-    cinDraw(ease(Math.min(1, el / dur)), pr);
+    CIN.p = ease(Math.min(1, el / dur));
+    cinDraw(CIN.p, pr);
+    $("#cin-scrub").value = String(Math.round(CIN.p * 1000));
+    $("#cin-pos").textContent = Math.round(CIN.p * 100) + "%";
     if (el < dur + hold) CIN.raf = requestAnimationFrame(loop);
-    else { CIN.playing = false; CIN.raf = null; if (done) done(true); }
+    else {
+      CIN.playing = false; CIN.raf = null;
+      $("#cin-play").textContent = "▶ PREVIEW";
+      if (done) done(true);
+    }
   })(t0);
 }
 function cinRecord(){
@@ -2754,21 +3232,32 @@ function cinRecordWebm(){
 $("#cinemabtn").addEventListener("click", () => {
   $("#cinema").hidden = false;
   document.body.style.overflow = "hidden";
-  cinDraw(1);
+  cinScenes();
+  CIN.p = 1;
+  cinSync(true);
 });
 $("#cin-close").addEventListener("click", () => {
   cinStop();
   $("#cinema").hidden = true;
   document.body.style.overflow = "";
 });
-$("#cin-play").addEventListener("click", () => { $("#cin-status").textContent = ""; cinPlay(); });
+$("#cin-play").addEventListener("click", () => {
+  if (CIN.playing){ cinStop(); return; }
+  $("#cin-status").textContent = "";
+  cinPlay();
+});
 $("#cin-rec").addEventListener("click", cinRecord);
-["cin-scene", "cin-metric", "cin-res"].forEach(id =>
-  document.getElementById(id).addEventListener("change", () => {
-    const [w, h] = $("#cin-res").value.split("x").map(Number);
-    const cv = cinC(); cv.width = w; cv.height = h;
-    cinDraw(1);
-  }));
+$("#cin-frame").addEventListener("click", cinSavePng);
+$("#cin-scrub").addEventListener("input", e => {
+  cinStop();
+  CIN.p = +e.target.value / 1000;
+  $("#cin-pos").textContent = Math.round(CIN.p * 100) + "%";
+  cinDraw(CIN.p, CIN.prep || (CIN.prep = cinPrep()));
+});
+// anything that changes what is drawn rebuilds the frame you are looking at
+["cin-metric", "cin-who", "cin-res", "cin-theme"].forEach(id =>
+  $("#" + id).addEventListener("change", () => cinSync(true)));
+$("#cin-title").addEventListener("input", () => { CIN.prep = null; cinFrame(); });
 
 // ---------- remember how the page was set up between visits ----------
 function saveUI(){
@@ -3128,6 +3617,22 @@ setInterval(() => { syncServer(); loadNotes(); loadSeries(); loadTags(); loadCha
 // ---------- keyboard: / focuses search, Esc clears ----------
 addEventListener("keydown", e => {
   const q = $("#q");
+  const cinOpen = !document.getElementById("cinema").hidden;
+  // cinema transport: space plays or stops, arrows nudge the scrub
+  if (cinOpen && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){
+    if (e.key === " "){
+      e.preventDefault();
+      if (CIN.playing) cinStop(); else cinPlay();
+      return;
+    }
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+      e.preventDefault();
+      cinStop();
+      CIN.p = Math.max(0, Math.min(1, CIN.p + (e.key === "ArrowRight" ? .02 : -.02) * (e.shiftKey ? 5 : 1)));
+      cinFrame();
+      return;
+    }
+  }
   if (e.key === "/" && document.activeElement !== q && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){
     e.preventDefault(); q.focus();
   } else if (e.key === "Escape" && document.activeElement === q){
