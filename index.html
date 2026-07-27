@@ -387,16 +387,36 @@
   /* cinema */
   #cinema{position:fixed;inset:0;background:var(--bg);z-index:70;display:flex;flex-direction:column}
   #cinema[hidden]{display:none}
-  .cin-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;
-    border-bottom:1px solid var(--line)}
+  .cin-top{display:flex;gap:10px;align-items:flex-start;padding:12px 16px 0}
+  .cin-scenes{display:flex;gap:6px;overflow-x:auto;flex:1;padding-bottom:10px}
+  .cin-scenes::-webkit-scrollbar{height:5px}
+  .cin-scenes::-webkit-scrollbar-thumb{background:var(--line)}
+  .cin-sc{font-family:var(--mono);font-size:10px;letter-spacing:.08em;white-space:nowrap;cursor:pointer;
+    padding:8px 11px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+  .cin-sc:hover{color:var(--ink);border-color:var(--faint)}
+  .cin-sc[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .cin-sc.cr[aria-pressed="true"]{background:var(--up);border-color:var(--up);color:#fff}
+  .cin-sc .tag{opacity:.6;margin-right:5px}
+  .cin-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:10px 16px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
   .cin-bar select{font-family:var(--mono);font-size:11px;padding:6px 8px;border:1px solid var(--line);
     background:var(--card);color:var(--ink)}
+  .cin-grp{display:flex;align-items:center;gap:5px}
+  .cin-grp[hidden]{display:none}
+  .cin-grp > label{font-size:8.5px;letter-spacing:.12em;color:var(--faint)}
+  .cin-sep{width:1px;height:22px;background:var(--line);margin:0 2px}
   #cin-title{font-family:var(--mono);font-size:11px;padding:6px 8px;border:1px solid var(--line);
-    background:var(--card);color:var(--ink);width:170px}
+    background:var(--card);color:var(--ink);width:168px}
   #cin-status{font-size:11px;color:var(--muted)}
   #cin-rec[data-on="1"]{background:var(--down);border-color:var(--down);color:#fff}
-  .cin-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:16px}
-  #cin-canvas{width:min(92vw,calc(76vh * 16 / 9));height:auto;border:1px solid var(--line);background:var(--bg)}
+  .cin-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:14px}
+  #cin-canvas{width:min(92vw,calc(70vh * 16 / 9));height:auto;border:1px solid var(--line);background:var(--bg)}
+  .cin-foot{display:flex;gap:14px;align-items:center;padding:0 16px 14px}
+  #cin-scrub{flex:0 0 300px;accent-color:var(--up);height:18px}
+  #cin-pos{font-size:10.5px;color:var(--muted);min-width:74px;font-variant-numeric:tabular-nums}
+  #cin-desc{font-size:11.5px;color:var(--faint);font-family:var(--sans);line-height:1.45;
+    flex:1;min-width:0}
+  @media (max-width:760px){ #cin-scrub{flex-basis:150px} #cin-desc{display:none} }
 
   /* live data */
   .livebox{border:1px solid var(--line);background:var(--card);margin:0 0 12px;font-size:12px}
@@ -567,41 +587,66 @@
   <div id="wall"></div>
 
   <div id="cinema" hidden>
+    <div class="cin-top">
+      <div class="cin-scenes" id="cin-scenes"></div>
+      <button class="chip" id="cin-close">ESC</button>
+    </div>
     <div class="cin-bar">
-      <select id="cin-scene" aria-label="Scene">
-        <option value="race">LINE RACE · your compare picks</option>
-        <option value="versus">CR vs FIELD · size-matched race</option>
-        <option value="stick">DID IT STICK · CR retention</option>
-        <option value="bars">LEADERBOARD RACE · top 10</option>
-        <option value="counter">RIZPY COUNTER</option>
-        <option value="end">END CARD · campaign recap</option>
+      <select id="cin-scene" hidden aria-hidden="true">
+        <option value="versus">CR vs FIELD</option><option value="brackets">BRACKET DUEL</option>
+        <option value="bubbles">CLASS FIELD</option><option value="clips">CLIP ENGINE</option>
+        <option value="heat">DAILY HEAT</option><option value="stick">DID IT STICK</option>
+        <option value="milestones">MILESTONE RUN</option><option value="race">LINE RACE</option>
+        <option value="bars">LEADERBOARD</option><option value="ticker">EXCHANGE TAPE</option>
+        <option value="counter">RIZPY COUNTER</option><option value="end">END CARD</option>
       </select>
-      <input id="cin-title" placeholder="Custom title (optional)" aria-label="Custom title">
-      <select id="cin-metric" aria-label="Metric">
-        <option value="g">GROWTH %</option><option value="gain">GAINED</option>
-        <option value="f">FOLLOWERS</option><option value="lv">LIVE VIEWERS</option>
-        <option value="cv">CLIP VIEWS</option><option value="hl">HOURS LIVE</option>
-      </select>
-      <select id="cin-dur" aria-label="Duration">
-        <option value="5">5s</option><option value="10" selected>10s</option>
-        <option value="20">20s</option><option value="30">30s</option>
-      </select>
-      <select id="cin-res" aria-label="Resolution">
-        <option value="1280x720">720p</option><option value="1920x1080" selected>1080p</option>
-        <option value="2560x1440">1440p</option><option value="3840x2160">4K</option>
-      </select>
-      <select id="cin-fps" aria-label="Frame rate">
-        <option value="24">24fps</option><option value="30" selected>30fps</option><option value="60">60fps</option>
-      </select>
-      <select id="cin-fmt" aria-label="Format" title="MP4 renders offline frame-perfect; WebM records in real time">
-        <option value="mp4" selected>MP4</option><option value="webm">WEBM</option>
-      </select>
-      <button class="chip" id="cin-play">PREVIEW</button>
+      <span class="cin-grp" data-opt="metric"><label>DATA</label>
+        <select id="cin-metric" aria-label="Metric">
+          <option value="g">GROWTH %</option><option value="gain">GAINED</option>
+          <option value="f">FOLLOWERS</option><option value="lv">LIVE VIEWERS</option>
+          <option value="cv">CLIP VIEWS</option><option value="hl">HOURS LIVE</option>
+        </select></span>
+      <span class="cin-grp" data-opt="who"><label>SHOW</label>
+        <select id="cin-who" aria-label="Who to show">
+          <option value="cr">CR CLIENTS</option><option value="all">WHOLE CLASS</option>
+        </select></span>
+      <span class="cin-grp"><input id="cin-title" placeholder="Custom title (optional)" aria-label="Custom title"></span>
+      <span class="cin-sep"></span>
+      <span class="cin-grp"><label>LENGTH</label>
+        <select id="cin-dur" aria-label="Duration">
+          <option value="5">5s</option><option value="10" selected>10s</option>
+          <option value="15">15s</option><option value="20">20s</option><option value="30">30s</option>
+        </select></span>
+      <span class="cin-grp"><label>SIZE</label>
+        <select id="cin-res" aria-label="Resolution">
+          <option value="1280x720">720p</option><option value="1920x1080" selected>1080p</option>
+          <option value="2560x1440">1440p</option><option value="3840x2160">4K</option>
+          <option value="1080x1920">VERTICAL 1080</option><option value="1080x1080">SQUARE 1080</option>
+        </select></span>
+      <span class="cin-grp"><label>FPS</label>
+        <select id="cin-fps" aria-label="Frame rate">
+          <option value="24">24</option><option value="30" selected>30</option><option value="60">60</option>
+        </select></span>
+      <span class="cin-grp"><label>LOOK</label>
+        <select id="cin-theme" aria-label="Theme" title="Render on a dark or light background regardless of the page theme">
+          <option value="auto">AUTO</option><option value="dark">DARK</option><option value="light">LIGHT</option>
+        </select></span>
+      <span class="cin-grp"><label>FILE</label>
+        <select id="cin-fmt" aria-label="Format" title="MP4 renders offline frame-perfect; WebM records in real time">
+          <option value="mp4" selected>MP4</option><option value="webm">WEBM</option>
+        </select></span>
+      <span class="cin-sep"></span>
+      <button class="chip" id="cin-play">▶ PREVIEW</button>
       <button class="chip" id="cin-rec">⬤ RECORD</button>
+      <button class="chip" id="cin-frame" title="Save the frame on screen as a PNG">FRAME</button>
       <span id="cin-status"></span>
-      <button class="chip" id="cin-close" style="margin-left:auto">ESC</button>
     </div>
     <div class="cin-stage"><canvas id="cin-canvas" width="1920" height="1080"></canvas></div>
+    <div class="cin-foot">
+      <input type="range" id="cin-scrub" min="0" max="1000" value="1000" aria-label="Scrub through the animation">
+      <span id="cin-pos">100%</span>
+      <span id="cin-desc"></span>
+    </div>
   </div>
 
   <footer id="foot">
@@ -1969,14 +2014,51 @@ $("#cmppng").addEventListener("click", () => {
 });
 
 // ---------- cinema: animated data renders, exportable as video ----------
-const CIN = { raf: null, playing: false, rec: null, pos: null };
+const CIN = { raf: null, playing: false, rec: null, pos: null, p: 1, prep: null };
 const cinC = () => document.getElementById("cin-canvas");
+// every scene: what it is, what it needs, which controls actually change it.
+// The control bar hides the options a scene ignores, so nothing on screen is a lie.
+const SCENES = [
+  { k: "versus", t: "CR vs FIELD", cr: 1, opts: [],
+    d: "Your CR clients' average growth racing a size-matched twin cohort of the field. The gap between the lines is the campaign effect, with account size held constant." },
+  { k: "brackets", t: "BRACKET DUEL", cr: 1, opts: [],
+    d: "One panel per size class. Each CR client races the median streamer of their own bracket, so a 5K creator is never scored against a 1M creator." },
+  { k: "bubbles", t: "CLASS FIELD", cr: 1, opts: ["who"],
+    d: "Every tracked creator as a bubble. Height is audience size, right is campaign growth, area is followers gained. CR clients in green, trails show where they came from." },
+  { k: "clips", t: "CLIP ENGINE", cr: 1, opts: [],
+    d: "What the campaigns produced since July 15: clips made, views on those clips, followers gained, counted up stage by stage with each client's contribution." },
+  { k: "heat", t: "DAILY HEAT", cr: 1, opts: ["who"],
+    d: "Every campaign day as a cell, filling in left to right. Darker green is a bigger day for that creator, scaled to their own best day." },
+  { k: "stick", t: "DID IT STICK", cr: 1, opts: [],
+    d: "Growth earned during campus week, then what happened after the cameras left. Solid is campus week, light is added since." },
+  { k: "milestones", t: "MILESTONE RUN", cr: 1, opts: [],
+    d: "RIZPY's follower count at two-minute resolution, with every milestone timestamped as it lands and the single best hour marked." },
+  { k: "race", t: "LINE RACE", opts: ["metric"],
+    d: "Your compare picks racing on any metric, with the rest of the class drawn behind them as ghost lines." },
+  { k: "bars", t: "LEADERBOARD", opts: ["metric"],
+    d: "The top ten of the class, bars overtaking each other as the days pass." },
+  { k: "ticker", t: "EXCHANGE TAPE", opts: [],
+    d: "The whole class scrolling past like an exchange ticker, CR clients flagged. Built to loop as an intro or an outro." },
+  { k: "counter", t: "RIZPY COUNTER", opts: [],
+    d: "The flagship number climbing, straight from the two-minute samples." },
+  { k: "end", t: "END CARD", opts: [],
+    d: "The campaign recap card: followers, gained, clip views, hours streamed." }
+];
+const sceneDef = k => SCENES.find(s => s.k === k) || SCENES[0];
 function cinColors(){
-  const cs = getComputedStyle(document.documentElement);
+  const root = document.documentElement;
+  const want = ($("#cin-theme") || {}).value || "auto";
+  // read the palette as if the page were in the requested theme, then put it
+  // back before anything paints, so the render can be dark on a light page
+  const had = root.dataset.theme;
+  if (want !== "auto") root.dataset.theme = want;
+  const cs = getComputedStyle(root);
   const v = n => cs.getPropertyValue(n).trim();
-  return { bg: v("--bg"), ink: v("--ink"), muted: v("--muted"), faint: v("--faint"),
-    line: v("--line"), up: v("--up"), ghost: v("--ghost"),
+  const col = { bg: v("--bg"), ink: v("--ink"), muted: v("--muted"), faint: v("--faint"),
+    line: v("--line"), up: v("--up"), down: v("--down"), ghost: v("--ghost"),
     pal: [v("--c1"), v("--c2"), v("--c3"), v("--c4"), v("--c5")] };
+  if (want !== "auto"){ if (had) root.dataset.theme = had; else delete root.dataset.theme; }
+  return col;
 }
 // value at a fractional index, linearly interpolated between samples
 function cinAt(vals, u){
@@ -2022,10 +2104,136 @@ function cinPrep(){
     prep.min = Math.min(...all); prep.max = Math.max(...all);
     if (prep.min === prep.max){ prep.min -= 1; prep.max += 1; }
     const p4 = (prep.max - prep.min) * .06; prep.min -= p4; prep.max += p4;
-  } else if (scene === "versus" || scene === "stick"){
+  } else if (scene === "ticker"){
+    const rowsT = ALL.filter(t => t.f != null && (t.d != null || t.gain != null))
+      .sort((a, b) => (b.gain || 0) - (a.gain || 0))
+      .map(t => ({ s: t.s, n: t.n, f: t.f, d: t.dReal ? t.d : null, gain: t.gain, cr: TAGS.has(t.s) }));
+    if (rowsT.length < 4) return null;
+    prep.tape = rowsT;
+    prep.tot = rowsT.reduce((s, t) => s + (t.gain > 0 ? t.gain : 0), 0);
+    prep.crTot = rowsT.filter(t => t.cr).reduce((s, t) => s + (t.gain > 0 ? t.gain : 0), 0);
+    if (!title) prep.title = "SU26 CLASS EXCHANGE";
+  } else if (scene === "clips"){
+    const crT = ALL.filter(t => TAGS.has(t.s));
+    if (!crT.length) return null;
+    const cd = crCohortData();
+    const gainOf = t => (cd && cd.campG[t.s] && t.f != null) ? t.f - cd.campG[t.s].base : (t.gain || 0);
+    const parts = crT.map(t => ({ s: t.s, clips: t.clips || 0, cv: t.cv || 0, gain: Math.max(0, gainOf(t)) }));
+    prep.stages = [
+      { k: "CLIPS MADE", sub: "clips cut from their streams since July 15", key: "clips", fmt: v => Math.round(v).toLocaleString() },
+      { k: "CLIP VIEWS", sub: "views those clips pulled on Twitch", key: "cv", fmt: v => Math.round(v).toLocaleString() },
+      { k: "FOLLOWERS GAINED", sub: "growth across the same window", key: "gain", fmt: v => "+" + Math.round(v).toLocaleString() }
+    ].map(st => ({ ...st, total: parts.reduce((s, p) => s + p[st.key], 0),
+      parts: parts.slice().sort((a, b) => b[st.key] - a[st.key]).filter(p => p[st.key] > 0) }));
+    if (!prep.stages.some(st => st.total > 0)) return null;
+    prep.nCr = crT.length;
+    if (!title) prep.title = "WHAT THE CR CAMPAIGNS PRODUCED";
+  } else if (scene === "heat"){
+    const who = ($("#cin-who") || {}).value || "cr";
+    const allDays = [...new Set(SERIES.times.map(t => t.slice(0, 10)))].sort();
+    const useDays = allDays.filter(d => d >= CAMP_START);
+    if (useDays.length < 3) return null;
+    const pick = who === "cr" ? Object.keys(SERIES.series).filter(k => TAGS.has(k))
+      : Object.keys(SERIES.series);
+    const rowsH = [];
+    for (const k of pick){
+      const f = SERIES.series[k] && SERIES.series[k].f;
+      if (!f) continue;
+      // last reading of each day, in one pass
+      const lastOfDay = {};
+      for (let i = 0; i < N; i++) if (f[i] != null) lastOfDay[SERIES.times[i].slice(0, 10)] = f[i];
+      // seed from the last day before campus so day one is a real delta
+      let prevV = null;
+      for (const d of allDays){ if (d >= CAMP_START) break; if (lastOfDay[d] != null) prevV = lastOfDay[d]; }
+      const gains = [];
+      for (const d of useDays){
+        const v = lastOfDay[d];
+        gains.push(v != null && prevV != null ? v - prevV : null);
+        if (v != null) prevV = v;
+      }
+      if (!gains.some(g => g != null)) continue;
+      rowsH.push({ k, n: SERIES.series[k].n || k, gains, cr: TAGS.has(k),
+        tot: gains.reduce((s, g) => s + (g > 0 ? g : 0), 0),
+        best: Math.max(1, ...gains.map(g => g || 0)) });
+    }
+    if (!rowsH.length) return null;
+    rowsH.sort((a, b) => b.tot - a.tot);
+    prep.rows = rowsH.slice(0, who === "cr" ? 14 : 22);
+    prep.days = useDays;
+    prep.who = who;
+    prep.evEnd = useDays.filter(d => d < EVENT_END).length;
+    if (!title) prep.title = who === "cr" ? "CR CAMPAIGNS · DAY BY DAY" : "THE CLASS · DAY BY DAY";
+  } else if (scene === "bubbles"){
+    const cd = crCohortData();
+    if (!cd) return null;
+    const who = ($("#cin-who") || {}).value || "cr";
+    const pts = [];
+    for (const [k, o] of Object.entries(cd.campG)){
+      const g = cd.gAll[k], f = cmpValuesRaw(k, "f");
+      if (!g || !f) continue;
+      pts.push({ k, n: (SERIES.series[k] || {}).n || k, g, f, cr: TAGS.has(k), base: o.base });
+    }
+    if (pts.length < 4) return null;
+    const gm = Math.max(...pts.flatMap(p => p.g.filter(v => v != null)), 10);
+    const fAll = pts.flatMap(p => p.f.filter(v => v != null && v > 0));
+    prep.pts = pts;
+    prep.gMax = gm;
+    prep.fMin = Math.min(...fAll);
+    prep.fMax = Math.max(...fAll);
+    prep.who = who;
+    prep.b0 = cd.b0; prep.b1 = cd.b1;
+    if (!title) prep.title = "THE WHOLE CLASS, MOVING";
+  } else if (scene === "milestones"){
+    const sp = (SPOTSAMPLES || []).filter(s => s[1] != null);
+    if (sp.length < 10) return null;
+    const vals = sp.map(s => s[1]), tms = sp.map(s => s[0]);
+    prep.spot = vals; prep.times = tms; prep.N = vals.length;
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const step = hi - lo > 30000 ? 5000 : hi - lo > 12000 ? 2500 : 1000;
+    const marks = [];
+    for (let m = Math.ceil(lo / step) * step; m <= hi; m += step){
+      const i = vals.findIndex(v => v >= m);
+      if (i > 0) marks.push({ m, i, t: tms[i] });
+    }
+    prep.marks = marks;
+    // the single best hour, found the same way the recap stats pack finds it
+    const ms = t => new Date(t).getTime();
+    let best = { g: -1 };
+    for (let i = 0, j = 0; j < vals.length; j++){
+      while (ms(tms[j]) - ms(tms[i]) > 36e5) i++;
+      if (vals[j] - vals[i] > best.g) best = { g: vals[j] - vals[i], i, j };
+    }
+    prep.best = best.g > 0 ? best : null;
+    prep.min = lo; prep.max = hi;
+    if (!title) prep.title = "RIZPY · EVERY TWO MINUTES";
+  } else if (scene === "versus" || scene === "stick" || scene === "brackets"){
     const cd = crCohortData();
     if (!cd || !cd.vetKeys.length) return null;
-    if (scene === "versus"){
+    if (scene === "brackets"){
+      const brOf = b => b < 1e5 ? 0 : b < 1e6 ? 1 : 2;
+      const NAMES = ["UNDER 100K", "100K TO 1M", "1M PLUS"];
+      const panels = [];
+      for (let bi = 0; bi < 3; bi++){
+        const members = Object.keys(cd.campG).filter(k => brOf(cd.campG[k].base) === bi);
+        if (members.length < 2) continue;
+        const medLine = [];
+        for (let i = 0; i < cd.N; i++){
+          const vs = members.map(k => cd.gAll[k] && cd.gAll[k][i]).filter(v => v != null).sort((a, b) => a - b);
+          medLine.push(vs.length ? vs[Math.floor(vs.length / 2)] : null);
+        }
+        const mine = cd.vetKeys.filter(k => brOf(cd.campG[k].base) === bi)
+          .map(k => ({ k, vals: cd.gAll[k] }))
+          .filter(x => x.vals && x.vals.some(v => v != null));
+        const all = [...medLine.filter(v => v != null), ...mine.flatMap(x => x.vals.filter(v => v != null))];
+        if (!all.length) continue;
+        panels.push({ name: NAMES[bi], n: members.length, med: medLine, mine,
+          min: Math.min(...all, 0), max: Math.max(...all) });
+      }
+      if (!panels.length) return null;
+      prep.panels = panels;
+      prep.b0 = cd.b0; prep.b1 = cd.b1;
+      if (!title) prep.title = "SIZE FOR SIZE";
+    } else if (scene === "versus"){
       if (!cd.crLine.some(v => v != null)) return null;
       prep.cr = cd.crLine; prep.twin = cd.twinLine;
       prep.vets = cd.vetKeys.length; prep.b0 = cd.b0; prep.b1 = cd.b1;
