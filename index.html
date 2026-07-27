@@ -2422,10 +2422,13 @@ function cinDrawVersus(ctx, W, H, p, pr){
   labels.sort((a, b) => a.y - b.y);
   if (labels.length === 2 && labels[1].y - labels[0].y < 44 * s)
     labels[1].y = labels[0].y + 44 * s;
+  // ride along with the tip instead of sitting pinned to the right margin,
+  // so mid-animation the number is attached to the line it belongs to
+  const lx = Math.min(tipX + 18 * s, W - mR + 18 * s);
   labels.forEach(l => {
     ctx.fillStyle = l.c;
     ctx.font = `${l.bold ? "700 " : ""}${30 * s}px ui-monospace,Menlo,monospace`;
-    ctx.fillText(l.txt, W - mR + 18 * s, l.y + 9 * s);
+    ctx.fillText(l.txt, lx, l.y + 9 * s);
   });
   if (cr.tip != null && tw.tip != null){
     const gap = cr.tip - tw.tip;
@@ -2554,10 +2557,11 @@ function cinDrawBrackets(ctx, W, H, p, pr){
     tips.sort((a, b) => a.y - b.y);
     for (let i = 1; i < tips.length; i++)
       if (tips[i].y - tips[i-1].y < 26 * s) tips[i].y = tips[i-1].y + 26 * s;
+    const tx = Math.min(X(u) + 14 * s, W - mR + 14 * s);
     tips.forEach(t => {
       ctx.fillStyle = t.c;
       ctx.font = `${t.b ? "700 " : ""}${21 * s}px ui-monospace,Menlo,monospace`;
-      ctx.fillText(t.txt, W - mR + 14 * s, t.y + 7 * s);
+      ctx.fillText(t.txt, tx, t.y + 7 * s);
     });
     ctx.fillStyle = pr.col.ink; ctx.font = `700 ${23 * s}px ui-monospace,Menlo,monospace`;
     ctx.fillText(pa.name, mL, top + 20 * s);
