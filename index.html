@@ -604,7 +604,8 @@
         <select id="cin-metric" aria-label="Metric">
           <option value="g">GROWTH %</option><option value="gain">GAINED</option>
           <option value="f">FOLLOWERS</option><option value="lv">LIVE VIEWERS</option>
-          <option value="cv">CLIP VIEWS</option><option value="hl">HOURS LIVE</option>
+          <option value="cv">CLIP VIEWS</option><option value="clips">CLIPS MADE</option>
+          <option value="hl">HOURS LIVE</option>
         </select></span>
       <span class="cin-grp" data-opt="who"><label>SHOW</label>
         <select id="cin-who" aria-label="Who to show">
@@ -1288,6 +1289,15 @@ function updateCrKpi(){
   $("#kpi-cr-sub").textContent = "median of " + cr.length + (field.length ? " · field " + fmtD(mid(field)) : "");
 }
 
+// last non-null reading of a counter metric for one creator, newest first.
+// Clip and hour counters only exist in the collector's snapshots, and any
+// single snapshot can be missing a channel the Twitch API declined that pass.
+function lastSeen(t, k){
+  const a = SERIES && SERIES.series[t.s] && SERIES.series[t.s][k];
+  if (a) for (let i = a.length - 1; i >= 0; i--) if (a[i] != null) return a[i];
+  return t[k] != null ? t[k] : null;
+}
+
 // ---------- CR portfolio: the client cohort vs the rest of the class ----------
 // campaign-window growth for everyone plus the size-matched twin cohort.
 // One computation shared by the portfolio section and the cinema scenes so
@@ -1352,6 +1362,11 @@ function renderCrPortfolio(){
   }
   const sum = (a, k) => a.reduce((s, t) => s + (t[k] || 0), 0);
   const med = a => { const s = a.filter(v => v != null).sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  // Twitch sometimes returns nothing for a channel's clips on a given pass. The
+  // newest snapshot would then count that creator as zero and quietly shrink
+  // every clip total, so fall back to their last recorded reading instead.
+  const sumS = (a, k) => a.reduce((s, t) => s + (lastSeen(t, k) || 0), 0);
+  const avgS = (a, k) => { const v = a.map(t => lastSeen(t, k)).filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
   const crGainers = cr.filter(t => t.gain != null), fdGainers = fd.filter(t => t.gain != null);
   const crGain = sum(crGainers, "gain"), fdGain = sum(fdGainers, "gain");
   const live = cr.filter(t => t.lv != null);
@@ -1362,7 +1377,7 @@ function renderCrPortfolio(){
     ["Gained together", (crGain >= 0 ? "+" : "") + crGain.toLocaleString(), crGain >= 0 ? "up" : "dn", "Followers gained since the Jul 13 baseline, all CR creators combined", Math.abs(crGain), "", crGain >= 0 ? "+" : "-"],
     ["Share of class gains", share != null ? share.toFixed(1) + "%" : "-", "", cr.length + " of " + tracked.length + " tracked people (" + (cr.length / tracked.length * 100).toFixed(0) + "% of the class) took this share of all follower gains", null, "", ""],
     ["Live right now", live.length ? live.length + " · " + fmtC(sum(live, "lv")) + " watching" : "0", live.length ? "up" : "", "CR creators streaming at this moment", null, "", ""],
-    ["Clip views", fmtC(sum(cr, "cv")), "", "Views on their Twitch clips made since Jul 15, combined", sum(cr, "cv"), "c", ""]
+    ["Clip views", fmtC(sumS(cr, "cv")), "", "Views on their Twitch clips made since Jul 15, combined", sumS(cr, "cv"), "c", ""]
   ];
   const bar = (label, a, b, fmt) => {
     const mx = Math.max(Math.abs(a || 0), Math.abs(b || 0)) || 1;
@@ -1615,9 +1630,9 @@ function renderCrPortfolio(){
     ["Median weekly growth", crD, fdD, fmtD, 1],
     ["Avg followers gained", crAvg, fdAvg, v => (v >= 0 ? "+" : "") + fmtC(Math.round(Math.abs(v))), 1],
     ["Avg peak viewers", avgPeak(crVet), avgPeak(fd), v => fmtC(Math.round(v)), 1],
-    ["Avg hours streamed", avg(cr, "hl"), avg(fd, "hl"), v => v.toFixed(1) + "h", 0],
-    ["Avg clips made", avg(cr, "clips"), avg(fd, "clips"), v => String(Math.round(v)), 0],
-    ["Avg Twitch clip views", avg(cr, "cv"), avg(fd, "cv"), v => fmtC(Math.round(v)), 0],
+    ["Avg hours streamed", avgS(cr, "hl"), avgS(fd, "hl"), v => v.toFixed(1) + "h", 0],
+    ["Avg clips made", avgS(cr, "clips"), avgS(fd, "clips"), v => String(Math.round(v)), 0],
+    ["Avg Twitch clip views", avgS(cr, "cv"), avgS(fd, "cv"), v => fmtC(Math.round(v)), 0],
     ["Streaming right now", pctLive(cr), pctLive(fd), v => v.toFixed(0) + "%", 0]
   ];
   const table = `<div class="cptab">
@@ -1685,7 +1700,8 @@ const CMP = { sel: ["RIZPY"], metric: "g", fit: "zoom" };
 const CMPFMT = {
   g: fmtD, f: fmtC, lv: fmtC, cv: fmtC,
   gain: v => (v >= 0 ? "+" : "") + Math.round(v).toLocaleString(),
-  hl: v => v.toFixed(1) + "h"
+  hl: v => v.toFixed(1) + "h",
+  clips: v => Math.round(v).toLocaleString()
 };
 async function loadSeries(){
   SERIES = await fetch(PUBLIC ? "series.json" : "/api/series", { cache: "no-store" })
@@ -2070,7 +2086,7 @@ function cinAt(vals, u){
 }
 function cinFmtT(s){ return s ? s.slice(5, 16).replace("T", " ").replace("-", "/") : ""; }
 const CINLBL = { g: "GROWTH %", gain: "FOLLOWERS GAINED", f: "FOLLOWERS",
-  lv: "LIVE VIEWERS", cv: "CLIP VIEWS", hl: "HOURS LIVE" };
+  lv: "LIVE VIEWERS", cv: "CLIP VIEWS", clips: "CLIPS MADE", hl: "HOURS LIVE" };
 
 function cinPrep(){
   const scene = $("#cin-scene").value, m = $("#cin-metric").value;
@@ -2118,7 +2134,8 @@ function cinPrep(){
     if (!crT.length) return null;
     const cd = crCohortData();
     const gainOf = t => (cd && cd.campG[t.s] && t.f != null) ? t.f - cd.campG[t.s].base : (t.gain || 0);
-    const parts = crT.map(t => ({ s: t.s, clips: t.clips || 0, cv: t.cv || 0, gain: Math.max(0, gainOf(t)) }));
+    const parts = crT.map(t => ({ s: t.s, clips: lastSeen(t, "clips") || 0,
+      cv: lastSeen(t, "cv") || 0, gain: Math.max(0, gainOf(t)) }));
     prep.stages = [
       { k: "CLIPS MADE", sub: "clips cut from their streams since July 15", key: "clips", fmt: v => Math.round(v).toLocaleString() },
       { k: "CLIP VIEWS", sub: "views those clips pulled on Twitch", key: "cv", fmt: v => Math.round(v).toLocaleString() },
@@ -2699,7 +2716,7 @@ function cinDrawClips(ctx, W, H, p, pr){
   if (p > .9){
     ctx.globalAlpha = Math.min(1, (p - .9) / .08);
     ctx.fillStyle = pr.col.faint; ctx.font = `${19 * s}px ui-monospace,Menlo,monospace`;
-    ctx.fillText("official Twitch counts over the same window · three outcomes of one campaign, not an attribution model", mL, H - 34 * s);
+    ctx.fillText("official Twitch counts, latest reading per creator · clip totals move slightly between reads · three outcomes of one campaign, not an attribution model", mL, H - 34 * s);
     ctx.globalAlpha = 1;
   }
 }
@@ -3028,6 +3045,10 @@ function cinDraw(p, pr){
   const ctx = cv.getContext("2d");
   const col = pr ? pr.col : cinColors();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
+  // every frame starts from the same context state, so a frame never depends on
+  // what the previous one left behind. Offline MP4 render needs that guarantee.
+  ctx.globalAlpha = 1; ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+  ctx.setLineDash([]); ctx.lineWidth = 1; ctx.lineJoin = "miter"; ctx.lineCap = "butt";
   ctx.fillStyle = col.bg;
   ctx.fillRect(0, 0, cv.width, cv.height);
   if (!pr){
@@ -3170,6 +3191,10 @@ async function cinRenderMp4(){
   CIN.pos = null;
   CIN.playing = true;
   $("#cin-rec").dataset.on = "1";
+  // throwaway first frame: the canvas resolves its font stack on first use, and
+  // that would otherwise land inside frame one of the export
+  cinDraw(0, pr);
+  CIN.pos = null;
   const durF = fps * durS, total = durF + Math.round(fps * .8);
   const ease = t => 1 - Math.pow(1 - t, 2.2);
   const t0 = performance.now();
