@@ -370,5 +370,17 @@
   "t": "2026-07-28T20:26",
   "text": "stream ended: 1.9h · peak 177 watching · +37 followers",
   "auto": 1
+ },
+ {
+  "id": "ms9cyl26u96",
+  "t": "2026-07-31T15:51",
+  "text": "live: Jul 31, 2026 at 12:50PM (IRL)",
+  "auto": 1
+ },
+ {
+  "id": "ms9czlnagk5",
+  "t": "2026-07-31T15:52",
+  "text": "chat spike: 174 msgs/min (baseline ~33)",
+  "auto": 1
  }
 ]
