@@ -442,5 +442,11 @@
   "t": "2026-07-31T21:48",
   "text": "chat spike: 32 msgs/min (baseline ~5)",
   "auto": 1
+ },
+ {
+  "id": "ms9wd0qjt7z",
+  "t": "2026-08-01T00:54",
+  "text": "stream ended: 3.1h · peak 87 watching · +59 followers",
+  "auto": 1
  }
 ]
