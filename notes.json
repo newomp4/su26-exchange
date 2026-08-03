@@ -502,5 +502,11 @@
   "t": "2026-08-02T20:21",
   "text": "chat spike: 33 msgs/min (baseline ~7)",
   "auto": 1
+ },
+ {
+  "id": "mscid9mmkfz",
+  "t": "2026-08-02T20:46",
+  "text": "chat spike: 59 msgs/min (baseline ~5)",
+  "auto": 1
  }
 ]
