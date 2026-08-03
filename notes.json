@@ -490,5 +490,17 @@
   "t": "2026-08-02T02:52",
   "text": "stream ended: 0.5h · peak 59 watching · +16 followers",
   "auto": 1
+ },
+ {
+  "id": "mschfpuhgds",
+  "t": "2026-08-02T20:19",
+  "text": "live: Aug 2, 2026 at 5:19PM (IRL)",
+  "auto": 1
+ },
+ {
+  "id": "mschh476eyc",
+  "t": "2026-08-02T20:21",
+  "text": "chat spike: 33 msgs/min (baseline ~7)",
+  "auto": 1
  }
 ]
