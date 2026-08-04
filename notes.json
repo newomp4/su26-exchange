@@ -550,5 +550,11 @@
   "t": "2026-08-03T19:51",
   "text": "chat spike: 47 msgs/min (baseline ~5)",
   "auto": 1
+ },
+ {
+  "id": "msdx2e5bjir",
+  "t": "2026-08-03T20:25",
+  "text": "chat spike: 39 msgs/min (baseline ~9)",
+  "auto": 1
  }
 ]
