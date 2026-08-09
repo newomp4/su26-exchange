@@ -1715,6 +1715,20 @@ const CMPFMT = {
 // minutes old, so the label says "at last check" rather than "right now".
 // Called from both loaders because they race and either can be the one that
 // finally has SERIES in hand.
+// Ten class members have no Twitch handle the collector can reach, so they sit
+// in the seed table at a hand-entered follower estimate that never moves. They
+// are 53M of the reach total, which is most of it, so the tile must not call
+// the whole figure "tracked". Split the count instead of quietly rounding them
+// in with the live ones.
+function reachSub(list){
+  const isTracked = t => {
+    if (t.liveF) return true;
+    const s = SERIES && SERIES.series && SERIES.series[t.s];
+    return !!(s && s.f && s.f.some(v => v != null));
+  };
+  const tracked = list.filter(isTracked).length, est = list.length - tracked;
+  return "followers · " + tracked + " tracked" + (est ? ", " + est + " estimated" : " names");
+}
 function renderLiveKpi(){
   if (LIVEDIRECT || !SERIES || !SERIES.times.length) return;
   const li = SERIES.times.length - 1;
@@ -3628,7 +3642,7 @@ async function syncServer(){
       }
       const reach = ALL.filter(t => t.f != null);
       $("#kpi-reach").textContent = fmtC(reach.reduce((a,t) => a + t.f, 0));
-      $("#kpi-reach-sub").textContent = "followers · " + reach.length + " tracked names";
+      $("#kpi-reach-sub").textContent = reachSub(reach);
       renderLiveKpi();
       updateGeneral();
     }
@@ -3896,7 +3910,7 @@ async function goLive(){
     // refresh KPIs + status line
     const withF = ALL.filter(t => t.f != null);
     $("#kpi-reach").textContent = fmtC(withF.reduce((a, t) => a + t.f, 0));
-    $("#kpi-reach-sub").textContent = "followers · " + withF.length + " tracked names";
+    $("#kpi-reach-sub").textContent = reachSub(withF);
     const missed = twitch.length - found.length;
     const liveList = Object.values(liveBy);
     const watching = liveList.reduce((a, st) => a + st.viewer_count, 0);
