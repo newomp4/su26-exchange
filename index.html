@@ -748,6 +748,9 @@ function clusterMarks(items, minGap){
 // on the public mirror (GitHub Pages) there is no local server: read the
 // published data files directly and hide every admin control
 const PUBLIC = location.protocol === "https:" && !["localhost", "127.0.0.1"].includes(location.hostname);
+// set once goLive() has real-time Twitch data in hand, so the collected-pass
+// fallback for the live tile knows to stand down
+let LIVEDIRECT = false;
 if (PUBLIC) document.documentElement.classList.add("public");
 let HIST = JSON.parse(localStorage.getItem("su26_hist") || "{}");
 let SERIES = null; // per-ticker time series from the collector, via /api/series
@@ -3603,6 +3606,20 @@ async function syncServer(){
       const reach = ALL.filter(t => t.f != null);
       $("#kpi-reach").textContent = fmtC(reach.reduce((a,t) => a + t.f, 0));
       $("#kpi-reach-sub").textContent = "followers · " + reach.length + " tracked names";
+      // Live tile: goLive() fills this from the Twitch API, but that path needs
+      // credentials and so only ever runs on localhost. On the public mirror,
+      // fall back to the viewer counts in the last collected pass. It is a
+      // snapshot up to 15 minutes old, so the label says "at last check".
+      if (!LIVEDIRECT && SERIES && SERIES.times.length){
+        const li = SERIES.times.length - 1;
+        let n = 0, watching = 0;
+        for (const k of Object.keys(SERIES.series)){
+          const lv = SERIES.series[k].lv, v = lv ? lv[li] : null;
+          if (v != null && v > 0){ n++; watching += v; }
+        }
+        $("#kpi-live").textContent = n + " live";
+        $("#kpi-live-sub").textContent = n ? fmtC(watching) + " watching at last check" : "nobody streaming at last check";
+      }
       updateGeneral();
     }
   } catch(e){}
@@ -3870,6 +3887,7 @@ async function goLive(){
     const missed = twitch.length - found.length;
     const liveList = Object.values(liveBy);
     const watching = liveList.reduce((a, st) => a + st.viewer_count, 0);
+    LIVEDIRECT = true;
     $("#kpi-live").textContent = liveList.length + " live";
     $("#kpi-live-sub").textContent = liveList.length ? fmtC(watching) + " watching right now" : "nobody streaming right now";
     $s.innerHTML = `<span class="on">● LIVE</span> · ${found.length} Twitch channels · ${liveList.length} streaming now` +
