@@ -94,6 +94,9 @@
     font-size:11px;padding:4px 8px;white-space:nowrap;transform:translate(-50%,-130%);
     display:none;z-index:3;font-variant-numeric:tabular-nums}
   details.data{margin-top:10px;font-size:11px;color:var(--muted)}
+  /* one column per day, so this table runs past 1500px and off a phone screen.
+     Scroll it inside its own box rather than letting the tail get clipped. */
+  details.data #idxtable{overflow-x:auto;-webkit-overflow-scrolling:touch}
   details.data table{border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums}
   details.data td,details.data th{border:1px solid var(--line);padding:3px 8px;text-align:right}
 
@@ -3781,6 +3784,9 @@ async function collectNow(){
   if (r && r.ok){ syncServer(); loadSeries(); }
 }
 async function loadCfg(){
+  // there is no server behind the public mirror, so skip the round trip rather
+  // than throw a 404 into the console on every page load
+  if (PUBLIC) return;
   const c = await fetch("/api/config").then(r => r.ok ? r.json() : null).catch(() => null);
   if (!c) return;
   if (c.client_id && !$("#cid").value) $("#cid").value = c.client_id;
