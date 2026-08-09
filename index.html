@@ -1706,9 +1706,29 @@ const CMPFMT = {
   hl: v => v.toFixed(1) + "h",
   clips: v => Math.round(v).toLocaleString()
 };
+// Live tile: goLive() fills this from the Twitch API, but that path needs
+// credentials and so only ever runs on localhost. Everywhere else, fall back to
+// the viewer counts in the last collected pass. That is a snapshot up to 15
+// minutes old, so the label says "at last check" rather than "right now".
+// Called from both loaders because they race and either can be the one that
+// finally has SERIES in hand.
+function renderLiveKpi(){
+  if (LIVEDIRECT || !SERIES || !SERIES.times.length) return;
+  const li = SERIES.times.length - 1;
+  let n = 0, watching = 0;
+  for (const k of Object.keys(SERIES.series)){
+    const lv = SERIES.series[k].lv, v = lv ? lv[li] : null;
+    if (v != null && v > 0){ n++; watching += v; }
+  }
+  $("#kpi-live").textContent = n + " live";
+  $("#kpi-live-sub").textContent = n
+    ? fmtC(watching) + " watching at last check"
+    : "nobody streaming at last check";
+}
 async function loadSeries(){
   SERIES = await fetch(PUBLIC ? "series.json" : "/api/series", { cache: "no-store" })
     .then(r => r.ok ? r.json() : null).catch(() => null);
+  renderLiveKpi();
   // masthead freshness: when the collector last saved, red when overdue
   const md = $("#mast-data");
   if (md && SERIES && SERIES.times.length){
@@ -3606,20 +3626,7 @@ async function syncServer(){
       const reach = ALL.filter(t => t.f != null);
       $("#kpi-reach").textContent = fmtC(reach.reduce((a,t) => a + t.f, 0));
       $("#kpi-reach-sub").textContent = "followers · " + reach.length + " tracked names";
-      // Live tile: goLive() fills this from the Twitch API, but that path needs
-      // credentials and so only ever runs on localhost. On the public mirror,
-      // fall back to the viewer counts in the last collected pass. It is a
-      // snapshot up to 15 minutes old, so the label says "at last check".
-      if (!LIVEDIRECT && SERIES && SERIES.times.length){
-        const li = SERIES.times.length - 1;
-        let n = 0, watching = 0;
-        for (const k of Object.keys(SERIES.series)){
-          const lv = SERIES.series[k].lv, v = lv ? lv[li] : null;
-          if (v != null && v > 0){ n++; watching += v; }
-        }
-        $("#kpi-live").textContent = n + " live";
-        $("#kpi-live-sub").textContent = n ? fmtC(watching) + " watching at last check" : "nobody streaming at last check";
-      }
+      renderLiveKpi();
       updateGeneral();
     }
   } catch(e){}
