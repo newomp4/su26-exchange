@@ -706,5 +706,11 @@
   "t": "2026-08-10T20:43",
   "text": "chat spike: 30 msgs/min (baseline ~3)",
   "auto": 1
+ },
+ {
+  "id": "mso2bh2ipjn",
+  "t": "2026-08-10T22:49",
+  "text": "stream ended: 1.8h · peak 65 watching · +22 followers",
+  "auto": 1
  }
 ]
