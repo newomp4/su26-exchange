@@ -700,5 +700,11 @@
   "t": "2026-08-09T23:54",
   "text": "stream ended: 0.0h · peak 21 watching · +1 followers",
   "auto": 1
+ },
+ {
+  "id": "msnxsbvonvu",
+  "t": "2026-08-10T20:43",
+  "text": "chat spike: 30 msgs/min (baseline ~3)",
+  "auto": 1
  }
 ]
