@@ -778,5 +778,11 @@
   "t": "2026-08-19T15:01",
   "text": "chat spike: 59 msgs/min (baseline ~13)",
   "auto": 1
+ },
+ {
+  "id": "mt0i1apxmrp",
+  "t": "2026-08-19T15:43",
+  "text": "stream ended: 1.3h · peak 99 watching · +23 followers",
+  "auto": 1
  }
 ]
